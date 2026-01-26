@@ -1,5 +1,6 @@
 /**
  * Thumbnail preview popup on progress bar hover
+ * Includes debouncing and request cancellation to prevent excessive loading
  */
 
 import type { KimochiPlayer } from '../core/KimochiPlayer';
@@ -10,8 +11,22 @@ export class ThumbnailPreview {
   private imageContainer: HTMLElement;
   private timeLabel: HTMLElement;
   private player: KimochiPlayer;
+
+  // State tracking
   private currentTime = -1;
+  private lastLoadedTime = -1;
   private isLoading = false;
+
+  // Debouncing
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly debounceDelay = 150; // ms to wait before loading
+
+  // Request tracking for cancellation
+  private requestId = 0;
+
+  // Minimum time difference to trigger a new load (in seconds)
+  // Larger values = fewer requests but less precise previews
+  private readonly minTimeDelta = 2;
 
   constructor(player: KimochiPlayer) {
     this.player = player;
@@ -32,11 +47,11 @@ export class ThumbnailPreview {
   }
 
   async show(time: number, xPosition: number, containerWidth: number): Promise<void> {
-    // Update time label
+    // Always update time label immediately (this is cheap)
     this.timeLabel.textContent = UIBuilder.formatTime(time);
 
     // Position the preview
-    const previewWidth = 160; // Match thumbnail width
+    const previewWidth = 160;
     const halfWidth = previewWidth / 2;
     let left = xPosition - halfWidth;
 
@@ -47,26 +62,63 @@ export class ThumbnailPreview {
     // Show the preview
     this.element.classList.add('kimochi-visible');
 
-    // Load thumbnail if time changed significantly
-    if (Math.abs(time - this.currentTime) > 0.5 && !this.isLoading) {
-      this.currentTime = time;
-      await this.loadThumbnail(time);
+    // Update current target time
+    this.currentTime = time;
+
+    // Check if we need to load a new thumbnail
+    const timeDelta = Math.abs(time - this.lastLoadedTime);
+
+    if (timeDelta > this.minTimeDelta) {
+      // Cancel any pending debounced request
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer);
+      }
+
+      // Debounce the thumbnail load
+      this.debounceTimer = setTimeout(() => {
+        this.debounceTimer = null;
+        // Only load if we're still showing and time hasn't changed much
+        if (Math.abs(this.currentTime - time) < 1) {
+          this.loadThumbnail(time);
+        }
+      }, this.debounceDelay);
     }
   }
 
   hide(): void {
     this.element.classList.remove('kimochi-visible');
+
+    // Cancel any pending request
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
   }
 
   private async loadThumbnail(time: number): Promise<void> {
+    // Don't start new load if already loading
+    if (this.isLoading) {
+      return;
+    }
+
     this.isLoading = true;
     this.imageContainer.classList.add('kimochi-loading');
+
+    // Track this request
+    const thisRequestId = ++this.requestId;
 
     try {
       const thumbnail = await this.player.getThumbnail(time);
 
-      if (thumbnail && Math.abs(time - this.currentTime) < 0.5) {
-        // Still showing the same time
+      // Check if this request is still relevant
+      // (user might have moved to a different time while we were loading)
+      if (thisRequestId !== this.requestId) {
+        return; // Stale request, ignore result
+      }
+
+      if (thumbnail) {
+        this.lastLoadedTime = time;
+
         if (thumbnail.sprite) {
           // Sprite-based thumbnail
           this.imageContainer.style.backgroundImage = `url(${thumbnail.url})`;
@@ -83,14 +135,38 @@ export class ThumbnailPreview {
         }
       }
     } catch (error) {
-      console.warn('Failed to load thumbnail:', error);
+      // Only log if this is still the current request
+      if (thisRequestId === this.requestId) {
+        console.warn('Failed to load thumbnail:', error);
+      }
     } finally {
-      this.isLoading = false;
-      this.imageContainer.classList.remove('kimochi-loading');
+      // Only clear loading state if this is still the current request
+      if (thisRequestId === this.requestId) {
+        this.isLoading = false;
+        this.imageContainer.classList.remove('kimochi-loading');
+      }
     }
   }
 
   getElement(): HTMLElement {
     return this.element;
+  }
+
+  /**
+   * Reset state (e.g., when source changes)
+   */
+  reset(): void {
+    this.currentTime = -1;
+    this.lastLoadedTime = -1;
+    this.isLoading = false;
+    this.requestId = 0;
+
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+
+    this.imageContainer.style.backgroundImage = '';
+    this.imageContainer.classList.remove('kimochi-loading');
   }
 }

@@ -13,33 +13,46 @@ import {
 } from '../types/video-stats'
 
 const VIDEO_SOURCES: VideoSource[] = [
+  // MP4 Sources
   {
     name: 'Big Buck Bunny (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    type: 'mp4',
-  },
-  {
-    name: 'Elephants Dream (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     type: 'mp4',
   },
   {
     name: 'Sintel (MP4)',
-    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
     type: 'mp4',
   },
   {
-    name: 'Apple HLS Test Stream (HLS)',
-    url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8',
+    name: 'Tears of Steel (MP4)',
+    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+    type: 'mp4',
+  },
+  // HLS Sources
+  {
+    name: 'Big Buck Bunny (HLS)',
+    url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
     type: 'hls',
   },
   {
-    name: 'Akamai HLS Test Stream (HLS)',
-    url: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
+    name: 'Sintel (HLS)',
+    url: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
     type: 'hls',
   },
   {
-    name: 'Tears of Steel (WebM)',
+    name: 'Tears of Steel (HLS)',
+    url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    type: 'hls',
+  },
+  {
+    name: 'Elephants Dream (HLS)',
+    url: 'https://demo.unified-streaming.com/k8s/features/stable/video/elephants-dream/elephants-dream.ism/.m3u8',
+    type: 'hls',
+  },
+  // WebM Source
+  {
+    name: 'Sintel (WebM)',
     url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f1/Sintel_movie_4K.webm/Sintel_movie_4K.webm.720p.webm',
     type: 'webm',
   },
