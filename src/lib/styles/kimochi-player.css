@@ -1,0 +1,720 @@
+/**
+ * KimochiPlayer Styles
+ */
+
+@import './_variables.css';
+
+/* ============================================================================
+   Container & Video
+   ============================================================================ */
+
+.kimochi-player {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--kimochi-text);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.kimochi-player * {
+  box-sizing: border-box;
+}
+
+.kimochi-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: var(--kimochi-z-video);
+}
+
+/* ============================================================================
+   Controls Overlay
+   ============================================================================ */
+
+.kimochi-controls-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--kimochi-z-overlay);
+  pointer-events: none;
+  transition: opacity var(--kimochi-transition-normal);
+}
+
+.kimochi-controls-overlay > * {
+  pointer-events: auto;
+}
+
+.kimochi-controls-hidden .kimochi-controls-bottom,
+.kimochi-controls-hidden .kimochi-controls-gradient,
+.kimochi-controls-hidden .kimochi-center-play {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Gradient overlay */
+.kimochi-controls-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  pointer-events: none;
+  transition: opacity var(--kimochi-transition-normal);
+}
+
+/* Bottom bar */
+.kimochi-controls-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--kimochi-controls-padding);
+  padding-top: 0;
+  transition: opacity var(--kimochi-transition-normal);
+}
+
+.kimochi-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.kimochi-controls-left,
+.kimochi-controls-right {
+  display: flex;
+  align-items: center;
+  gap: var(--kimochi-controls-gap);
+}
+
+/* ============================================================================
+   Center Play Button
+   ============================================================================ */
+
+.kimochi-center-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: var(--kimochi-z-controls);
+  transition: opacity var(--kimochi-transition-normal),
+    transform var(--kimochi-transition-normal);
+}
+
+.kimochi-center-play.kimochi-hidden {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  pointer-events: none;
+}
+
+.kimochi-center-play-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border: none;
+  border-radius: 50%;
+  background: var(--kimochi-primary);
+  color: #fff;
+  cursor: pointer;
+  transition: transform var(--kimochi-transition-fast),
+    background var(--kimochi-transition-fast);
+  box-shadow: var(--kimochi-shadow);
+}
+
+.kimochi-center-play-btn:hover {
+  background: var(--kimochi-primary-hover);
+  transform: scale(1.1);
+}
+
+.kimochi-center-play-btn:active {
+  background: var(--kimochi-primary-active);
+  transform: scale(1.05);
+}
+
+.kimochi-center-play-btn svg {
+  width: 36px;
+  height: 36px;
+}
+
+/* ============================================================================
+   Buttons
+   ============================================================================ */
+
+.kimochi-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--kimochi-btn-size);
+  height: var(--kimochi-btn-size);
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--kimochi-text);
+  cursor: pointer;
+  transition: background var(--kimochi-transition-fast),
+    color var(--kimochi-transition-fast);
+}
+
+.kimochi-btn:hover {
+  background: var(--kimochi-bg-hover);
+}
+
+.kimochi-btn:active {
+  background: var(--kimochi-bg-active);
+}
+
+.kimochi-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kimochi-btn svg {
+  width: var(--kimochi-icon-size);
+  height: var(--kimochi-icon-size);
+}
+
+/* ============================================================================
+   Time Display
+   ============================================================================ */
+
+.kimochi-time-display {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--kimochi-text);
+  white-space: nowrap;
+  padding: 0 8px;
+}
+
+.kimochi-time-current {
+  color: var(--kimochi-text);
+}
+
+.kimochi-time-duration {
+  color: var(--kimochi-text-secondary);
+}
+
+/* ============================================================================
+   Progress Bar
+   ============================================================================ */
+
+.kimochi-progress-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.kimochi-progress-container {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.kimochi-progress-container:focus {
+  outline: none;
+}
+
+.kimochi-progress-container:focus-visible .kimochi-progress-scrubber {
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.5);
+}
+
+.kimochi-progress-track {
+  position: relative;
+  width: 100%;
+  height: var(--kimochi-progress-height);
+  background: var(--kimochi-progress-bg);
+  border-radius: 2px;
+  overflow: visible;
+  transition: height var(--kimochi-transition-fast);
+}
+
+.kimochi-progress-container:hover .kimochi-progress-track {
+  height: var(--kimochi-progress-height-hover);
+}
+
+.kimochi-progress-buffered {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--kimochi-progress-buffered);
+  border-radius: 2px;
+  transition: width 200ms ease-out;
+}
+
+.kimochi-progress-played {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--kimochi-progress-filled);
+  border-radius: 2px;
+}
+
+.kimochi-progress-scrubber {
+  position: absolute;
+  top: 50%;
+  width: var(--kimochi-scrubber-size);
+  height: var(--kimochi-scrubber-size);
+  background: var(--kimochi-scrubber-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform var(--kimochi-transition-fast);
+  box-shadow: var(--kimochi-shadow-sm);
+}
+
+.kimochi-progress-container:hover .kimochi-progress-scrubber,
+.kimochi-progress-container.kimochi-dragging .kimochi-progress-scrubber {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Hover time display */
+.kimochi-progress-hover-time {
+  position: absolute;
+  bottom: 100%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--kimochi-bg);
+  border-radius: 4px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--kimochi-transition-fast);
+  margin-bottom: 8px;
+}
+
+.kimochi-progress-hover-time.kimochi-visible {
+  opacity: 1;
+}
+
+/* ============================================================================
+   Volume Control
+   ============================================================================ */
+
+.kimochi-volume-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kimochi-volume-slider-container {
+  width: 0;
+  overflow: hidden;
+  transition: width var(--kimochi-transition-normal);
+}
+
+.kimochi-volume-control:hover .kimochi-volume-slider-container {
+  width: 80px;
+}
+
+.kimochi-volume-slider {
+  width: 80px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--kimochi-progress-bg);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.kimochi-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--kimochi-text);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--kimochi-transition-fast);
+}
+
+.kimochi-volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.kimochi-volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--kimochi-text);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* ============================================================================
+   Settings Menu
+   ============================================================================ */
+
+.kimochi-settings-container {
+  position: relative;
+}
+
+.kimochi-settings-btn.kimochi-active {
+  background: var(--kimochi-bg-active);
+}
+
+.kimochi-settings-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  width: var(--kimochi-menu-width);
+  background: var(--kimochi-menu-bg);
+  border-radius: var(--kimochi-menu-radius);
+  box-shadow: var(--kimochi-shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity var(--kimochi-transition-fast),
+    transform var(--kimochi-transition-fast),
+    visibility var(--kimochi-transition-fast);
+  overflow: hidden;
+  z-index: var(--kimochi-z-menu);
+}
+
+.kimochi-settings-menu.kimochi-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Main menu */
+.kimochi-settings-main {
+  padding: 8px 0;
+}
+
+.kimochi-settings-menu.kimochi-submenu-open .kimochi-settings-main {
+  display: none;
+}
+
+/* Menu items */
+.kimochi-settings-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--kimochi-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--kimochi-transition-fast);
+}
+
+.kimochi-settings-item:hover {
+  background: var(--kimochi-bg-hover);
+}
+
+.kimochi-settings-item-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kimochi-settings-item-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.kimochi-settings-item-label {
+  flex: 1;
+}
+
+.kimochi-settings-item-value {
+  color: var(--kimochi-text-secondary);
+  font-size: 13px;
+  margin-right: 8px;
+}
+
+.kimochi-settings-item-chevron {
+  width: 20px;
+  height: 20px;
+  color: var(--kimochi-text-muted);
+}
+
+.kimochi-settings-item-chevron svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Submenu */
+.kimochi-settings-submenu {
+  display: none;
+  padding: 8px 0;
+}
+
+.kimochi-settings-submenu.kimochi-visible {
+  display: block;
+}
+
+/* Back button */
+.kimochi-settings-back {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid var(--kimochi-menu-border);
+  background: transparent;
+  color: var(--kimochi-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--kimochi-transition-fast);
+  margin-bottom: 8px;
+}
+
+.kimochi-settings-back:hover {
+  background: var(--kimochi-bg-hover);
+}
+
+.kimochi-settings-back-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  transform: rotate(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kimochi-settings-back-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Speed options */
+.kimochi-settings-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--kimochi-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--kimochi-transition-fast);
+}
+
+.kimochi-settings-option:hover {
+  background: var(--kimochi-bg-hover);
+}
+
+.kimochi-settings-option-check {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kimochi-settings-option-check svg {
+  width: 18px;
+  height: 18px;
+  color: var(--kimochi-primary);
+}
+
+.kimochi-settings-option.kimochi-active .kimochi-settings-option-check {
+  opacity: 1;
+}
+
+.kimochi-settings-option.kimochi-active {
+  color: var(--kimochi-primary);
+}
+
+/* ============================================================================
+   Thumbnail Preview
+   ============================================================================ */
+
+.kimochi-thumbnail-preview {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity var(--kimochi-transition-fast),
+    transform var(--kimochi-transition-fast),
+    visibility var(--kimochi-transition-fast);
+  z-index: var(--kimochi-z-tooltip);
+}
+
+.kimochi-thumbnail-preview.kimochi-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.kimochi-thumbnail-image {
+  width: var(--kimochi-thumbnail-width);
+  height: var(--kimochi-thumbnail-height);
+  background: #000;
+  border-radius: var(--kimochi-thumbnail-radius);
+  overflow: hidden;
+  box-shadow: var(--kimochi-shadow);
+}
+
+.kimochi-thumbnail-image.kimochi-loading {
+  background: var(--kimochi-bg);
+}
+
+.kimochi-thumbnail-time {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--kimochi-bg);
+  border-radius: 4px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   Loading Indicator
+   ============================================================================ */
+
+.kimochi-loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--kimochi-transition-normal);
+  z-index: var(--kimochi-z-controls);
+}
+
+.kimochi-controls-overlay.kimochi-loading .kimochi-loading-indicator {
+  opacity: 1;
+}
+
+.kimochi-controls-overlay.kimochi-loading .kimochi-center-play {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.kimochi-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--kimochi-text-muted);
+  border-top-color: var(--kimochi-primary);
+  border-radius: 50%;
+  animation: kimochi-spin 0.8s linear infinite;
+}
+
+@keyframes kimochi-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   Utility Classes
+   ============================================================================ */
+
+.kimochi-hidden {
+  display: none !important;
+}
+
+.kimochi-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================================
+   Fullscreen Adjustments
+   ============================================================================ */
+
+.kimochi-player:fullscreen,
+.kimochi-player:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+}
+
+.kimochi-player:fullscreen .kimochi-controls-bottom,
+.kimochi-player:-webkit-full-screen .kimochi-controls-bottom {
+  padding: 16px 24px;
+}
+
+.kimochi-player:fullscreen .kimochi-center-play-btn,
+.kimochi-player:-webkit-full-screen .kimochi-center-play-btn {
+  width: 96px;
+  height: 96px;
+}
+
+.kimochi-player:fullscreen .kimochi-center-play-btn svg,
+.kimochi-player:-webkit-full-screen .kimochi-center-play-btn svg {
+  width: 48px;
+  height: 48px;
+}
+
+/* ============================================================================
+   Responsive Adjustments
+   ============================================================================ */
+
+@media (max-width: 480px) {
+  .kimochi-btn {
+    --kimochi-btn-size: 36px;
+    --kimochi-icon-size: 20px;
+  }
+
+  .kimochi-time-display {
+    font-size: 12px;
+    padding: 0 4px;
+  }
+
+  .kimochi-volume-slider-container {
+    display: none;
+  }
+
+  .kimochi-settings-menu {
+    --kimochi-menu-width: 240px;
+  }
+
+  .kimochi-center-play-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .kimochi-center-play-btn svg {
+    width: 28px;
+    height: 28px;
+  }
+}

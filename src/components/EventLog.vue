@@ -18,7 +18,7 @@ function formatTimestamp(ts: number): string {
     minute: '2-digit',
     second: '2-digit',
     fractionalSecondDigits: 3,
-  })
+  } as Intl.DateTimeFormatOptions)
 }
 
 function getEventClass(type: string): string {

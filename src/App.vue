@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import VideoPlayer from './components/VideoPlayer.vue'
+import KimochiPlayerDemo from './components/KimochiPlayerDemo.vue'
+
+const activeTab = ref<'kimochi' | 'original'>('kimochi')
 </script>
 
 <template>
@@ -7,9 +11,26 @@ import VideoPlayer from './components/VideoPlayer.vue'
     <header>
       <h1>KimochiPlayer PoC</h1>
       <p class="subtitle">WebAssembly Video Player Test Harness</p>
+
+      <!-- Tab Switcher -->
+      <div class="tabs">
+        <button
+          :class="{ active: activeTab === 'kimochi' }"
+          @click="activeTab = 'kimochi'"
+        >
+          KimochiPlayer (New)
+        </button>
+        <button
+          :class="{ active: activeTab === 'original' }"
+          @click="activeTab = 'original'"
+        >
+          Original Player
+        </button>
+      </div>
     </header>
     <main>
-      <VideoPlayer />
+      <KimochiPlayerDemo v-if="activeTab === 'kimochi'" />
+      <VideoPlayer v-else />
     </main>
   </div>
 </template>
@@ -63,6 +84,35 @@ header h1 {
 .subtitle {
   color: var(--text-secondary);
   font-size: 0.95rem;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.tabs button {
+  padding: 10px 24px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.tabs button:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.tabs button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
 }
 
 main {
