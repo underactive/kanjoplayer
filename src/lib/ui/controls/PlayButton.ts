@@ -29,6 +29,7 @@ export class PlayButton {
     this.player.on('play', () => this.updateIcon(false));
     this.player.on('pause', () => this.updateIcon(true));
     this.player.on('ended', () => this.updateIcon(true));
+    this.player.on('sourcechange', () => this.updateIcon(true));
   }
 
   private updateIcon(paused: boolean): void {
@@ -91,6 +92,11 @@ export class CenterPlayButton {
 
     this.player.on('ended', () => {
       btn.innerHTML = UIBuilder.icons.replay;
+      this.element.classList.remove('kimochi-hidden');
+    });
+
+    this.player.on('sourcechange', () => {
+      btn.innerHTML = UIBuilder.icons.play;
       this.element.classList.remove('kimochi-hidden');
     });
   }

@@ -62,6 +62,11 @@ export class ProgressBar {
   }
 
   private bindEvents(): void {
+    // Reset on source change
+    this.player.on('sourcechange', () => {
+      this.reset();
+    });
+
     // Update progress on timeupdate
     this.player.on('timeupdate', ({ currentTime, duration }) => {
       if (!this.isDragging && duration > 0) {
@@ -207,6 +212,15 @@ export class ProgressBar {
 
     e.preventDefault();
     this.player.seek(this.player.getCurrentTime() + seek);
+  }
+
+  /**
+   * Reset progress bar to initial state (e.g., on source change)
+   */
+  private reset(): void {
+    this.updateProgress(0);
+    this.bufferedBar.style.width = '0%';
+    this.thumbnailPreview.reset();
   }
 
   getElement(): HTMLElement {
