@@ -307,6 +307,15 @@
   opacity: 1;
 }
 
+.kimochi-progress-hover-time.kimochi-marker-time {
+  background: var(--kimochi-primary);
+  color: #fff;
+  font-weight: 600;
+  padding: 6px 10px;
+  font-size: 13px;
+  z-index: 50; /* Above zoom indicator (40) */
+}
+
 /* ============================================================================
    Volume Control
    ============================================================================ */
@@ -547,6 +556,261 @@
 
 .kimochi-settings-option.kimochi-active {
   color: var(--kimochi-primary);
+}
+
+/* ============================================================================
+   A/B Loop Control
+   ============================================================================ */
+
+.kimochi-abloop-control {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+}
+
+.kimochi-abloop-btn {
+  opacity: 0.7;
+  transition: opacity var(--kimochi-transition-fast),
+    background var(--kimochi-transition-fast),
+    color var(--kimochi-transition-fast);
+}
+
+.kimochi-abloop-btn:hover {
+  opacity: 1;
+}
+
+.kimochi-abloop-btn.kimochi-active {
+  opacity: 1;
+  background: var(--kimochi-primary);
+  color: #fff;
+}
+
+.kimochi-abloop-btn.kimochi-active:hover {
+  background: var(--kimochi-primary-hover);
+}
+
+.kimochi-abloop-start,
+.kimochi-abloop-end {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: auto;
+  padding: 0 8px;
+}
+
+.kimochi-abloop-start svg,
+.kimochi-abloop-end svg {
+  flex-shrink: 0;
+}
+
+.kimochi-abloop-time {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.kimochi-abloop-time:empty {
+  display: none;
+}
+
+.kimochi-abloop-clear {
+  opacity: 0.5;
+}
+
+.kimochi-abloop-clear:hover {
+  opacity: 1;
+}
+
+.kimochi-abloop-toggle {
+  opacity: 0.5;
+}
+
+.kimochi-abloop-toggle:not(:disabled) {
+  opacity: 0.7;
+}
+
+.kimochi-abloop-toggle:not(:disabled):hover {
+  opacity: 1;
+}
+
+.kimochi-abloop-toggle.kimochi-active {
+  opacity: 1;
+  background: var(--kimochi-primary);
+  color: #fff;
+}
+
+.kimochi-abloop-toggle.kimochi-active:hover {
+  background: var(--kimochi-primary-hover);
+}
+
+.kimochi-abloop-toggle:disabled {
+  cursor: not-allowed;
+}
+
+/* Loop Region Highlight */
+.kimochi-loop-region {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: rgba(233, 69, 96, 0.2);
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--kimochi-transition-fast);
+}
+
+.kimochi-loop-region.kimochi-visible {
+  opacity: 1;
+}
+
+.kimochi-loop-region.kimochi-active {
+  background: rgba(233, 69, 96, 0.35);
+}
+
+/* Loop Markers */
+.kimochi-loop-marker {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  cursor: ew-resize;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--kimochi-transition-fast);
+  z-index: 5;
+}
+
+.kimochi-loop-marker.kimochi-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.kimochi-loop-marker-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 20px;
+  background: var(--kimochi-primary);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: var(--kimochi-shadow-sm);
+  transition: transform var(--kimochi-transition-fast),
+    background var(--kimochi-transition-fast);
+}
+
+.kimochi-loop-marker:hover .kimochi-loop-marker-handle {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: var(--kimochi-primary-hover);
+}
+
+.kimochi-loop-marker-start .kimochi-loop-marker-handle {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.kimochi-loop-marker-end .kimochi-loop-marker-handle {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+/* ============================================================================
+   Zoom Mode for Fine-tuning Markers
+   ============================================================================ */
+
+.kimochi-zoom-indicator {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  padding: 8px 12px;
+  background: var(--kimochi-bg);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity var(--kimochi-transition-fast),
+    transform var(--kimochi-transition-fast),
+    visibility var(--kimochi-transition-fast);
+  z-index: var(--kimochi-z-tooltip);
+  box-shadow: var(--kimochi-shadow);
+  border: 1px solid var(--kimochi-primary);
+}
+
+.kimochi-zoom-indicator.kimochi-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.kimochi-zoom-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--kimochi-primary);
+  text-align: center;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kimochi-zoom-range {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--kimochi-text-secondary);
+}
+
+.kimochi-zoom-time-center {
+  font-size: 10px;
+  color: var(--kimochi-text-muted);
+}
+
+/* Zoomed progress bar styling */
+.kimochi-progress-container.kimochi-zoomed {
+  background: rgba(233, 69, 96, 0.15);
+  border-radius: 4px;
+  padding: 4px;
+  margin: -4px;
+}
+
+.kimochi-progress-container.kimochi-zoomed .kimochi-progress-track {
+  height: 12px;
+  background: var(--kimochi-progress-bg);
+  border: 1px solid rgba(233, 69, 96, 0.5);
+  border-radius: 4px;
+}
+
+.kimochi-progress-container.kimochi-zoomed .kimochi-loop-marker {
+  height: 32px;
+}
+
+.kimochi-progress-container.kimochi-zoomed .kimochi-loop-marker-handle {
+  transform: translate(-50%, -50%) scale(1.3);
+  box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3), var(--kimochi-shadow);
+}
+
+.kimochi-progress-container.kimochi-zoomed .kimochi-loop-region {
+  background: rgba(233, 69, 96, 0.4);
+}
+
+.kimochi-progress-container.kimochi-zoomed .kimochi-progress-scrubber {
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0.5;
 }
 
 /* ============================================================================

@@ -10,6 +10,7 @@ import { ProgressBar } from './controls/ProgressBar';
 import { VolumeControl } from './controls/VolumeControl';
 import { FullscreenButton } from './controls/FullscreenButton';
 import { SettingsMenu } from './controls/SettingsMenu';
+import { ABLoopControl } from './controls/ABLoopControl';
 
 export class ControlsOverlay {
   private element: HTMLElement;
@@ -24,6 +25,7 @@ export class ControlsOverlay {
   private volumeControl: VolumeControl;
   private fullscreenButton: FullscreenButton;
   private settingsMenu: SettingsMenu;
+  private abLoopControl: ABLoopControl;
 
   constructor(player: KimochiPlayer, container: HTMLElement) {
     this.player = player;
@@ -36,6 +38,19 @@ export class ControlsOverlay {
     this.volumeControl = new VolumeControl(player);
     this.fullscreenButton = new FullscreenButton(player);
     this.settingsMenu = new SettingsMenu(player);
+    this.abLoopControl = new ABLoopControl(player);
+
+    // Wire up A/B loop control with progress bar
+    this.abLoopControl.setStateChangeCallback((state) => {
+      this.progressBar.updateLoopState(state);
+    });
+    this.progressBar.setLoopMarkerDragCallback((type, time) => {
+      if (type === 'start') {
+        this.abLoopControl.updateStartTime(time);
+      } else {
+        this.abLoopControl.updateEndTime(time);
+      }
+    });
 
     // Build the overlay
     this.bottomBar = this.createBottomBar();
@@ -98,6 +113,7 @@ export class ControlsOverlay {
     const rightControls = UIBuilder.create({
       className: 'kimochi-controls-right',
     });
+    rightControls.appendChild(this.abLoopControl.getElement());
     rightControls.appendChild(this.settingsMenu.getElement());
     rightControls.appendChild(this.fullscreenButton.getElement());
 
