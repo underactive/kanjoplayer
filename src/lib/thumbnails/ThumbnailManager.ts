@@ -1,27 +1,32 @@
 /**
- * Thumbnail Manager - Coordinates WASM extraction and sprite loading
+ * Thumbnail Manager - Coordinates extraction methods
+ * - Canvas extraction for MP4/WebM
+ * - HLS segment extraction for HLS streams
+ * - Sprite sheets for pre-generated thumbnails
  */
 
 import type { KimochiPlayer } from '../core/KimochiPlayer';
 import type { ThumbnailConfig, ThumbnailData } from '../core/types';
 import { ThumbnailCache } from './ThumbnailCache';
-import { WasmExtractor } from './WasmExtractor';
+import { CanvasExtractor } from './CanvasExtractor';
 import { SpriteLoader } from './SpriteLoader';
 
 export class ThumbnailManager {
   private player: KimochiPlayer;
   private config: ThumbnailConfig;
   private cache: ThumbnailCache;
-  private wasmExtractor: WasmExtractor | null = null;
+  private canvasExtractor: CanvasExtractor | null = null;
+  private hlsExtractor: unknown = null; // Lazy loaded
   private spriteLoader: SpriteLoader | null = null;
   private isInitialized = false;
   private pendingInit: Promise<void> | null = null;
   private useSprites = false;
+  private useHls = false;
 
   constructor(player: KimochiPlayer, config: ThumbnailConfig) {
     this.player = player;
     const defaults = {
-      useWasm: true,
+      useWasm: false,
       cacheSize: 50,
       width: 160,
       height: 90,
@@ -55,9 +60,10 @@ export class ThumbnailManager {
     // Clear previous data
     this.cache.clear();
     this.useSprites = false;
+    this.useHls = false;
 
-    // For HLS with sprite URL, use sprite loader
-    if (this.config.vttUrl || (state.sourceType === 'hls' && this.config.spriteUrl)) {
+    // For HLS with sprite URL, use sprite loader (preferred)
+    if (this.config.vttUrl || this.config.spriteUrl) {
       try {
         this.spriteLoader = new SpriteLoader({
           baseUrl: this.getBaseUrl(state.src),
@@ -69,23 +75,43 @@ export class ThumbnailManager {
         this.isInitialized = true;
         return;
       } catch (error) {
-        console.warn('[ThumbnailManager] Sprite loading failed, falling back to WASM:', error);
+        console.warn('[ThumbnailManager] Sprite loading failed, trying other methods:', error);
       }
     }
 
-    // Use WASM extraction for MP4/WebM
-    if (this.config.useWasm && WasmExtractor.isSupported()) {
+    // For HLS streams without sprites, use HLS segment extraction
+    if (state.sourceType === 'hls') {
       try {
-        this.wasmExtractor = new WasmExtractor({
+        const { HlsExtractor } = await import('./HlsExtractor');
+
+        if (HlsExtractor.isSupported()) {
+          this.hlsExtractor = new HlsExtractor({
+            width: this.config.width,
+            height: this.config.height,
+          });
+
+          (this.hlsExtractor as { setVideoUrl: (url: string) => void }).setVideoUrl(state.src);
+          this.useHls = true;
+          this.isInitialized = true;
+          return;
+        }
+      } catch (error) {
+        console.warn('[ThumbnailManager] HLS extraction not available:', error);
+      }
+    }
+
+    // Use Canvas extraction for MP4/WebM
+    if (CanvasExtractor.isSupported()) {
+      try {
+        this.canvasExtractor = new CanvasExtractor({
           width: this.config.width,
           height: this.config.height,
         });
 
-        // Don't initialize WASM until first use (lazy loading)
-        this.wasmExtractor.setVideoUrl(state.src);
+        this.canvasExtractor.setVideoUrl(state.src);
         this.isInitialized = true;
       } catch (error) {
-        console.warn('[ThumbnailManager] WASM extraction not available:', error);
+        console.warn('[ThumbnailManager] Canvas extraction not available:', error);
       }
     }
 
@@ -95,17 +121,27 @@ export class ThumbnailManager {
   /**
    * Handle source change events
    */
-  private handleSourceChange(data: { src: string; type: string }): void {
+  private handleSourceChange(_data: { src: string; type: string }): void {
     // Reset state for new source
     this.isInitialized = false;
+    this.useSprites = false;
+    this.useHls = false;
     this.cache.clear();
 
-    if (this.wasmExtractor) {
-      this.wasmExtractor.setVideoUrl(data.src);
+    // Cleanup extractors
+    if (this.canvasExtractor) {
+      this.canvasExtractor.destroy();
+      this.canvasExtractor = null;
+    }
+
+    if (this.hlsExtractor) {
+      (this.hlsExtractor as { destroy: () => void }).destroy();
+      this.hlsExtractor = null;
     }
 
     if (this.spriteLoader) {
       this.spriteLoader.clear();
+      this.spriteLoader = null;
     }
   }
 
@@ -131,15 +167,17 @@ export class ThumbnailManager {
     // Get from appropriate source
     let thumbnail: ThumbnailData | null = null;
 
-    if (this.useSprites && this.spriteLoader?.isReady()) {
-      thumbnail = this.spriteLoader.getThumbnail(time);
-    } else if (this.wasmExtractor) {
-      try {
-        thumbnail = await this.wasmExtractor.extract(time);
-      } catch (error) {
-        console.warn('[ThumbnailManager] Failed to extract thumbnail:', error);
-        return null;
+    try {
+      if (this.useSprites && this.spriteLoader?.isReady()) {
+        thumbnail = this.spriteLoader.getThumbnail(time);
+      } else if (this.useHls && this.hlsExtractor) {
+        thumbnail = await (this.hlsExtractor as { extract: (time: number) => Promise<ThumbnailData> }).extract(time);
+      } else if (this.canvasExtractor) {
+        thumbnail = await this.canvasExtractor.extract(time);
       }
+    } catch (error) {
+      console.warn('[ThumbnailManager] Failed to extract thumbnail:', error);
+      return null;
     }
 
     // Cache the result
@@ -203,9 +241,14 @@ export class ThumbnailManager {
   destroy(): void {
     this.cache.clear();
 
-    if (this.wasmExtractor) {
-      this.wasmExtractor.destroy();
-      this.wasmExtractor = null;
+    if (this.canvasExtractor) {
+      this.canvasExtractor.destroy();
+      this.canvasExtractor = null;
+    }
+
+    if (this.hlsExtractor) {
+      (this.hlsExtractor as { destroy: () => void }).destroy();
+      this.hlsExtractor = null;
     }
 
     if (this.spriteLoader) {

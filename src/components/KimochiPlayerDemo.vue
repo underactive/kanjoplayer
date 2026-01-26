@@ -16,6 +16,7 @@ import {
 import '../lib/styles/kimochi-player.css';
 
 const VIDEO_SOURCES: VideoSource[] = [
+  // MP4 Sources
   {
     name: 'Big Buck Bunny (MP4)',
     url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
@@ -31,14 +32,30 @@ const VIDEO_SOURCES: VideoSource[] = [
     url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
     type: 'mp4',
   },
+  // HLS Sources
   {
-    name: 'Apple HLS Test (HLS)',
-    url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8',
+    name: 'Big Buck Bunny (HLS)',
+    url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
     type: 'hls',
   },
   {
-    name: 'Akamai Test Stream (HLS)',
-    url: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
+    name: 'Sintel (HLS)',
+    url: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+    type: 'hls',
+  },
+  {
+    name: 'Tears of Steel (HLS)',
+    url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    type: 'hls',
+  },
+  {
+    name: 'Elephants Dream (HLS)',
+    url: 'https://demo.unified-streaming.com/k8s/features/stable/video/elephants-dream/elephants-dream.ism/.m3u8',
+    type: 'hls',
+  },
+  {
+    name: 'Azure Sample (HLS)',
+    url: 'https://amssamples.streaming.mediaservices.windows.net/91492735-c523-432b-ba01-faba6c2206a2/AzureMediaServicesPromo.ism/manifest(format=m3u8-aapl)',
     type: 'hls',
   },
 ];
