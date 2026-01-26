@@ -1,6 +1,6 @@
 /**
  * HLS-aware thumbnail extractor
- * Uses a separate HLS.js instance to seek and extract frames
+ * Uses a separate HLS.js instance optimized for fast thumbnail extraction
  */
 
 import type { ThumbnailData } from '../core/types';
@@ -8,6 +8,8 @@ import type { ThumbnailData } from '../core/types';
 export interface HlsExtractorOptions {
   width?: number;
   height?: number;
+  /** Number of thumbnails to pre-buffer (distributed evenly across duration) */
+  prebufferCount?: number;
 }
 
 interface PendingExtraction {
@@ -29,11 +31,17 @@ export class HlsExtractor {
   private pendingExtractions: PendingExtraction[] = [];
   private isProcessing = false;
   private lastExtractedTime = -1;
+  private duration = 0;
+
+  // Pre-buffered thumbnails cache
+  private thumbnailCache: Map<number, ThumbnailData> = new Map();
+  private isPrebuffering = false;
 
   constructor(options: HlsExtractorOptions = {}) {
     this.options = {
       width: options.width ?? 160,
       height: options.height ?? 90,
+      prebufferCount: options.prebufferCount ?? 10, // Pre-buffer 10 thumbnails evenly distributed
     };
   }
 
@@ -47,13 +55,20 @@ export class HlsExtractor {
   }
 
   /**
-   * Set the HLS URL
+   * Set the HLS URL and optionally pre-initialize
    */
-  setVideoUrl(url: string): void {
+  setVideoUrl(url: string, preInit = true): void {
     if (this.hlsUrl !== url) {
       this.destroy();
       this.hlsUrl = url;
       this.isInitialized = false;
+
+      // Pre-initialize in background
+      if (preInit) {
+        this.initialize().catch(() => {
+          // Silently fail pre-init, will retry on first extract
+        });
+      }
     }
   }
 
@@ -107,15 +122,21 @@ export class HlsExtractor {
     this.canvas.height = this.options.height;
     this.ctx = this.canvas.getContext('2d');
 
-    // Create HLS instance
+    // Create HLS instance optimized for thumbnails
     this.hls = new Hls({
       enableWorker: true,
       lowLatencyMode: false,
-      // Optimize for seeking/thumbnails
-      maxBufferLength: 10,
-      maxMaxBufferLength: 30,
-      maxBufferSize: 10 * 1024 * 1024, // 10MB
+      // Use smallest buffer for faster startup
+      maxBufferLength: 5,
+      maxMaxBufferLength: 10,
+      maxBufferSize: 5 * 1024 * 1024, // 5MB
       maxBufferHole: 0.5,
+      // Start with lowest quality for faster loading
+      startLevel: 0,
+      // Prefer lower quality for thumbnails
+      capLevelToPlayerSize: true,
+      // Faster ABR switching
+      abrEwmaDefaultEstimate: 500000, // 500kbps default
     });
 
     const hlsInstance = this.hls as {
@@ -124,14 +145,39 @@ export class HlsExtractor {
       on: (event: string, handler: (event: string, data: unknown) => void) => void;
       off: (event: string, handler: (event: string, data: unknown) => void) => void;
       destroy: () => void;
+      currentLevel: number;
+      levels: Array<{ height: number; bitrate: number }>;
     };
 
     return new Promise<void>((resolve, reject) => {
-      const onManifestParsed = () => {
+      const onManifestParsed = (_event: string, _data: unknown) => {
         hlsInstance.off(Hls.Events.MANIFEST_PARSED, onManifestParsed);
         hlsInstance.off(Hls.Events.ERROR, onError);
+
+        // Force lowest quality level for thumbnails
+        if (hlsInstance.levels && hlsInstance.levels.length > 0) {
+          // Find the lowest quality level
+          let lowestIdx = 0;
+          let lowestBitrate = Infinity;
+          hlsInstance.levels.forEach((level, idx) => {
+            if (level.bitrate < lowestBitrate) {
+              lowestBitrate = level.bitrate;
+              lowestIdx = idx;
+            }
+          });
+          hlsInstance.currentLevel = lowestIdx;
+        }
+
         this.isInitialized = true;
         resolve();
+
+        // Get duration and start pre-buffering
+        if (this.video) {
+          this.video.addEventListener('loadedmetadata', () => {
+            this.duration = this.video?.duration || 0;
+            this.startPrebuffering();
+          }, { once: true });
+        }
       };
 
       const onError = (_event: string, data: unknown) => {
@@ -149,15 +195,78 @@ export class HlsExtractor {
       hlsInstance.loadSource(this.hlsUrl);
       hlsInstance.attachMedia(this.video!);
 
-      // Timeout after 15 seconds
+      // Timeout after 10 seconds
       setTimeout(() => {
         if (!this.isInitialized) {
           hlsInstance.off(Hls.Events.MANIFEST_PARSED, onManifestParsed);
           hlsInstance.off(Hls.Events.ERROR, onError);
           reject(new Error('HLS manifest loading timeout'));
         }
-      }, 15000);
+      }, 10000);
     });
+  }
+
+  /**
+   * Pre-buffer thumbnails distributed evenly across the video
+   */
+  private async startPrebuffering(): Promise<void> {
+    if (this.isPrebuffering || this.duration <= 0) return;
+    this.isPrebuffering = true;
+
+    const count = this.options.prebufferCount;
+
+    // Calculate interval to distribute thumbnails evenly across duration
+    // For 90min video with 10 thumbnails = one every 9 minutes
+    const interval = this.duration / (count + 1);
+
+    // Generate evenly distributed timestamps
+    const times: number[] = [];
+    for (let i = 1; i <= count; i++) {
+      const time = Math.floor(interval * i);
+      if (time < this.duration) {
+        times.push(time);
+      }
+    }
+
+    // Also add the start (0s) as it's commonly requested
+    times.unshift(0);
+
+    // Pre-buffer in background with low priority
+    for (const time of times) {
+      // Stop if extractor was destroyed
+      if (!this.video) break;
+
+      try {
+        // Use requestIdleCallback if available for non-blocking prebuffer
+        if ('requestIdleCallback' in window) {
+          await new Promise<void>(resolve => {
+            (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void })
+              .requestIdleCallback(async () => {
+                if (!this.thumbnailCache.has(time) && this.video) {
+                  try {
+                    const thumb = await this.extractFrameInternal(time);
+                    this.thumbnailCache.set(time, thumb);
+                  } catch {
+                    // Ignore prebuffer errors
+                  }
+                }
+                resolve();
+              }, { timeout: 5000 }); // Don't wait forever
+          });
+        } else {
+          // Fallback: small delay between prebuffers
+          await new Promise(r => setTimeout(r, 200));
+          if (!this.thumbnailCache.has(time) && this.video) {
+            const thumb = await this.extractFrameInternal(time);
+            this.thumbnailCache.set(time, thumb);
+          }
+        }
+      } catch {
+        // Continue with next position on error
+      }
+    }
+
+    this.isPrebuffering = false;
   }
 
   /**
@@ -168,11 +277,41 @@ export class HlsExtractor {
       throw new Error('HLS URL not set');
     }
 
+    // Check cache first (including nearby cached thumbnails)
+    const cached = this.findCachedThumbnail(time);
+    if (cached) {
+      return cached;
+    }
+
     // Queue the extraction
     return new Promise((resolve, reject) => {
       this.pendingExtractions.push({ time, resolve, reject });
       this.processQueue();
     });
+  }
+
+  /**
+   * Find a cached thumbnail near the requested time
+   */
+  private findCachedThumbnail(time: number): ThumbnailData | null {
+    // Exact match
+    if (this.thumbnailCache.has(time)) {
+      return this.thumbnailCache.get(time)!;
+    }
+
+    // Find closest cached thumbnail within 5 seconds
+    let closest: ThumbnailData | null = null;
+    let closestDelta = 5;
+
+    this.thumbnailCache.forEach((thumb, cachedTime) => {
+      const delta = Math.abs(cachedTime - time);
+      if (delta < closestDelta) {
+        closestDelta = delta;
+        closest = thumb;
+      }
+    });
+
+    return closest;
   }
 
   /**
@@ -194,7 +333,11 @@ export class HlsExtractor {
           await this.initialize();
         }
 
-        const result = await this.extractFrame(extraction.time);
+        const result = await this.extractFrameInternal(extraction.time);
+
+        // Cache the result
+        this.thumbnailCache.set(extraction.time, result);
+
         extraction.resolve(result);
       } catch (error) {
         extraction.reject(error as Error);
@@ -205,9 +348,9 @@ export class HlsExtractor {
   }
 
   /**
-   * Extract a frame at the given time
+   * Internal frame extraction
    */
-  private async extractFrame(time: number): Promise<ThumbnailData> {
+  private async extractFrameInternal(time: number): Promise<ThumbnailData> {
     if (!this.video || !this.canvas || !this.ctx) {
       throw new Error('Extractor not properly initialized');
     }
@@ -218,7 +361,6 @@ export class HlsExtractor {
 
     // Skip if we just extracted this time
     if (Math.abs(time - this.lastExtractedTime) < 0.5) {
-      // Return cached-ish result by just capturing current frame
       return this.captureFrame(video, canvas, ctx, time);
     }
 
@@ -227,25 +369,32 @@ export class HlsExtractor {
 
       const cleanup = () => {
         video.removeEventListener('seeked', onSeeked);
+        video.removeEventListener('canplay', onCanPlay);
         video.removeEventListener('error', onError);
       };
 
-      const onSeeked = () => {
+      const attemptCapture = () => {
         if (resolved) return;
-        resolved = true;
-        cleanup();
 
-        // Small delay to ensure frame is rendered
-        requestAnimationFrame(() => {
-          try {
-            this.lastExtractedTime = time;
-            const result = this.captureFrame(video, canvas, ctx, time);
-            resolve(result);
-          } catch (error) {
-            reject(error);
-          }
-        });
+        // Check if video has data
+        if (video.readyState >= 2 && video.videoWidth > 0) {
+          resolved = true;
+          cleanup();
+
+          requestAnimationFrame(() => {
+            try {
+              this.lastExtractedTime = time;
+              const result = this.captureFrame(video, canvas, ctx, time);
+              resolve(result);
+            } catch (error) {
+              reject(error);
+            }
+          });
+        }
       };
+
+      const onSeeked = () => attemptCapture();
+      const onCanPlay = () => attemptCapture();
 
       const onError = (e: Event) => {
         if (resolved) return;
@@ -254,25 +403,29 @@ export class HlsExtractor {
         reject(new Error(`Video seek error: ${(e as ErrorEvent).message || 'unknown'}`));
       };
 
-      // Timeout
+      // Timeout - but try to capture anyway
       const timeout = setTimeout(() => {
         if (!resolved) {
           resolved = true;
           cleanup();
-          // Try to capture current frame anyway
           try {
-            const result = this.captureFrame(video, canvas, ctx, time);
-            resolve(result);
+            if (video.videoWidth > 0) {
+              const result = this.captureFrame(video, canvas, ctx, time);
+              resolve(result);
+            } else {
+              reject(new Error('Thumbnail extraction timeout'));
+            }
           } catch {
             reject(new Error('Thumbnail extraction timeout'));
           }
         }
-      }, 5000);
+      }, 3000); // Reduced timeout
 
       video.addEventListener('seeked', () => {
         clearTimeout(timeout);
         onSeeked();
       });
+      video.addEventListener('canplay', onCanPlay);
       video.addEventListener('error', onError);
 
       // Seek to target time
@@ -289,31 +442,25 @@ export class HlsExtractor {
     ctx: CanvasRenderingContext2D,
     time: number
   ): ThumbnailData {
-    // Check if video has valid dimensions
     if (video.videoWidth === 0 || video.videoHeight === 0) {
       throw new Error('Video has no valid dimensions');
     }
 
-    // Calculate dimensions maintaining aspect ratio
     const videoAspect = video.videoWidth / video.videoHeight;
     const canvasAspect = canvas.width / canvas.height;
 
     let sx = 0, sy = 0, sw = video.videoWidth, sh = video.videoHeight;
 
     if (videoAspect > canvasAspect) {
-      // Video is wider - crop sides
       sw = video.videoHeight * canvasAspect;
       sx = (video.videoWidth - sw) / 2;
     } else {
-      // Video is taller - crop top/bottom
       sh = video.videoWidth / canvasAspect;
       sy = (video.videoHeight - sh) / 2;
     }
 
-    // Draw frame to canvas
     ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
-    // Get data URL
     const url = canvas.toDataURL('image/jpeg', 0.7);
 
     return {
@@ -325,22 +472,30 @@ export class HlsExtractor {
   }
 
   /**
+   * Get cache statistics
+   */
+  getCacheStats(): { size: number; times: number[] } {
+    return {
+      size: this.thumbnailCache.size,
+      times: Array.from(this.thumbnailCache.keys()).sort((a, b) => a - b),
+    };
+  }
+
+  /**
    * Destroy and release all resources
    */
   destroy(): void {
-    // Reject pending extractions
     this.pendingExtractions.forEach(p => {
       p.reject(new Error('Extractor destroyed'));
     });
     this.pendingExtractions = [];
+    this.thumbnailCache.clear();
 
-    // Destroy HLS instance
     if (this.hls) {
       (this.hls as { destroy: () => void }).destroy();
       this.hls = null;
     }
 
-    // Remove video element
     if (this.video) {
       this.video.pause();
       this.video.src = '';
@@ -352,6 +507,8 @@ export class HlsExtractor {
     this.ctx = null;
     this.isInitialized = false;
     this.isInitializing = false;
+    this.isPrebuffering = false;
     this.lastExtractedTime = -1;
+    this.duration = 0;
   }
 }

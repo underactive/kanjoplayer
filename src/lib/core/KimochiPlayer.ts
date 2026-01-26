@@ -188,37 +188,65 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   private setupControlsVisibility(): void {
+    let isMouseInside = false;
+
     const showControls = () => {
       if (this.controlsTimeout) {
         clearTimeout(this.controlsTimeout);
+        this.controlsTimeout = null;
       }
 
       this.stateManager.setState({ controlsVisible: true });
       this.emit('controlsshow', undefined);
+    };
 
-      if (!this.stateManager.get('paused')) {
-        this.controlsTimeout = setTimeout(() => {
-          this.stateManager.setState({ controlsVisible: false });
-          this.emit('controlshide', undefined);
-        }, this.options.controlsTimeout);
+    const hideControls = () => {
+      // Never hide if mouse is inside or video is paused
+      if (isMouseInside || this.stateManager.get('paused')) {
+        return;
+      }
+
+      this.stateManager.setState({ controlsVisible: false });
+      this.emit('controlshide', undefined);
+    };
+
+    const scheduleHide = () => {
+      if (this.controlsTimeout) {
+        clearTimeout(this.controlsTimeout);
+      }
+
+      if (!isMouseInside && !this.stateManager.get('paused')) {
+        this.controlsTimeout = setTimeout(hideControls, this.options.controlsTimeout);
       }
     };
 
-    this.container.addEventListener('mousemove', showControls);
-    this.container.addEventListener('mouseenter', showControls);
+    this.container.addEventListener('mousemove', () => {
+      showControls();
+      // Reset hide timer on mouse move, but only if mouse will eventually leave
+    });
+
+    this.container.addEventListener('mouseenter', () => {
+      isMouseInside = true;
+      showControls();
+    });
+
     this.container.addEventListener('mouseleave', () => {
-      if (!this.stateManager.get('paused')) {
-        this.stateManager.setState({ controlsVisible: false });
-        this.emit('controlshide', undefined);
-      }
+      isMouseInside = false;
+      scheduleHide();
     });
 
     // Keep controls visible when paused
     this.on('pause', () => {
       if (this.controlsTimeout) {
         clearTimeout(this.controlsTimeout);
+        this.controlsTimeout = null;
       }
       this.stateManager.setState({ controlsVisible: true });
+    });
+
+    // Schedule hide when playback starts (if mouse is outside)
+    this.on('play', () => {
+      scheduleHide();
     });
 
     // Double-click fullscreen

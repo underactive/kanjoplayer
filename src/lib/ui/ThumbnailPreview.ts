@@ -17,16 +17,15 @@ export class ThumbnailPreview {
   private lastLoadedTime = -1;
   private isLoading = false;
 
-  // Debouncing
+  // Debouncing - very short, just to batch rapid mousemove events
   private debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  private readonly debounceDelay = 150; // ms to wait before loading
+  private readonly debounceDelay = 30; // ms - minimal debounce for batching
 
   // Request tracking for cancellation
   private requestId = 0;
 
   // Minimum time difference to trigger a new load (in seconds)
-  // Larger values = fewer requests but less precise previews
-  private readonly minTimeDelta = 2;
+  private readonly minTimeDelta = 0.5;
 
   constructor(player: KimochiPlayer) {
     this.player = player;

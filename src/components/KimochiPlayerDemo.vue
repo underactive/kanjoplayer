@@ -49,13 +49,13 @@ const VIDEO_SOURCES: VideoSource[] = [
     type: 'hls',
   },
   {
-    name: 'Elephants Dream (HLS)',
-    url: 'https://demo.unified-streaming.com/k8s/features/stable/video/elephants-dream/elephants-dream.ism/.m3u8',
+    name: 'Cosmos Laundromat (HLS)',
+    url: 'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
     type: 'hls',
   },
   {
-    name: 'Azure Sample (HLS)',
-    url: 'https://amssamples.streaming.mediaservices.windows.net/91492735-c523-432b-ba01-faba6c2206a2/AzureMediaServicesPromo.ism/manifest(format=m3u8-aapl)',
+    name: 'Apple HLS Test (HLS)',
+    url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8',
     type: 'hls',
   },
 ];
