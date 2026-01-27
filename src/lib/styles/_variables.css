@@ -3,10 +3,10 @@
  */
 
 :root {
-  /* Primary colors */
-  --kimochi-primary: #e94560;
-  --kimochi-primary-hover: #ff6b81;
-  --kimochi-primary-active: #c73e54;
+  /* Primary colors - Blue */
+  --kimochi-primary: #2E82FF;
+  --kimochi-primary-hover: #5a9eff;
+  --kimochi-primary-active: #1a6ae0;
 
   /* Background colors */
   --kimochi-bg: rgba(0, 0, 0, 0.85);
