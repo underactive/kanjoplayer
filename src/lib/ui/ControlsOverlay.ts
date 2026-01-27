@@ -3,7 +3,7 @@
  */
 
 import type { KimochiPlayer } from '../core/KimochiPlayer';
-import type { SettingsMenuConfig, WatermarkConfig } from '../core/types';
+import type { SettingsMenuConfig, WatermarkConfig, CustomButtonsConfig } from '../core/types';
 import { UIBuilder } from './UIBuilder';
 import { PlayButton, CenterPlayButton } from './controls/PlayButton';
 import { TimeDisplay } from './controls/TimeDisplay';
@@ -14,10 +14,12 @@ import { SettingsMenu } from './controls/SettingsMenu';
 import { ABLoopControl } from './controls/ABLoopControl';
 import { DownloadOverlay } from './DownloadOverlay';
 import { VideoAdjustmentsPanel } from './controls/VideoAdjustmentsPanel';
+import { CustomButtonArea } from './controls/CustomButtonArea';
 
 export interface ControlsOverlayOptions {
   settings?: SettingsMenuConfig;
   watermark?: WatermarkConfig;
+  customButtons?: CustomButtonsConfig;
 }
 
 export class ControlsOverlay {
@@ -37,6 +39,8 @@ export class ControlsOverlay {
   private abLoopControl: ABLoopControl;
   private downloadOverlay: DownloadOverlay;
   private videoAdjustmentsPanel: VideoAdjustmentsPanel;
+  // Custom button area (kept as reference for potential future use/cleanup)
+  private _customButtonArea: CustomButtonArea | null = null;
 
   constructor(player: KimochiPlayer, container: HTMLElement, options?: ControlsOverlayOptions) {
     this.player = player;
@@ -123,6 +127,15 @@ export class ControlsOverlay {
       className: 'kimochi-controls-bottom',
     });
 
+    // Custom button area (above progress bar)
+    if (this.options.customButtons?.enabled && this.options.customButtons.buttons.length > 0) {
+      this._customButtonArea = new CustomButtonArea(
+        this.player,
+        bottomBar,
+        this.options.customButtons
+      );
+    }
+
     // Progress bar row
     bottomBar.appendChild(this.progressBar.getElement());
 
@@ -182,5 +195,11 @@ export class ControlsOverlay {
 
   getElement(): HTMLElement {
     return this.element;
+  }
+
+  destroy(): void {
+    if (this._customButtonArea) {
+      this._customButtonArea.destroy();
+    }
   }
 }

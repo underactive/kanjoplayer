@@ -36,6 +36,42 @@ export interface SettingsMenuConfig {
   showAdjustments?: boolean;
 }
 
+// ============================================================================
+// Custom Buttons Configuration
+// ============================================================================
+
+/** Player properties that can be used as event values */
+export type PlayerProperty =
+  | 'src'
+  | 'currentTime'
+  | 'duration'
+  | 'volume'
+  | 'playbackRate';
+
+export interface CustomButtonConfig {
+  /** Unique identifier for the button */
+  id: string;
+  /** CSS class for icon (e.g., "hero-bookmark-solid") */
+  iconClass?: string;
+  /** Button text label */
+  text?: string;
+  /** How to display the button content */
+  displayMode: 'icon' | 'icon-text' | 'text';
+  /** Event name to emit when clicked (e.g., "bookmark_movie") */
+  eventKey: string;
+  /** Static value or player property name to include in event */
+  eventValue?: string | PlayerProperty;
+  /** Optional hover tooltip */
+  tooltip?: string;
+}
+
+export interface CustomButtonsConfig {
+  /** Enable custom button area (default: false) */
+  enabled?: boolean;
+  /** Array of button configurations */
+  buttons: CustomButtonConfig[];
+}
+
 export interface WatermarkConfig {
   /** Enable watermark on downloaded clips (default: true) */
   enabled?: boolean;
@@ -82,6 +118,8 @@ export interface KimochiPlayerOptions {
   settings?: SettingsMenuConfig;
   /** Watermark configuration for downloaded clips */
   watermark?: WatermarkConfig;
+  /** Custom buttons configuration */
+  customButtons?: CustomButtonsConfig;
   /** Plugins to load */
   plugins?: KimochiPlugin[];
   /** Custom CSS class for container */
@@ -205,6 +243,13 @@ export interface KimochiPlayerEvents {
   setloopend: void;
   clearloop: void;
   toggleloop: void;
+
+  // Custom button events
+  custombuttonevent: {
+    buttonId: string;
+    eventKey: string;
+    value: unknown;
+  };
 }
 
 export interface HlsLevel {

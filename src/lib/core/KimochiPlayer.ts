@@ -125,6 +125,10 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
         position: 'bottom-right',
         padding: 10,
       },
+      customButtons: {
+        enabled: false,
+        buttons: [],
+      },
       plugins: [],
       className: '',
       keyboardShortcuts: true,
@@ -146,6 +150,10 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
       watermark: {
         ...defaults.watermark,
         ...options.watermark,
+      },
+      customButtons: {
+        ...defaults.customButtons,
+        ...options.customButtons,
       },
     } as Required<KimochiPlayerOptions>;
   }
@@ -207,6 +215,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
     this.controlsOverlay = new ControlsOverlay(this, this.container, {
       settings: this.options.settings,
       watermark: this.options.watermark,
+      customButtons: this.options.customButtons,
     }).getElement();
 
     // Setup controls visibility
