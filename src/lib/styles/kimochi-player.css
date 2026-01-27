@@ -594,20 +594,23 @@
 .kimochi-abloop-end {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0;
   width: auto;
   padding: 0 8px;
+  font-family: var(--kimochi-font-mono, 'SF Mono', 'Monaco', 'Consolas', monospace);
 }
 
-.kimochi-abloop-start svg,
-.kimochi-abloop-end svg {
-  flex-shrink: 0;
+.kimochi-abloop-label {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .kimochi-abloop-time {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .kimochi-abloop-time:empty {
@@ -646,6 +649,42 @@
 
 .kimochi-abloop-toggle:disabled {
   cursor: not-allowed;
+}
+
+/* Download Button */
+.kimochi-abloop-download {
+  padding: 4px 8px;
+}
+
+.kimochi-abloop-download:not(:disabled) {
+  color: var(--kimochi-text);
+}
+
+.kimochi-abloop-download:not(:disabled):hover {
+  background: var(--kimochi-bg-hover);
+  color: var(--kimochi-primary);
+}
+
+.kimochi-abloop-download.kimochi-downloading {
+  color: var(--kimochi-primary);
+}
+
+.kimochi-abloop-download.kimochi-downloading svg {
+  animation: kimochi-spin 1s linear infinite;
+}
+
+.kimochi-abloop-download.kimochi-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@keyframes kimochi-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Loop Region Highlight */
@@ -981,4 +1020,237 @@
     width: 28px;
     height: 28px;
   }
+}
+
+/* ============================================================================
+   Download Overlay
+   ============================================================================ */
+
+.kimochi-download-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: var(--kimochi-z-menu);
+}
+
+/* Progress Indicator (top-right corner) */
+.kimochi-download-progress-container {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity var(--kimochi-transition-fast),
+    visibility var(--kimochi-transition-fast),
+    transform var(--kimochi-transition-fast);
+  pointer-events: auto;
+  box-shadow: var(--kimochi-shadow);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.kimochi-download-progress-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.kimochi-download-progress-close {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--kimochi-text-secondary);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity var(--kimochi-transition-fast), color var(--kimochi-transition-fast);
+  margin-top: -2px;
+}
+
+.kimochi-download-progress-close:hover {
+  opacity: 1;
+  color: var(--kimochi-text);
+}
+
+.kimochi-download-progress-close svg {
+  width: 100%;
+  height: 100%;
+}
+
+.kimochi-download-progress-container.kimochi-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.kimochi-download-progress-container.kimochi-error {
+  border: 1px solid #e74c3c;
+}
+
+.kimochi-download-progress-container.kimochi-error .kimochi-download-progress-text {
+  color: #e74c3c;
+}
+
+.kimochi-download-progress-text {
+  font-size: 12px;
+  color: var(--kimochi-text);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kimochi-download-progress-track {
+  height: 4px;
+  background: var(--kimochi-progress-bg);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.kimochi-download-progress-bar {
+  height: 100%;
+  background: var(--kimochi-primary);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.2s ease;
+}
+
+/* Indeterminate progress animation - barber pole style */
+.kimochi-indeterminate .kimochi-download-progress-bar {
+  width: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--kimochi-primary),
+    var(--kimochi-primary) 10px,
+    rgba(255, 255, 255, 0.2) 10px,
+    rgba(255, 255, 255, 0.2) 20px
+  );
+  background-size: 200% 100%;
+  animation: kimochi-barber-pole 1s linear infinite;
+}
+
+@keyframes kimochi-barber-pole {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 28px 0;
+  }
+}
+
+/* Dialog Overlay (center) */
+.kimochi-download-dialog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--kimochi-transition-normal),
+    visibility var(--kimochi-transition-normal);
+  pointer-events: auto;
+}
+
+.kimochi-download-dialog-overlay.kimochi-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.kimochi-download-dialog {
+  background: var(--kimochi-menu-bg);
+  border-radius: 12px;
+  padding: 24px 32px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: var(--kimochi-shadow);
+  transform: scale(0.95);
+  transition: transform var(--kimochi-transition-normal);
+}
+
+.kimochi-download-dialog-overlay.kimochi-visible .kimochi-download-dialog {
+  transform: scale(1);
+}
+
+.kimochi-download-dialog-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  color: var(--kimochi-primary);
+}
+
+.kimochi-download-dialog-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.kimochi-download-dialog-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--kimochi-text);
+  margin-bottom: 8px;
+}
+
+.kimochi-download-dialog-message {
+  font-size: 14px;
+  color: var(--kimochi-text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.kimochi-download-dialog-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.kimochi-download-dialog-btn {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background var(--kimochi-transition-fast),
+    transform var(--kimochi-transition-fast);
+}
+
+.kimochi-download-dialog-btn:hover {
+  transform: translateY(-1px);
+}
+
+.kimochi-download-dialog-btn:active {
+  transform: translateY(0);
+}
+
+.kimochi-download-dialog-btn-cancel {
+  background: var(--kimochi-bg-hover);
+  color: var(--kimochi-text);
+}
+
+.kimochi-download-dialog-btn-cancel:hover {
+  background: var(--kimochi-bg-active);
+}
+
+.kimochi-download-dialog-btn-download {
+  background: var(--kimochi-primary);
+  color: #fff;
+}
+
+.kimochi-download-dialog-btn-download:hover {
+  background: var(--kimochi-primary-hover);
 }

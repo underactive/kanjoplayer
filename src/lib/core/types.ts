@@ -23,6 +23,34 @@ export interface ThumbnailConfig {
   height?: number;
 }
 
+export interface SettingsMenuConfig {
+  /** Show settings button (default: true) */
+  enabled?: boolean;
+  /** Show playback speed option (default: true) */
+  showSpeed?: boolean;
+  /** Show Picture-in-Picture option (default: true) */
+  showPiP?: boolean;
+  /** Show download option (default: true) */
+  showDownload?: boolean;
+}
+
+export interface WatermarkConfig {
+  /** Enable watermark on downloaded clips (default: true) */
+  enabled?: boolean;
+  /** Watermark text */
+  text?: string;
+  /** Font size in pixels (default: 18) */
+  fontSize?: number;
+  /** Text color (default: 'white') */
+  color?: string;
+  /** Text opacity 0-1 (default: 0.5) */
+  opacity?: number;
+  /** Position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' (default: 'bottom-right') */
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  /** Padding from edge in pixels (default: 10) */
+  padding?: number;
+}
+
 export interface KimochiPlayerOptions {
   /** Container element or selector */
   container: HTMLElement | string;
@@ -48,6 +76,10 @@ export interface KimochiPlayerOptions {
   theme?: 'dark' | 'light';
   /** Thumbnail preview configuration */
   thumbnails?: ThumbnailConfig;
+  /** Settings menu configuration */
+  settings?: SettingsMenuConfig;
+  /** Watermark configuration for downloaded clips */
+  watermark?: WatermarkConfig;
   /** Plugins to load */
   plugins?: KimochiPlugin[];
   /** Custom CSS class for container */
@@ -359,5 +391,20 @@ export const DEFAULT_OPTIONS: Partial<KimochiPlayerOptions> = {
     cacheSize: 50,
     width: 160,
     height: 90,
+  },
+  settings: {
+    enabled: true,
+    showSpeed: true,
+    showPiP: true,
+    showDownload: false,
+  },
+  watermark: {
+    enabled: true,
+    text: 'Downloaded from KimochiPlayer PoC',
+    fontSize: 18,
+    color: 'white',
+    opacity: 0.5,
+    position: 'bottom-right',
+    padding: 10,
   },
 };

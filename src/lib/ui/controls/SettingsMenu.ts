@@ -3,19 +3,39 @@
  */
 
 import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { SettingsMenuConfig } from '../../core/types';
 import { UIBuilder } from '../UIBuilder';
 
 const PLAYBACK_RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+
+export interface SettingsMenuOptions {
+  showSpeed: boolean;
+  showPiP: boolean;
+  showDownload: boolean;
+}
+
+const DEFAULT_SETTINGS_OPTIONS: SettingsMenuOptions = {
+  showSpeed: true,
+  showPiP: true,
+  showDownload: false,
+};
 
 export class SettingsMenu {
   private element: HTMLElement;
   private toggleBtn: HTMLButtonElement;
   private menuPanel: HTMLElement;
   private player: KimochiPlayer;
+  private options: SettingsMenuOptions;
   private isOpen = false;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KimochiPlayer, config?: SettingsMenuConfig) {
     this.player = player;
+    this.options = {
+      ...DEFAULT_SETTINGS_OPTIONS,
+      showSpeed: config?.showSpeed ?? DEFAULT_SETTINGS_OPTIONS.showSpeed,
+      showPiP: config?.showPiP ?? DEFAULT_SETTINGS_OPTIONS.showPiP,
+      showDownload: config?.showDownload ?? DEFAULT_SETTINGS_OPTIONS.showDownload,
+    };
     this.toggleBtn = this.createToggleButton();
     this.menuPanel = this.createMenuPanel();
     this.element = this.createElement();
@@ -40,18 +60,20 @@ export class SettingsMenu {
     const mainMenu = UIBuilder.create({ className: 'kimochi-settings-main' });
 
     // Speed option
-    const speedItem = this.createMenuItem({
-      icon: UIBuilder.icons.speed,
-      label: 'Playback speed',
-      value: '1x',
-      hasSubmenu: true,
-      onClick: () => this.showSubmenu('speed'),
-    });
-    speedItem.id = 'kimochi-speed-item';
-    mainMenu.appendChild(speedItem);
+    if (this.options.showSpeed) {
+      const speedItem = this.createMenuItem({
+        icon: UIBuilder.icons.speed,
+        label: 'Playback speed',
+        value: '1x',
+        hasSubmenu: true,
+        onClick: () => this.showSubmenu('speed'),
+      });
+      speedItem.id = 'kimochi-speed-item';
+      mainMenu.appendChild(speedItem);
+    }
 
     // Picture-in-Picture option
-    if (document.pictureInPictureEnabled) {
+    if (this.options.showPiP && document.pictureInPictureEnabled) {
       const pipItem = this.createMenuItem({
         icon: UIBuilder.icons.pip,
         label: 'Picture-in-Picture',
@@ -64,21 +86,25 @@ export class SettingsMenu {
     }
 
     // Download option
-    const downloadItem = this.createMenuItem({
-      icon: UIBuilder.icons.download,
-      label: 'Download',
-      onClick: () => {
-        this.downloadVideo();
-        this.close();
-      },
-    });
-    mainMenu.appendChild(downloadItem);
+    if (this.options.showDownload) {
+      const downloadItem = this.createMenuItem({
+        icon: UIBuilder.icons.download,
+        label: 'Download',
+        onClick: () => {
+          this.downloadVideo();
+          this.close();
+        },
+      });
+      mainMenu.appendChild(downloadItem);
+    }
 
     panel.appendChild(mainMenu);
 
-    // Speed submenu
-    const speedSubmenu = this.createSpeedSubmenu();
-    panel.appendChild(speedSubmenu);
+    // Speed submenu (only if speed option is enabled)
+    if (this.options.showSpeed) {
+      const speedSubmenu = this.createSpeedSubmenu();
+      panel.appendChild(speedSubmenu);
+    }
 
     return panel;
   }

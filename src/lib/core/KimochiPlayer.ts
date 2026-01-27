@@ -110,6 +110,21 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
         width: 160,
         height: 90,
       },
+      settings: {
+        enabled: true,
+        showSpeed: true,
+        showPiP: true,
+        showDownload: false,
+      },
+      watermark: {
+        enabled: true,
+        text: 'Downloaded from KimochiPlayer PoC',
+        fontSize: 18,
+        color: 'white',
+        opacity: 0.5,
+        position: 'bottom-right',
+        padding: 10,
+      },
       plugins: [],
       className: '',
       keyboardShortcuts: true,
@@ -123,6 +138,14 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
       thumbnails: {
         ...defaults.thumbnails,
         ...options.thumbnails,
+      },
+      settings: {
+        ...defaults.settings,
+        ...options.settings,
+      },
+      watermark: {
+        ...defaults.watermark,
+        ...options.watermark,
       },
     } as Required<KimochiPlayerOptions>;
   }
@@ -181,7 +204,10 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   private async initControls(): Promise<void> {
     // Dynamically import ControlsOverlay to avoid circular dependencies
     const { ControlsOverlay } = await import('../ui/ControlsOverlay');
-    this.controlsOverlay = new ControlsOverlay(this, this.container).getElement();
+    this.controlsOverlay = new ControlsOverlay(this, this.container, {
+      settings: this.options.settings,
+      watermark: this.options.watermark,
+    }).getElement();
 
     // Setup controls visibility
     this.setupControlsVisibility();
