@@ -152,6 +152,23 @@ export class ABLoopControl {
     this.player.on('sourcechange', () => {
       this.clearPoints();
     });
+
+    // Listen for keyboard shortcuts
+    this.player.on('setloopstart', () => {
+      this.setStartPoint();
+    });
+
+    this.player.on('setloopend', () => {
+      this.setEndPoint();
+    });
+
+    this.player.on('clearloop', () => {
+      this.clearPoints();
+    });
+
+    this.player.on('toggleloop', () => {
+      this.toggleLoop();
+    });
   }
 
   private setStartPoint(): void {

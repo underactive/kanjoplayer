@@ -197,6 +197,12 @@ export interface KimochiPlayerEvents {
   hlsmanifestparsed: { levels: HlsLevel[] };
   hlslevelswitch: { level: number; auto: boolean };
   hlserror: { type: string; details: string; fatal: boolean };
+
+  // A/B Loop events
+  setloopstart: void;
+  setloopend: void;
+  clearloop: void;
+  toggleloop: void;
 }
 
 export interface HlsLevel {
