@@ -1,9 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import VideoPlayer from './components/VideoPlayer.vue'
 import KimochiPlayerDemo from './components/KimochiPlayerDemo.vue'
 
 const activeTab = ref<'kimochi' | 'original'>('kimochi')
+const isDarkMode = ref(false)
+
+function handleCustomEvent(e: Event) {
+  const detail = (e as CustomEvent).detail
+  if (detail.eventKey === 'set_dark_mode') {
+    isDarkMode.value = true
+    document.documentElement.classList.add('dark-mode')
+  } else if (detail.eventKey === 'set_light_mode') {
+    isDarkMode.value = false
+    document.documentElement.classList.remove('dark-mode')
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('kimochi-custom-event', handleCustomEvent)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('kimochi-custom-event', handleCustomEvent)
+})
 </script>
 
 <template>
@@ -42,10 +62,27 @@ const activeTab = ref<'kimochi' | 'original'>('kimochi')
   --bg-tertiary: #d8dbe0;
   --text-primary: #1c1e21;
   --text-secondary: #606770;
+  --text-muted: #8a8d91;
   --accent: #2E82FF;
   --accent-hover: #5a9eff;
   --accent-secondary: #e7f0ff;
   --border: #ced0d4;
+  --success: #31a24c;
+  --warning: #f0932b;
+  --error: #e41e3f;
+}
+
+:root.dark-mode {
+  --bg-primary: #18191a;
+  --bg-secondary: #242526;
+  --bg-tertiary: #3a3b3c;
+  --text-primary: #e4e6eb;
+  --text-secondary: #b0b3b8;
+  --text-muted: #6a6c6e;
+  --accent: #2E82FF;
+  --accent-hover: #5a9eff;
+  --accent-secondary: #263c5a;
+  --border: #3e4042;
   --success: #31a24c;
   --warning: #f0932b;
   --error: #e41e3f;
@@ -62,6 +99,14 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
+  transition: background-color 1.5s ease, color 1.5s ease;
+}
+
+/* Theme transition for all elements using CSS variables */
+*,
+*::before,
+*::after {
+  transition: background-color 1.5s ease, border-color 1.5s ease, color 1.5s ease;
 }
 
 .app {
