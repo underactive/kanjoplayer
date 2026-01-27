@@ -4,7 +4,23 @@ This document covers WebAssembly usage in KanjoPlayer and potential areas for WA
 
 ## Current WASM Components
 
-### 1. WasmExtractor (`src/lib/thumbnails/WasmExtractor.ts`)
+### 1. JpegEncoder (`src/lib/thumbnails/encoder/JpegEncoder.ts`)
+
+**NEW** - WASM-based JPEG encoding for thumbnail generation.
+
+- Uses `@jsquash/jpeg` (MozJPEG compiled to WASM) for fast JPEG encoding
+- Singleton pattern with lazy initialization
+- Auto-releases after 30 seconds of inactivity
+- Automatic fallback to `canvas.toDataURL()` if WASM fails
+- Integrated into both `CanvasExtractor` and `HlsExtractor`
+
+```typescript
+// Usage (internal)
+const encoder = JpegEncoder.getInstance();
+const dataUrl = await encoder.encode(imageData, 70); // quality 1-100
+```
+
+### 2. WasmExtractor (`src/lib/thumbnails/WasmExtractor.ts`)
 
 Extracts video thumbnails using FFmpeg.wasm.
 
@@ -12,51 +28,50 @@ Extracts video thumbnails using FFmpeg.wasm.
 - Message types defined in `src/lib/thumbnails/worker/messages.ts`
 - Currently **not enabled** in ThumbnailManager's fallback chain (config `useWasm` defaults to false)
 
-### 2. LoopDownloader (`src/lib/download/LoopDownloader.ts`)
+### 3. LoopDownloader (`src/lib/download/LoopDownloader.ts`)
 
 Downloads A/B loop video segments using FFmpeg.wasm.
 
 - Loads FFmpeg core from CDN via `toBlobURL()`
 - Supports both direct video files and HLS streams
-- Includes watermark support
+- Includes watermark support (optimized with `canvas.toBlob()`)
 
 ## Configuration Files
 
 | File | WASM-related config |
 |------|---------------------|
-| `vite.config.ts` | COOP/COEP headers for SharedArrayBuffer support |
-| `vite.config.lib.ts` | Externalizes `@ffmpeg/ffmpeg` and `@ffmpeg/util` as peer deps |
-| `package.json` | Optional peer dependencies for FFmpeg packages |
+| `vite.config.ts` | COOP/COEP headers, `vite-plugin-wasm`, `vite-plugin-top-level-await` |
+| `vite.config.lib.ts` | Externalizes `@ffmpeg/ffmpeg`, `@ffmpeg/util`, `@jsquash/jpeg` as peer deps |
+| `package.json` | Optional peer dependencies for FFmpeg and jSquash packages |
 | `src/lib/vite-env.d.ts` | Type declarations for FFmpeg modules |
 
 ## Requirements
 
-- Both WASM features check support via `typeof WebAssembly !== 'undefined'`
-- FFmpeg packages are **optional peer dependencies** - not bundled
-- Web Workers prevent blocking the main thread during WASM operations
+- WASM features check support via `typeof WebAssembly !== 'undefined'`
+- FFmpeg and jSquash packages are **optional peer dependencies** - not bundled
 - SharedArrayBuffer requires these headers:
   - `Cross-Origin-Opener-Policy: same-origin`
   - `Cross-Origin-Embedder-Policy: credentialless`
 
 ---
 
-## Potential WASM Performance Improvements
+## Implementation Status
 
-### High Priority
+### High Priority - IMPLEMENTED
 
-| Area | File | Current Approach | Potential Speedup |
-|------|------|------------------|-------------------|
-| Frame Capture + JPEG Encoding | `CanvasExtractor.ts` | Canvas API + `toDataURL()` | 2-5x |
-| HLS Frame Capture | `HlsExtractor.ts` | Canvas with region extraction | 1.5-3x |
+| Area | File | Implementation | Status |
+|------|------|----------------|--------|
+| JPEG Encoding | `CanvasExtractor.ts` | Uses `JpegEncoder` with MozJPEG WASM | Done |
+| JPEG Encoding | `HlsExtractor.ts` | Uses `JpegEncoder` with MozJPEG WASM | Done |
 
-These operations run frequently during thumbnail preview and involve CPU-intensive image encoding.
+Both extractors now use WASM-accelerated JPEG encoding via `@jsquash/jpeg`, with automatic fallback to `canvas.toDataURL()` when WASM is unavailable.
 
-### Medium Priority
+### Medium Priority - PARTIALLY IMPLEMENTED
 
-| Area | File | Current Approach | Potential Speedup |
-|------|------|------------------|-------------------|
-| Watermark Generation | `LoopDownloader.ts:719-765` | Canvas text + Base64 encoding | 2-4x |
-| Custom Video Filters | `VideoAdjustmentsPanel.ts` | SVG/CSS filters | 3-8x* |
+| Area | File | Implementation | Status |
+|------|------|----------------|--------|
+| Watermark Generation | `LoopDownloader.ts` | Optimized with `canvas.toBlob()` (no base64 round-trip) | Done (non-WASM) |
+| Custom Video Filters | `VideoAdjustmentsPanel.ts` | CSS/SVG filters (GPU-accelerated) | No change needed* |
 
 *CSS filters are already GPU-accelerated. WASM only helps if you need per-pixel processing (LUTs, curves, selective color adjustments).
 
@@ -64,26 +79,70 @@ These operations run frequently during thumbnail preview and involve CPU-intensi
 
 | Area | File | Why Low Priority |
 |------|------|------------------|
-| Array Comparison | `StateManager.ts:160-163` | Uses `JSON.stringify()` but impact is <1% of CPU |
-| HLS Playlist Parsing | `LoopDownloader.ts:526-605` | Happens once at load time |
-| VTT Sprite Parsing | `SpriteLoader.ts:59-97` | Single parse at startup |
+| Array Comparison | `StateManager.ts` | Uses `JSON.stringify()` but impact is <1% of CPU |
+| HLS Playlist Parsing | `LoopDownloader.ts` | Happens once at load time |
+| VTT Sprite Parsing | `SpriteLoader.ts` | Single parse at startup |
 
 ---
 
-## Quick Wins Without Additional WASM
+## Future Enhancements
 
-1. **Pre-generate watermarks** - Cache watermark images instead of creating them per-download
-2. **Replace `JSON.stringify` array comparison** - Use typed comparison in StateManager for buffered ranges
-3. **Enable WasmExtractor** - Set `useWasm: true` in ThumbnailManager config to use the existing FFmpeg-based extraction
+### LUT (Look-Up Table) Support
+
+For advanced color grading, WASM-based LUT application could be added to `VideoAdjustmentsPanel`:
+
+- Load `.cube` or `.3dl` LUT files
+- Apply per-pixel color transformations via WebGL or WASM
+- Would require frame-by-frame processing or WebGL shader approach
+
+### Custom Curves
+
+Photoshop-style RGB curves for fine-grained color control:
+
+- WASM would process pixel data in real-time
+- Could use canvas + ImageData or WebGL for GPU acceleration
 
 ---
 
-## Implementation Notes
+## Fallback Behavior
 
-The codebase already has good patterns for WASM integration:
+All WASM components implement graceful fallback:
 
-- `WasmExtractor` uses Web Workers to avoid main thread blocking
-- Lazy loading of optional dependencies
-- Async/await patterns for heavy operations
+```
+JpegEncoder:
+  1. Try @jsquash/jpeg WASM encoding
+  2. On failure → switch to canvas.toDataURL() permanently
 
-Any additional WASM should follow the same pattern with Worker threads to maintain UI responsiveness.
+WasmExtractor:
+  1. Try FFmpeg.wasm extraction
+  2. On failure → extraction fails (other extractors used instead)
+
+LoopDownloader:
+  1. Requires FFmpeg.wasm (no fallback - feature requires it)
+```
+
+---
+
+## Troubleshooting
+
+### WASM encode fails immediately
+
+Check browser console for:
+- `[JpegEncoder] WASM encoder loaded` - Success
+- `[JpegEncoder] Failed to load WASM encoder` - Module load failed
+- `[JpegEncoder] WASM encode failed, switching to fallback` - Encoding failed
+
+Common causes:
+1. Missing `@jsquash/jpeg` peer dependency
+2. MIME type issues with dev server (should be fixed with `vite-plugin-wasm`)
+3. Browser doesn't support WebAssembly
+
+### SharedArrayBuffer errors
+
+Ensure your server sends these headers:
+```
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: credentialless
+```
+
+For Vite dev server, these are configured in `vite.config.ts`.
