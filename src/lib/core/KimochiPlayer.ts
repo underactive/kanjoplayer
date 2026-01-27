@@ -174,6 +174,8 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
     video.className = 'kimochi-video';
     video.playsInline = true;
     video.preload = this.options.preload;
+    // Enable CORS for cross-origin HLS streams
+    video.crossOrigin = 'anonymous';
 
     if (this.options.poster) {
       video.poster = this.options.poster;
