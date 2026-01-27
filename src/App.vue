@@ -18,13 +18,13 @@ const activeTab = ref<'kimochi' | 'original'>('kimochi')
           :class="{ active: activeTab === 'kimochi' }"
           @click="activeTab = 'kimochi'"
         >
-          KimochiPlayer (New)
+          KimochiPlayer
         </button>
         <button
           :class="{ active: activeTab === 'original' }"
           @click="activeTab = 'original'"
         >
-          Original Player
+          HTML5 &lt;video&gt;
         </button>
       </div>
     </header>
@@ -37,17 +37,18 @@ const activeTab = ref<'kimochi' | 'original'>('kimochi')
 
 <style>
 :root {
-  --bg-primary: #1a1a2e;
-  --bg-secondary: #16213e;
-  --bg-tertiary: #0f0f1a;
-  --text-primary: #eaeaea;
-  --text-secondary: #a0a0a0;
-  --accent: #e94560;
-  --accent-secondary: #0f3460;
-  --border: #2a2a4a;
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --error: #ef4444;
+  --bg-primary: #f0f2f5;
+  --bg-secondary: #e4e6eb;
+  --bg-tertiary: #d8dbe0;
+  --text-primary: #1c1e21;
+  --text-secondary: #606770;
+  --accent: #2E82FF;
+  --accent-hover: #5a9eff;
+  --accent-secondary: #e7f0ff;
+  --border: #ced0d4;
+  --success: #31a24c;
+  --warning: #f0932b;
+  --error: #e41e3f;
 }
 
 * {

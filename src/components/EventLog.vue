@@ -151,28 +151,28 @@ const eventCounts = computed(() => {
 }
 
 .event-badge.error {
-  background: rgba(239, 68, 68, 0.2);
+  background: #fee2e2;
   color: var(--error);
 }
 
 .event-badge.warning {
-  background: rgba(251, 191, 36, 0.2);
+  background: #fef3c7;
   color: var(--warning);
 }
 
 .event-badge.success {
-  background: rgba(74, 222, 128, 0.2);
+  background: #d1fae5;
   color: var(--success);
 }
 
 .event-badge.hls {
-  background: rgba(34, 211, 153, 0.2);
-  color: #34d399;
+  background: #d1fae5;
+  color: #047857;
 }
 
 .event-badge.info {
-  background: rgba(96, 165, 250, 0.2);
-  color: #60a5fa;
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .log-entries {
@@ -225,11 +225,11 @@ const eventCounts = computed(() => {
 }
 
 .log-entry.hls .event-type {
-  color: #34d399;
+  color: #047857;
 }
 
 .log-entry.info .event-type {
-  color: #60a5fa;
+  color: #1d4ed8;
 }
 
 .no-events {

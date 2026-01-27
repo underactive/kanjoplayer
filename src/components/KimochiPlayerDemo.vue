@@ -16,22 +16,6 @@ import {
 import '../lib/styles/kimochi-player.css';
 
 const VIDEO_SOURCES: VideoSource[] = [
-  // MP4 Sources
-  {
-    name: 'Big Buck Bunny (MP4)',
-    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    type: 'mp4',
-  },
-  {
-    name: 'Sintel (MP4)',
-    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-    type: 'mp4',
-  },
-  {
-    name: 'Tears of Steel (MP4)',
-    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
-    type: 'mp4',
-  },
   // HLS Sources
   {
     name: 'Big Buck Bunny (HLS)',
@@ -57,6 +41,22 @@ const VIDEO_SOURCES: VideoSource[] = [
     name: 'Apple HLS Test (HLS)',
     url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8',
     type: 'hls',
+  },
+  // MP4 Sources
+  {
+    name: 'Big Buck Bunny (MP4)',
+    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    type: 'mp4',
+  },
+  {
+    name: 'Sintel (MP4)',
+    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+    type: 'mp4',
+  },
+  {
+    name: 'Tears of Steel (MP4)',
+    url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+    type: 'mp4',
   },
 ];
 
@@ -325,17 +325,17 @@ onUnmounted(() => {
 
 .source-type.mp4 {
   background: var(--accent-secondary);
-  color: #60a5fa;
+  color: var(--accent);
 }
 
 .source-type.hls {
-  background: #064e3b;
-  color: #34d399;
+  background: #d1fae5;
+  color: #047857;
 }
 
 .source-type.webm {
-  background: #4c1d95;
-  color: #a78bfa;
+  background: #ede9fe;
+  color: #6d28d9;
 }
 
 .player-wrapper {
