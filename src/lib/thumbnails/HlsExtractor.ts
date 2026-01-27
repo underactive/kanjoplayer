@@ -4,6 +4,7 @@
  */
 
 import type { ThumbnailData } from '../core/types';
+import { JpegEncoder } from './encoder/JpegEncoder';
 
 export interface HlsExtractorOptions {
   width?: number;
@@ -120,7 +121,7 @@ export class HlsExtractor {
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.options.width;
     this.canvas.height = this.options.height;
-    this.ctx = this.canvas.getContext('2d');
+    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
 
     // Create HLS instance optimized for thumbnails
     this.hls = new Hls({
@@ -364,7 +365,7 @@ export class HlsExtractor {
 
     // Skip if we just extracted this time
     if (Math.abs(time - this.lastExtractedTime) < 0.5) {
-      return this.captureFrame(video, canvas, ctx, time);
+      return await this.captureFrame(video, canvas, ctx, time);
     }
 
     return new Promise((resolve, reject) => {
@@ -384,10 +385,10 @@ export class HlsExtractor {
           resolved = true;
           cleanup();
 
-          requestAnimationFrame(() => {
+          requestAnimationFrame(async () => {
             try {
               this.lastExtractedTime = time;
-              const result = this.captureFrame(video, canvas, ctx, time);
+              const result = await this.captureFrame(video, canvas, ctx, time);
               resolve(result);
             } catch (error) {
               reject(error);
@@ -407,13 +408,13 @@ export class HlsExtractor {
       };
 
       // Timeout - but try to capture anyway
-      const timeout = setTimeout(() => {
+      const timeout = setTimeout(async () => {
         if (!resolved) {
           resolved = true;
           cleanup();
           try {
             if (video.videoWidth > 0) {
-              const result = this.captureFrame(video, canvas, ctx, time);
+              const result = await this.captureFrame(video, canvas, ctx, time);
               resolve(result);
             } else {
               reject(new Error('Thumbnail extraction timeout'));
@@ -439,12 +440,12 @@ export class HlsExtractor {
   /**
    * Capture current frame to canvas
    */
-  private captureFrame(
+  private async captureFrame(
     video: HTMLVideoElement,
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     time: number
-  ): ThumbnailData {
+  ): Promise<ThumbnailData> {
     if (video.videoWidth === 0 || video.videoHeight === 0) {
       throw new Error('Video has no valid dimensions');
     }
@@ -464,7 +465,9 @@ export class HlsExtractor {
 
     ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
-    const url = canvas.toDataURL('image/jpeg', 0.7);
+    // Get image data and encode with WASM (falls back to toDataURL if unavailable)
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const url = await JpegEncoder.getInstance().encode(imageData, 70);
 
     return {
       url,

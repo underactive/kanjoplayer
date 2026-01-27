@@ -51,7 +51,8 @@
   },
   "peerDependencies": {
     "@ffmpeg/ffmpeg": "^0.12.10",
-    "@ffmpeg/util": "^0.12.1"
+    "@ffmpeg/util": "^0.12.1",
+    "@jsquash/jpeg": "^1.4.0"
   },
   "peerDependenciesMeta": {
     "@ffmpeg/ffmpeg": {
@@ -59,14 +60,20 @@
     },
     "@ffmpeg/util": {
       "optional": true
+    },
+    "@jsquash/jpeg": {
+      "optional": true
     }
   },
   "devDependencies": {
+    "@jsquash/jpeg": "^1.6.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "terser": "^5.27.0",
     "typescript": "~5.6.2",
     "vite": "^6.0.5",
     "vite-plugin-dts": "^4.0.0",
+    "vite-plugin-top-level-await": "^1.6.0",
+    "vite-plugin-wasm": "^3.5.0",
     "vue-tsc": "^2.2.0"
   }
 }

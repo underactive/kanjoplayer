@@ -5,6 +5,7 @@
  */
 
 import type { ThumbnailData } from '../core/types';
+import { JpegEncoder } from './encoder/JpegEncoder';
 
 export interface CanvasExtractorOptions {
   /** Thumbnail width */
@@ -82,7 +83,7 @@ export class CanvasExtractor {
       this.canvas = document.createElement('canvas');
       this.canvas.width = this.options.width;
       this.canvas.height = this.options.height;
-      this.ctx = this.canvas.getContext('2d');
+      this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
 
       const onLoadedMetadata = () => {
         this.isReady = true;
@@ -144,6 +145,50 @@ export class CanvasExtractor {
   }
 
   /**
+   * Capture the current frame to a data URL
+   */
+  private async captureFrame(
+    video: HTMLVideoElement,
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    time: number
+  ): Promise<ThumbnailData> {
+    // Calculate dimensions maintaining aspect ratio
+    const videoAspect = video.videoWidth / video.videoHeight;
+    const canvasAspect = canvas.width / canvas.height;
+
+    let sx = 0, sy = 0, sw = video.videoWidth, sh = video.videoHeight;
+
+    if (videoAspect > canvasAspect) {
+      // Video is wider - crop sides
+      sw = video.videoHeight * canvasAspect;
+      sx = (video.videoWidth - sw) / 2;
+    } else {
+      // Video is taller - crop top/bottom
+      sh = video.videoWidth / canvasAspect;
+      sy = (video.videoHeight - sh) / 2;
+    }
+
+    // Draw frame to canvas
+    ctx.drawImage(
+      video,
+      sx, sy, sw, sh,
+      0, 0, canvas.width, canvas.height
+    );
+
+    // Get image data and encode with WASM (falls back to toDataURL if unavailable)
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const url = await JpegEncoder.getInstance().encode(imageData, 70);
+
+    return {
+      url,
+      time,
+      width: canvas.width,
+      height: canvas.height,
+    };
+  }
+
+  /**
    * Extract a single frame
    */
   private async extractFrame(time: number): Promise<ThumbnailData> {
@@ -156,65 +201,35 @@ export class CanvasExtractor {
       throw new Error('Extractor not initialized');
     }
 
+    const video = this.video;
+    const canvas = this.canvas;
+    const ctx = this.ctx;
+
+    // Clamp time to valid range
+    const seekTime = Math.max(0, Math.min(time, video.duration || 0));
+
     return new Promise((resolve, reject) => {
-      const video = this.video!;
-      const canvas = this.canvas!;
-      const ctx = this.ctx!;
-
-      // Clamp time to valid range
-      const seekTime = Math.max(0, Math.min(time, video.duration || 0));
-
-      const onSeeked = () => {
-        video.removeEventListener('seeked', onSeeked);
+      const onSeeked = async () => {
+        video.removeEventListener('seeked', wrappedOnSeeked);
         video.removeEventListener('error', onError);
 
         try {
-          // Calculate dimensions maintaining aspect ratio
-          const videoAspect = video.videoWidth / video.videoHeight;
-          const canvasAspect = canvas.width / canvas.height;
-
-          let sx = 0, sy = 0, sw = video.videoWidth, sh = video.videoHeight;
-
-          if (videoAspect > canvasAspect) {
-            // Video is wider - crop sides
-            sw = video.videoHeight * canvasAspect;
-            sx = (video.videoWidth - sw) / 2;
-          } else {
-            // Video is taller - crop top/bottom
-            sh = video.videoWidth / canvasAspect;
-            sy = (video.videoHeight - sh) / 2;
-          }
-
-          // Draw frame to canvas
-          ctx.drawImage(
-            video,
-            sx, sy, sw, sh,
-            0, 0, canvas.width, canvas.height
-          );
-
-          // Get data URL
-          const url = canvas.toDataURL('image/jpeg', 0.7);
-
-          resolve({
-            url,
-            time: seekTime,
-            width: canvas.width,
-            height: canvas.height,
-          });
+          const result = await this.captureFrame(video, canvas, ctx, seekTime);
+          resolve(result);
         } catch (error) {
           reject(new Error(`Failed to capture frame: ${error}`));
         }
       };
 
       const onError = () => {
-        video.removeEventListener('seeked', onSeeked);
+        video.removeEventListener('seeked', wrappedOnSeeked);
         video.removeEventListener('error', onError);
         reject(new Error('Failed to seek video'));
       };
 
       // Timeout in case seek doesn't complete
       const timeout = setTimeout(() => {
-        video.removeEventListener('seeked', onSeeked);
+        video.removeEventListener('seeked', wrappedOnSeeked);
         video.removeEventListener('error', onError);
         reject(new Error('Thumbnail extraction timeout'));
       }, 5000);
