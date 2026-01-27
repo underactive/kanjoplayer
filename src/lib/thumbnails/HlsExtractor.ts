@@ -192,7 +192,10 @@ export class HlsExtractor {
       hlsInstance.on(Hls.Events.MANIFEST_PARSED, onManifestParsed);
       hlsInstance.on(Hls.Events.ERROR, onError);
 
-      hlsInstance.loadSource(this.hlsUrl);
+      // Wait for MEDIA_ATTACHED before loading source to prevent ORB issues
+      hlsInstance.on(Hls.Events.MEDIA_ATTACHED, () => {
+        hlsInstance.loadSource(this.hlsUrl);
+      });
       hlsInstance.attachMedia(this.video!);
 
       // Timeout after 10 seconds

@@ -13,6 +13,11 @@ interface HlsConfig {
   backBufferLength?: number;
   maxBufferLength?: number;
   maxMaxBufferLength?: number;
+  autoStartLoad?: boolean;
+  startPosition?: number;
+  fragLoadingMaxRetry?: number;
+  manifestLoadingMaxRetry?: number;
+  levelLoadingMaxRetry?: number;
 }
 
 interface HlsInstance {
@@ -20,6 +25,8 @@ interface HlsInstance {
   attachMedia(media: HTMLMediaElement): void;
   detachMedia(): void;
   destroy(): void;
+  startLoad(startPosition?: number): void;
+  stopLoad(): void;
   currentLevel: number;
   levels: Array<{
     bitrate: number;
@@ -141,19 +148,43 @@ export class HlsPlugin implements KimochiPlugin {
       return;
     }
 
-    // Use HLS.js
-    this.hls = new this.Hls({
-      enableWorker: true,
-      lowLatencyMode: false,
-      backBufferLength: 60,
-      maxBufferLength: 30,
-      maxMaxBufferLength: 60,
-      ...this.options.hlsConfig,
-    });
+    // Ensure video element is clean before HLS.js attaches
+    // This helps prevent ORB issues on initial page load
+    video.removeAttribute('src');
+    video.preload = 'none'; // Prevent browser from prefetching
+    video.load();
 
-    this.bindHlsEvents();
-    this.hls.loadSource(src);
-    this.hls.attachMedia(video);
+    // Small delay to ensure video element state is fully reset
+    // This helps prevent ORB blocking on initial page load
+    requestAnimationFrame(() => {
+      if (!this.Hls || !this.player) return;
+
+      // Use HLS.js
+      this.hls = new this.Hls({
+        enableWorker: true,
+        lowLatencyMode: false,
+        backBufferLength: 60,
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        fragLoadingMaxRetry: 3,
+        manifestLoadingMaxRetry: 3,
+        levelLoadingMaxRetry: 3,
+        ...this.options.hlsConfig,
+      });
+
+      this.bindHlsEvents();
+
+      // Wait for MEDIA_ATTACHED before loading source
+      // This ensures proper initialization and prevents segment loading issues
+      const Events = this.Hls.Events;
+      this.hls.on(Events.MEDIA_ATTACHED, () => {
+        if (this.hls) {
+          this.hls.loadSource(src);
+        }
+      });
+
+      this.hls.attachMedia(video);
+    });
   }
 
   private bindHlsEvents(): void {
@@ -161,7 +192,7 @@ export class HlsPlugin implements KimochiPlugin {
 
     const Events = this.Hls.Events;
 
-    // Manifest parsed
+    // Manifest parsed - HLS is now ready for playback
     this.hls.on(Events.MANIFEST_PARSED, (...args: unknown[]) => {
       const data = args[1] as { levels: Array<{ bitrate: number; width: number; height: number; name: string }> };
       this.currentLevels = data.levels.map((level) => ({
@@ -297,10 +328,10 @@ export class HlsPlugin implements KimochiPlugin {
   }
 
   destroy(): void {
-    this.destroyHls();
     if (this.player) {
       this.player.removeMenuItem('hls-quality');
     }
+    this.destroyHls();
     this.player = null;
   }
 }
