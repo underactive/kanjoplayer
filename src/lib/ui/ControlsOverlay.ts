@@ -13,6 +13,7 @@ import { FullscreenButton } from './controls/FullscreenButton';
 import { SettingsMenu } from './controls/SettingsMenu';
 import { ABLoopControl } from './controls/ABLoopControl';
 import { DownloadOverlay } from './DownloadOverlay';
+import { VideoAdjustmentsPanel } from './controls/VideoAdjustmentsPanel';
 
 export interface ControlsOverlayOptions {
   settings?: SettingsMenuConfig;
@@ -35,6 +36,7 @@ export class ControlsOverlay {
   private settingsMenu: SettingsMenu | null = null;
   private abLoopControl: ABLoopControl;
   private downloadOverlay: DownloadOverlay;
+  private videoAdjustmentsPanel: VideoAdjustmentsPanel;
 
   constructor(player: KimochiPlayer, container: HTMLElement, options?: ControlsOverlayOptions) {
     this.player = player;
@@ -56,6 +58,14 @@ export class ControlsOverlay {
 
     this.abLoopControl = new ABLoopControl(player, { watermark: this.options.watermark });
     this.downloadOverlay = new DownloadOverlay(container);
+    this.videoAdjustmentsPanel = new VideoAdjustmentsPanel(player, container);
+
+    // Wire up settings menu with video adjustments panel
+    if (this.settingsMenu) {
+      this.settingsMenu.setAdjustmentsCallback(() => {
+        this.videoAdjustmentsPanel.toggle();
+      });
+    }
 
     // Wire up A/B loop control with progress bar
     this.abLoopControl.setStateChangeCallback((state) => {
