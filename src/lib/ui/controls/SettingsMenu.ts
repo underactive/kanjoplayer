@@ -12,12 +12,14 @@ export interface SettingsMenuOptions {
   showSpeed: boolean;
   showPiP: boolean;
   showDownload: boolean;
+  showAdjustments: boolean;
 }
 
 const DEFAULT_SETTINGS_OPTIONS: SettingsMenuOptions = {
   showSpeed: true,
   showPiP: true,
   showDownload: false,
+  showAdjustments: true,
 };
 
 export class SettingsMenu {
@@ -27,6 +29,7 @@ export class SettingsMenu {
   private player: KimochiPlayer;
   private options: SettingsMenuOptions;
   private isOpen = false;
+  private onAdjustmentsClick: (() => void) | null = null;
 
   constructor(player: KimochiPlayer, config?: SettingsMenuConfig) {
     this.player = player;
@@ -35,6 +38,7 @@ export class SettingsMenu {
       showSpeed: config?.showSpeed ?? DEFAULT_SETTINGS_OPTIONS.showSpeed,
       showPiP: config?.showPiP ?? DEFAULT_SETTINGS_OPTIONS.showPiP,
       showDownload: config?.showDownload ?? DEFAULT_SETTINGS_OPTIONS.showDownload,
+      showAdjustments: config?.showAdjustments ?? DEFAULT_SETTINGS_OPTIONS.showAdjustments,
     };
     this.toggleBtn = this.createToggleButton();
     this.menuPanel = this.createMenuPanel();
@@ -96,6 +100,21 @@ export class SettingsMenu {
         },
       });
       mainMenu.appendChild(downloadItem);
+    }
+
+    // Video Adjustments option
+    if (this.options.showAdjustments) {
+      const adjustmentsItem = this.createMenuItem({
+        icon: UIBuilder.icons.adjustments,
+        label: 'Video adjustments',
+        onClick: () => {
+          if (this.onAdjustmentsClick) {
+            this.onAdjustmentsClick();
+          }
+          this.close();
+        },
+      });
+      mainMenu.appendChild(adjustmentsItem);
     }
 
     panel.appendChild(mainMenu);
@@ -329,5 +348,12 @@ export class SettingsMenu {
 
   getElement(): HTMLElement {
     return this.element;
+  }
+
+  /**
+   * Set callback for when Video Adjustments is clicked
+   */
+  setAdjustmentsCallback(callback: () => void): void {
+    this.onAdjustmentsClick = callback;
   }
 }

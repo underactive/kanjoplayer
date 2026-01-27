@@ -1254,3 +1254,173 @@
 .kimochi-download-dialog-btn-download:hover {
   background: var(--kimochi-primary-hover);
 }
+
+/* ============================================================================
+   Video Adjustments Panel
+   ============================================================================ */
+
+.kimochi-adjustments-panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(35, 43, 47, 0.95);
+  border-radius: 8px;
+  padding: 12px 16px;
+  min-width: 280px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity var(--kimochi-transition-fast),
+    visibility var(--kimochi-transition-fast),
+    transform var(--kimochi-transition-fast);
+  pointer-events: auto;
+  box-shadow: var(--kimochi-shadow);
+  z-index: var(--kimochi-z-menu);
+}
+
+.kimochi-adjustments-panel.kimochi-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.kimochi-adjustments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--kimochi-menu-border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--kimochi-text);
+}
+
+.kimochi-adjustments-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--kimochi-text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color var(--kimochi-transition-fast),
+    background var(--kimochi-transition-fast);
+}
+
+.kimochi-adjustments-close:hover {
+  color: var(--kimochi-text);
+  background: var(--kimochi-bg-hover);
+}
+
+.kimochi-adjustments-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.kimochi-adjustments-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kimochi-adjustments-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kimochi-adjustments-label {
+  flex-shrink: 0;
+  width: 75px;
+  font-size: 12px;
+  color: var(--kimochi-text-secondary);
+}
+
+.kimochi-adjustments-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--kimochi-progress-bg);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.kimochi-adjustments-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--kimochi-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--kimochi-transition-fast);
+}
+
+.kimochi-adjustments-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.kimochi-adjustments-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--kimochi-primary);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.kimochi-adjustments-reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--kimochi-text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color var(--kimochi-transition-fast),
+    background var(--kimochi-transition-fast);
+}
+
+.kimochi-adjustments-reset:hover {
+  color: var(--kimochi-text);
+  background: var(--kimochi-bg-hover);
+}
+
+.kimochi-adjustments-reset svg {
+  width: 14px;
+  height: 14px;
+}
+
+.kimochi-adjustments-reset-all {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--kimochi-menu-border);
+  background: transparent;
+  color: var(--kimochi-text-secondary);
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color var(--kimochi-transition-fast),
+    border-color var(--kimochi-transition-fast),
+    background var(--kimochi-transition-fast);
+}
+
+.kimochi-adjustments-reset-all:hover {
+  color: var(--kimochi-text);
+  border-color: var(--kimochi-primary);
+  background: var(--kimochi-bg-hover);
+}

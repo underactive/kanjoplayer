@@ -30,8 +30,10 @@ export interface SettingsMenuConfig {
   showSpeed?: boolean;
   /** Show Picture-in-Picture option (default: true) */
   showPiP?: boolean;
-  /** Show download option (default: true) */
+  /** Show download option (default: false) */
   showDownload?: boolean;
+  /** Show video adjustments option (default: true) */
+  showAdjustments?: boolean;
 }
 
 export interface WatermarkConfig {
