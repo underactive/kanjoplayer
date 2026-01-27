@@ -24,13 +24,14 @@ export default defineConfig({
     },
     rollupOptions: {
       // Externalize peer dependencies
-      external: ['hls.js', '@ffmpeg/ffmpeg', '@ffmpeg/util'],
+      external: ['hls.js', '@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
       output: {
         // Global variables for UMD build
         globals: {
           'hls.js': 'Hls',
           '@ffmpeg/ffmpeg': 'FFmpeg',
           '@ffmpeg/util': 'FFmpegUtil',
+          '@jsquash/jpeg': 'jSquashJpeg',
         },
         // Preserve CSS imports
         assetFileNames: (assetInfo) => {
