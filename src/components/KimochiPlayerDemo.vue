@@ -257,11 +257,15 @@ onUnmounted(() => {
         <div><kbd>Space</kbd> / <kbd>K</kbd> Play/Pause</div>
         <div><kbd>M</kbd> Mute</div>
         <div><kbd>F</kbd> Fullscreen</div>
-        <div><kbd>←</kbd> / <kbd>J</kbd> Rewind 10s</div>
-        <div><kbd>→</kbd> / <kbd>L</kbd> Forward 10s</div>
+        <div><kbd>←</kbd> Rewind 10s</div>
+        <div><kbd>→</kbd> Forward 10s</div>
         <div><kbd>↑</kbd> / <kbd>↓</kbd> Volume</div>
         <div><kbd>&lt;</kbd> / <kbd>&gt;</kbd> Speed</div>
         <div><kbd>0-9</kbd> Seek to %</div>
+        <div><kbd>[</kbd> Set loop start (A)</div>
+        <div><kbd>]</kbd> Set loop end (B)</div>
+        <div><kbd>\</kbd> Clear loop</div>
+        <div><kbd>L</kbd> Toggle loop</div>
       </div>
     </div>
 

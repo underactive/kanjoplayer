@@ -24,21 +24,29 @@ export interface KeyBindings {
   pip: string[];
   seekStart: string[];
   seekEnd: string[];
+  loopStart: string[];
+  loopEnd: string[];
+  loopClear: string[];
+  loopToggle: string[];
 }
 
 const DEFAULT_BINDINGS: KeyBindings = {
   playPause: ['Space', 'k'],
   mute: ['m'],
   fullscreen: ['f'],
-  forward: ['ArrowRight', 'l'],
-  backward: ['ArrowLeft', 'j'],
+  forward: ['ArrowRight'],
+  backward: ['ArrowLeft'],
   volumeUp: ['ArrowUp'],
   volumeDown: ['ArrowDown'],
   speedUp: ['>'],
   speedDown: ['<'],
   pip: ['p'],
-  seekStart: ['Home', '0'],
+  seekStart: ['Home'],
   seekEnd: ['End'],
+  loopStart: ['['],
+  loopEnd: [']'],
+  loopClear: ['\\'],
+  loopToggle: ['l'],
 };
 
 const SPEED_STEPS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -164,6 +172,26 @@ export class KeyboardPlugin implements KimochiPlugin {
 
       case 'seekEnd':
         this.player.seek(this.player.getDuration());
+        break;
+
+      case 'loopStart':
+        // Emit event for ABLoopControl to handle
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('setloopstart', undefined);
+        break;
+
+      case 'loopEnd':
+        // Emit event for ABLoopControl to handle
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('setloopend', undefined);
+        break;
+
+      case 'loopClear':
+        // Emit event for ABLoopControl to handle
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('clearloop', undefined);
+        break;
+
+      case 'loopToggle':
+        // Emit event for ABLoopControl to handle
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('toggleloop', undefined);
         break;
     }
   }
