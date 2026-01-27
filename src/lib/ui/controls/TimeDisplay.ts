@@ -2,23 +2,23 @@
  * Time display component (current / duration)
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import { UIBuilder } from '../UIBuilder';
 
 export class TimeDisplay {
   private element: HTMLElement;
   private currentTimeEl: HTMLSpanElement;
   private durationEl: HTMLSpanElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KanjoPlayer) {
     this.player = player;
     this.currentTimeEl = document.createElement('span');
-    this.currentTimeEl.className = 'kimochi-time-current';
+    this.currentTimeEl.className = 'kanjo-time-current';
     this.currentTimeEl.textContent = '0:00';
 
     this.durationEl = document.createElement('span');
-    this.durationEl.className = 'kimochi-time-duration';
+    this.durationEl.className = 'kanjo-time-duration';
     this.durationEl.textContent = '0:00';
 
     this.element = this.createElement();
@@ -27,7 +27,7 @@ export class TimeDisplay {
 
   private createElement(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-time-display',
+      className: 'kanjo-time-display',
     });
 
     container.appendChild(this.currentTimeEl);

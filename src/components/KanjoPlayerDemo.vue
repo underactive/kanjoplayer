@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { KimochiPlayer } from '../lib/core/KimochiPlayer';
+import { KanjoPlayer } from '../lib/core/KanjoPlayer';
 import { HlsPlugin } from '../lib/plugins/built-in/HlsPlugin';
 import StatsPanel from './StatsPanel.vue';
 import EventLog from './EventLog.vue';
@@ -14,7 +14,7 @@ import {
 } from '../types/video-stats';
 
 // Import styles
-import '../lib/styles/kimochi-player.css';
+import '../lib/styles/kanjo-player.css';
 
 const VIDEO_SOURCES: VideoSource[] = [
   // HLS Sources
@@ -62,12 +62,12 @@ const VIDEO_SOURCES: VideoSource[] = [
 ];
 
 const containerRef = ref<HTMLDivElement | null>(null);
-const player = ref<KimochiPlayer | null>(null);
+const player = ref<KanjoPlayer | null>(null);
 const selectedSourceIndex = ref(0);
 const selectedSource = ref(VIDEO_SOURCES[0]);
 const isCodeExpanded = ref(false);
 
-const playerCode = `player.value = new KimochiPlayer({
+const playerCode = `player.value = new KanjoPlayer({
   container: containerRef.value,
   src: selectedSource.value.url,
   sourceType: selectedSource.value.type,
@@ -227,7 +227,7 @@ function initPlayer() {
   }
 
   // Create new player
-  player.value = new KimochiPlayer({
+  player.value = new KanjoPlayer({
     container: containerRef.value,
     src: selectedSource.value.url,
     sourceType: selectedSource.value.type,
@@ -325,8 +325,8 @@ onUnmounted(() => {
 <template>
   <div class="video-player-container">
     <div class="controls-bar">
-      <label for="kimochi-source-select">Source:</label>
-      <select id="kimochi-source-select" v-model="selectedSourceIndex">
+      <label for="kanjo-source-select">Source:</label>
+      <select id="kanjo-source-select" v-model="selectedSourceIndex">
         <option v-for="(source, index) in VIDEO_SOURCES" :key="source.url" :value="index">
           {{ source.name }}
         </option>

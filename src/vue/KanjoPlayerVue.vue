@@ -1,16 +1,16 @@
 <script setup lang="ts">
 /**
- * Vue wrapper component for KimochiPlayer
+ * Vue wrapper component for KanjoPlayer
  */
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
-import { KimochiPlayer } from '../lib/core/KimochiPlayer';
+import { KanjoPlayer } from '../lib/core/KanjoPlayer';
 import type {
-  KimochiPlayerOptions,
-  KimochiPlayerState,
-  KimochiPlayerEvents,
-  KimochiPlugin,
+  KanjoPlayerOptions,
+  KanjoPlayerState,
+  KanjoPlayerEvents,
+  KanjoPlugin,
   ThumbnailConfig,
-  KimochiPlayerAPI
+  KanjoPlayerAPI
 } from '../lib/core/types';
 
 // Props
@@ -26,7 +26,7 @@ interface Props {
   volume?: number;
   playbackRate?: number;
   thumbnails?: ThumbnailConfig | boolean;
-  plugins?: KimochiPlugin[];
+  plugins?: KanjoPlugin[];
   keyboardShortcuts?: boolean;
   doubleClickFullscreen?: boolean;
   controlsTimeout?: number;
@@ -49,27 +49,27 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Emits
 const emit = defineEmits<{
-  ready: [player: KimochiPlayerAPI];
+  ready: [player: KanjoPlayerAPI];
   play: [];
   pause: [];
   ended: [];
-  timeupdate: [data: KimochiPlayerEvents['timeupdate']];
-  seeking: [data: KimochiPlayerEvents['seeking']];
-  seeked: [data: KimochiPlayerEvents['seeked']];
-  volumechange: [data: KimochiPlayerEvents['volumechange']];
-  ratechange: [data: KimochiPlayerEvents['ratechange']];
-  fullscreenchange: [data: KimochiPlayerEvents['fullscreenchange']];
-  error: [data: KimochiPlayerEvents['error']];
-  statechange: [state: KimochiPlayerState];
+  timeupdate: [data: KanjoPlayerEvents['timeupdate']];
+  seeking: [data: KanjoPlayerEvents['seeking']];
+  seeked: [data: KanjoPlayerEvents['seeked']];
+  volumechange: [data: KanjoPlayerEvents['volumechange']];
+  ratechange: [data: KanjoPlayerEvents['ratechange']];
+  fullscreenchange: [data: KanjoPlayerEvents['fullscreenchange']];
+  error: [data: KanjoPlayerEvents['error']];
+  statechange: [state: KanjoPlayerState];
 }>();
 
 // Refs
 const containerRef = ref<HTMLDivElement | null>(null);
-const player = ref<KimochiPlayer | null>(null);
-const state = ref<KimochiPlayerState | null>(null);
+const player = ref<KanjoPlayer | null>(null);
+const state = ref<KanjoPlayerState | null>(null);
 
 // Computed options
-const playerOptions = computed<Partial<KimochiPlayerOptions>>(() => ({
+const playerOptions = computed<Partial<KanjoPlayerOptions>>(() => ({
   src: props.src,
   autoplay: props.autoplay,
   muted: props.muted,
@@ -92,7 +92,7 @@ const playerOptions = computed<Partial<KimochiPlayerOptions>>(() => ({
 onMounted(() => {
   if (!containerRef.value) return;
 
-  player.value = new KimochiPlayer({
+  player.value = new KanjoPlayer({
     ...playerOptions.value,
     container: containerRef.value,
   });
@@ -200,11 +200,11 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="containerRef" class="kimochi-player-vue"></div>
+  <div ref="containerRef" class="kanjo-player-vue"></div>
 </template>
 
 <style scoped>
-.kimochi-player-vue {
+.kanjo-player-vue {
   width: 100%;
   height: 100%;
 }

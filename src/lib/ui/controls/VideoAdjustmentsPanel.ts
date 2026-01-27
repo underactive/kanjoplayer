@@ -2,7 +2,7 @@
  * Video Adjustments Panel - Brightness, Contrast, Saturation, Gamma, Hue sliders
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import { UIBuilder } from '../UIBuilder';
 
 export interface VideoAdjustments {
@@ -39,16 +39,16 @@ const SLIDER_CONFIGS: SliderConfig[] = [
 
 export class VideoAdjustmentsPanel {
   private element: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private adjustments: VideoAdjustments = { ...DEFAULT_ADJUSTMENTS };
   private sliders: Map<keyof VideoAdjustments, HTMLInputElement> = new Map();
   private isVisible = false;
   private svgFilter: SVGSVGElement | null = null;
   private filterId: string;
 
-  constructor(player: KimochiPlayer, container: HTMLElement) {
+  constructor(player: KanjoPlayer, container: HTMLElement) {
     this.player = player;
-    this.filterId = `kimochi-gamma-filter-${Math.random().toString(36).slice(2, 9)}`;
+    this.filterId = `kanjo-gamma-filter-${Math.random().toString(36).slice(2, 9)}`;
     this.createSvgFilter(container);
     this.element = this.createElement();
     container.appendChild(this.element);
@@ -82,12 +82,12 @@ export class VideoAdjustmentsPanel {
 
   private createElement(): HTMLElement {
     const panel = UIBuilder.create({
-      className: 'kimochi-adjustments-panel',
+      className: 'kanjo-adjustments-panel',
     });
 
     // Header
     const header = UIBuilder.create({
-      className: 'kimochi-adjustments-header',
+      className: 'kanjo-adjustments-header',
     });
 
     const title = document.createElement('span');
@@ -96,7 +96,7 @@ export class VideoAdjustmentsPanel {
 
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
-    closeBtn.className = 'kimochi-adjustments-close';
+    closeBtn.className = 'kanjo-adjustments-close';
     closeBtn.innerHTML = UIBuilder.icons.close;
     closeBtn.title = 'Close';
     closeBtn.addEventListener('click', (e) => {
@@ -109,7 +109,7 @@ export class VideoAdjustmentsPanel {
 
     // Sliders
     const slidersContainer = UIBuilder.create({
-      className: 'kimochi-adjustments-sliders',
+      className: 'kanjo-adjustments-sliders',
     });
 
     for (const config of SLIDER_CONFIGS) {
@@ -122,7 +122,7 @@ export class VideoAdjustmentsPanel {
     // Reset all button
     const resetAllBtn = document.createElement('button');
     resetAllBtn.type = 'button';
-    resetAllBtn.className = 'kimochi-adjustments-reset-all';
+    resetAllBtn.className = 'kanjo-adjustments-reset-all';
     resetAllBtn.textContent = 'Reset All';
     resetAllBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -135,19 +135,19 @@ export class VideoAdjustmentsPanel {
 
   private createSliderRow(config: SliderConfig): HTMLElement {
     const row = UIBuilder.create({
-      className: 'kimochi-adjustments-row',
+      className: 'kanjo-adjustments-row',
     });
 
     // Label
     const label = document.createElement('label');
-    label.className = 'kimochi-adjustments-label';
+    label.className = 'kanjo-adjustments-label';
     label.textContent = config.label;
     row.appendChild(label);
 
     // Slider
     const slider = document.createElement('input');
     slider.type = 'range';
-    slider.className = 'kimochi-adjustments-slider';
+    slider.className = 'kanjo-adjustments-slider';
     slider.min = String(config.min);
     slider.max = String(config.max);
     slider.value = String(config.default);
@@ -161,7 +161,7 @@ export class VideoAdjustmentsPanel {
     // Reset button
     const resetBtn = document.createElement('button');
     resetBtn.type = 'button';
-    resetBtn.className = 'kimochi-adjustments-reset';
+    resetBtn.className = 'kanjo-adjustments-reset';
     resetBtn.innerHTML = UIBuilder.icons.reset;
     resetBtn.title = `Reset ${config.label}`;
     resetBtn.addEventListener('click', (e) => {
@@ -235,12 +235,12 @@ export class VideoAdjustmentsPanel {
 
   show(): void {
     this.isVisible = true;
-    this.element.classList.add('kimochi-visible');
+    this.element.classList.add('kanjo-visible');
   }
 
   hide(): void {
     this.isVisible = false;
-    this.element.classList.remove('kimochi-visible');
+    this.element.classList.remove('kanjo-visible');
   }
 
   toggle(): void {

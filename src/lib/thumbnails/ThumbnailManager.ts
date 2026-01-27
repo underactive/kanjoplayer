@@ -5,14 +5,14 @@
  * - Sprite sheets for pre-generated thumbnails
  */
 
-import type { KimochiPlayer } from '../core/KimochiPlayer';
+import type { KanjoPlayer } from '../core/KanjoPlayer';
 import type { ThumbnailConfig, ThumbnailData } from '../core/types';
 import { ThumbnailCache } from './ThumbnailCache';
 import { CanvasExtractor } from './CanvasExtractor';
 import { SpriteLoader } from './SpriteLoader';
 
 export class ThumbnailManager {
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private config: ThumbnailConfig;
   private cache: ThumbnailCache;
   private canvasExtractor: CanvasExtractor | null = null;
@@ -23,7 +23,7 @@ export class ThumbnailManager {
   private useSprites = false;
   private useHls = false;
 
-  constructor(player: KimochiPlayer, config: ThumbnailConfig) {
+  constructor(player: KanjoPlayer, config: ThumbnailConfig) {
     this.player = player;
     const defaults = {
       useWasm: false,

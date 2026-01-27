@@ -1,5 +1,5 @@
 /**
- * DOM construction utilities for KimochiPlayer UI
+ * DOM construction utilities for KanjoPlayer UI
  */
 
 export interface ElementConfig {
@@ -86,7 +86,7 @@ export class UIBuilder {
   }): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = `kimochi-btn ${options.className || ''}`.trim();
+    btn.className = `kanjo-btn ${options.className || ''}`.trim();
 
     if (options.tooltip) {
       btn.title = options.tooltip;
@@ -99,7 +99,7 @@ export class UIBuilder {
 
     if (options.label) {
       const span = document.createElement('span');
-      span.className = 'kimochi-btn-label';
+      span.className = 'kanjo-btn-label';
       span.textContent = options.label;
       btn.appendChild(span);
     }
@@ -132,7 +132,7 @@ export class UIBuilder {
   }): HTMLInputElement {
     const input = document.createElement('input');
     input.type = 'range';
-    input.className = `kimochi-slider ${options.className || ''}`.trim();
+    input.className = `kanjo-slider ${options.className || ''}`.trim();
     input.min = String(options.min ?? 0);
     input.max = String(options.max ?? 100);
     input.step = String(options.step ?? 1);

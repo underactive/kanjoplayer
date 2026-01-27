@@ -2,7 +2,7 @@
  * Main controls overlay container
  */
 
-import type { KimochiPlayer } from '../core/KimochiPlayer';
+import type { KanjoPlayer } from '../core/KanjoPlayer';
 import type { SettingsMenuConfig, WatermarkConfig, CustomButtonsConfig } from '../core/types';
 import { UIBuilder } from './UIBuilder';
 import { PlayButton, CenterPlayButton } from './controls/PlayButton';
@@ -24,7 +24,7 @@ export interface ControlsOverlayOptions {
 
 export class ControlsOverlay {
   private element: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private bottomBar: HTMLElement;
   private options: ControlsOverlayOptions;
 
@@ -42,7 +42,7 @@ export class ControlsOverlay {
   // Custom button area (kept as reference for potential future use/cleanup)
   private _customButtonArea: CustomButtonArea | null = null;
 
-  constructor(player: KimochiPlayer, container: HTMLElement, options?: ControlsOverlayOptions) {
+  constructor(player: KanjoPlayer, container: HTMLElement, options?: ControlsOverlayOptions) {
     this.player = player;
     this.options = options || {};
 
@@ -99,13 +99,13 @@ export class ControlsOverlay {
 
   private createElement(): HTMLElement {
     const overlay = UIBuilder.create({
-      className: 'kimochi-controls-overlay',
+      className: 'kanjo-controls-overlay',
     });
 
     // Loading indicator
     const loading = UIBuilder.create({
-      className: 'kimochi-loading-indicator',
-      html: `<div class="kimochi-spinner"></div>`,
+      className: 'kanjo-loading-indicator',
+      html: `<div class="kanjo-spinner"></div>`,
     });
     overlay.appendChild(loading);
 
@@ -113,7 +113,7 @@ export class ControlsOverlay {
     overlay.appendChild(this.centerPlayButton.getElement());
 
     // Gradient overlay at bottom
-    const gradient = UIBuilder.create({ className: 'kimochi-controls-gradient' });
+    const gradient = UIBuilder.create({ className: 'kanjo-controls-gradient' });
     overlay.appendChild(gradient);
 
     // Bottom bar
@@ -124,7 +124,7 @@ export class ControlsOverlay {
 
   private createBottomBar(): HTMLElement {
     const bottomBar = UIBuilder.create({
-      className: 'kimochi-controls-bottom',
+      className: 'kanjo-controls-bottom',
     });
 
     // Custom button area (above progress bar)
@@ -141,12 +141,12 @@ export class ControlsOverlay {
 
     // Controls row
     const controlsRow = UIBuilder.create({
-      className: 'kimochi-controls-row',
+      className: 'kanjo-controls-row',
     });
 
     // Left controls
     const leftControls = UIBuilder.create({
-      className: 'kimochi-controls-left',
+      className: 'kanjo-controls-left',
     });
     leftControls.appendChild(this.playButton.getElement());
     leftControls.appendChild(this.volumeControl.getElement());
@@ -154,7 +154,7 @@ export class ControlsOverlay {
 
     // Right controls
     const rightControls = UIBuilder.create({
-      className: 'kimochi-controls-right',
+      className: 'kanjo-controls-right',
     });
     rightControls.appendChild(this.abLoopControl.getElement());
     if (this.settingsMenu) {
@@ -172,23 +172,23 @@ export class ControlsOverlay {
   private bindVisibilityEvents(): void {
     // Show/hide loading indicator
     this.player.on('waiting', () => {
-      this.element.classList.add('kimochi-loading');
+      this.element.classList.add('kanjo-loading');
     });
 
     this.player.on('playing', () => {
-      this.element.classList.remove('kimochi-loading');
+      this.element.classList.remove('kanjo-loading');
     });
 
     this.player.on('canplay', () => {
-      this.element.classList.remove('kimochi-loading');
+      this.element.classList.remove('kanjo-loading');
     });
 
     // Show/hide controls based on state
     this.player.on('statechange', (state) => {
       if (state.controlsVisible) {
-        this.element.classList.remove('kimochi-controls-hidden');
+        this.element.classList.remove('kanjo-controls-hidden');
       } else {
-        this.element.classList.add('kimochi-controls-hidden');
+        this.element.classList.add('kanjo-controls-hidden');
       }
     });
   }

@@ -2,7 +2,7 @@
  * Custom Button Area - Configurable buttons that emit framework-agnostic events
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import type { CustomButtonsConfig, CustomButtonConfig, PlayerProperty } from '../../core/types';
 import { UIBuilder } from '../UIBuilder';
 
@@ -15,7 +15,7 @@ export interface CustomButtonEventDetail {
 
 export class CustomButtonArea {
   private element: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private config: CustomButtonsConfig;
   private overflowMenuBtn: HTMLButtonElement | null = null;
   private overflowDropdown: HTMLElement | null = null;
@@ -24,7 +24,7 @@ export class CustomButtonArea {
   private overflowButtons: CustomButtonConfig[] = [];
   private isOverflowOpen = false;
 
-  constructor(player: KimochiPlayer, container: HTMLElement, config: CustomButtonsConfig) {
+  constructor(player: KanjoPlayer, container: HTMLElement, config: CustomButtonsConfig) {
     this.player = player;
     this.config = config;
     this.element = this.createElement();
@@ -34,14 +34,14 @@ export class CustomButtonArea {
   }
 
   private createElement(): HTMLElement {
-    const area = UIBuilder.create({ className: 'kimochi-custom-button-area' });
+    const area = UIBuilder.create({ className: 'kanjo-custom-button-area' });
 
     // Overflow menu button (hidden by default)
     this.overflowMenuBtn = this.createOverflowButton();
     area.appendChild(this.overflowMenuBtn);
 
     // Create overflow dropdown
-    this.overflowDropdown = UIBuilder.create({ className: 'kimochi-custom-overflow-menu' });
+    this.overflowDropdown = UIBuilder.create({ className: 'kanjo-custom-overflow-menu' });
     area.appendChild(this.overflowDropdown);
 
     // Create buttons (in order from config - they'll display right-to-left due to flex-direction)
@@ -57,7 +57,7 @@ export class CustomButtonArea {
   private createOverflowButton(): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'kimochi-btn kimochi-custom-overflow-btn';
+    btn.className = 'kanjo-btn kanjo-custom-overflow-btn';
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>`;
     btn.title = 'More actions';
     btn.setAttribute('aria-label', 'More actions');
@@ -71,7 +71,7 @@ export class CustomButtonArea {
   private createButton(config: CustomButtonConfig): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'kimochi-btn kimochi-custom-btn';
+    btn.className = 'kanjo-btn kanjo-custom-btn';
     btn.dataset.buttonId = config.id;
 
     if (config.tooltip) {
@@ -91,7 +91,7 @@ export class CustomButtonArea {
     if (config.displayMode === 'text' || config.displayMode === 'icon-text') {
       if (config.text) {
         const text = document.createElement('span');
-        text.className = 'kimochi-custom-btn-text';
+        text.className = 'kanjo-custom-btn-text';
         text.textContent = config.text;
         btn.appendChild(text);
       }
@@ -108,7 +108,7 @@ export class CustomButtonArea {
   private createOverflowItem(config: CustomButtonConfig): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'kimochi-custom-overflow-item';
+    btn.className = 'kanjo-custom-overflow-item';
     btn.dataset.buttonId = config.id;
 
     // Icon (if present)
@@ -158,7 +158,7 @@ export class CustomButtonArea {
     };
 
     // Emit CustomEvent on player container (framework-agnostic)
-    const event = new CustomEvent('kimochi-custom-event', {
+    const event = new CustomEvent('kanjo-custom-event', {
       detail: eventDetail,
       bubbles: true,
       composed: true, // Penetrates shadow DOM
@@ -192,14 +192,14 @@ export class CustomButtonArea {
       this.overflowDropdown.appendChild(item);
     }
 
-    this.overflowDropdown.classList.add('kimochi-visible');
-    this.overflowMenuBtn?.classList.add('kimochi-active');
+    this.overflowDropdown.classList.add('kanjo-visible');
+    this.overflowMenuBtn?.classList.add('kanjo-active');
     this.isOverflowOpen = true;
   }
 
   private closeOverflowMenu(): void {
-    this.overflowDropdown?.classList.remove('kimochi-visible');
-    this.overflowMenuBtn?.classList.remove('kimochi-active');
+    this.overflowDropdown?.classList.remove('kanjo-visible');
+    this.overflowMenuBtn?.classList.remove('kanjo-active');
     this.isOverflowOpen = false;
   }
 

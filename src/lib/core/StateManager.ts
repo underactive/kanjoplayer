@@ -1,10 +1,10 @@
 /**
- * Reactive state manager for KimochiPlayer
+ * Reactive state manager for KanjoPlayer
  */
 
-import type { KimochiPlayerState, StateSubscriber, TimeRangeInfo } from './types';
+import type { KanjoPlayerState, StateSubscriber, TimeRangeInfo } from './types';
 
-export function createInitialState(): KimochiPlayerState {
+export function createInitialState(): KanjoPlayerState {
   return {
     currentTime: 0,
     duration: 0,
@@ -31,33 +31,33 @@ export function createInitialState(): KimochiPlayerState {
 }
 
 export class StateManager {
-  private state: KimochiPlayerState;
+  private state: KanjoPlayerState;
   private subscribers: Set<StateSubscriber> = new Set();
-  private batchUpdates: Partial<KimochiPlayerState>[] = [];
+  private batchUpdates: Partial<KanjoPlayerState>[] = [];
   private isBatching = false;
 
-  constructor(initialState?: Partial<KimochiPlayerState>) {
+  constructor(initialState?: Partial<KanjoPlayerState>) {
     this.state = { ...createInitialState(), ...initialState };
   }
 
   /**
    * Get current state (returns a shallow copy)
    */
-  getState(): KimochiPlayerState {
+  getState(): KanjoPlayerState {
     return { ...this.state };
   }
 
   /**
    * Get a specific state value
    */
-  get<K extends keyof KimochiPlayerState>(key: K): KimochiPlayerState[K] {
+  get<K extends keyof KanjoPlayerState>(key: K): KanjoPlayerState[K] {
     return this.state[key];
   }
 
   /**
    * Update state with partial changes
    */
-  setState(updates: Partial<KimochiPlayerState>): void {
+  setState(updates: Partial<KanjoPlayerState>): void {
     if (this.isBatching) {
       this.batchUpdates.push(updates);
       return;
@@ -132,11 +132,11 @@ export class StateManager {
     return result;
   }
 
-  private applyUpdates(updates: Partial<KimochiPlayerState>): boolean {
+  private applyUpdates(updates: Partial<KanjoPlayerState>): boolean {
     let hasChanges = false;
 
     for (const key in updates) {
-      const k = key as keyof KimochiPlayerState;
+      const k = key as keyof KanjoPlayerState;
       const newValue = updates[k];
       const oldValue = this.state[k];
 
@@ -162,7 +162,7 @@ export class StateManager {
     return JSON.stringify(a) === JSON.stringify(b);
   }
 
-  private notifySubscribers(_prevState: KimochiPlayerState): void {
+  private notifySubscribers(_prevState: KanjoPlayerState): void {
     const currentState = this.getState();
     this.subscribers.forEach((subscriber) => {
       try {

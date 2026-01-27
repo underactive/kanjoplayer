@@ -1,5 +1,5 @@
 /**
- * KimochiPlayer Styles
+ * KanjoPlayer Styles
  */
 
 @import './_variables.css';
@@ -8,7 +8,7 @@
    Container & Video
    ============================================================================ */
 
-.kimochi-player {
+.kanjo-player {
   position: relative;
   width: 100%;
   height: 100%;
@@ -18,53 +18,53 @@
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   user-select: none;
   -webkit-user-select: none;
 }
 
-.kimochi-player * {
+.kanjo-player * {
   box-sizing: border-box;
 }
 
-.kimochi-video {
+.kanjo-video {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  z-index: var(--kimochi-z-video);
+  z-index: var(--kanjo-z-video);
 }
 
 /* ============================================================================
    Controls Overlay
    ============================================================================ */
 
-.kimochi-controls-overlay {
+.kanjo-controls-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: var(--kimochi-z-overlay);
+  z-index: var(--kanjo-z-overlay);
   pointer-events: none;
-  transition: opacity var(--kimochi-transition-normal);
+  transition: opacity var(--kanjo-transition-normal);
 }
 
-.kimochi-controls-overlay > * {
+.kanjo-controls-overlay > * {
   pointer-events: auto;
 }
 
-.kimochi-controls-hidden .kimochi-controls-bottom,
-.kimochi-controls-hidden .kimochi-controls-gradient,
-.kimochi-controls-hidden .kimochi-center-play {
+.kanjo-controls-hidden .kanjo-controls-bottom,
+.kanjo-controls-hidden .kanjo-controls-gradient,
+.kanjo-controls-hidden .kanjo-center-play {
   opacity: 0;
   pointer-events: none;
 }
 
 /* Gradient overlay */
-.kimochi-controls-gradient {
+.kanjo-controls-gradient {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -72,55 +72,55 @@
   height: 150px;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
   pointer-events: none;
-  transition: opacity var(--kimochi-transition-normal);
+  transition: opacity var(--kanjo-transition-normal);
 }
 
 /* Bottom bar */
-.kimochi-controls-bottom {
+.kanjo-controls-bottom {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: var(--kimochi-controls-padding);
+  padding: var(--kanjo-controls-padding);
   padding-top: 0;
-  transition: opacity var(--kimochi-transition-normal);
+  transition: opacity var(--kanjo-transition-normal);
 }
 
-.kimochi-controls-row {
+.kanjo-controls-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 8px;
 }
 
-.kimochi-controls-left,
-.kimochi-controls-right {
+.kanjo-controls-left,
+.kanjo-controls-right {
   display: flex;
   align-items: center;
-  gap: var(--kimochi-controls-gap);
+  gap: var(--kanjo-controls-gap);
 }
 
 /* ============================================================================
    Center Play Button
    ============================================================================ */
 
-.kimochi-center-play {
+.kanjo-center-play {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: var(--kimochi-z-controls);
-  transition: opacity var(--kimochi-transition-normal),
-    transform var(--kimochi-transition-normal);
+  z-index: var(--kanjo-z-controls);
+  transition: opacity var(--kanjo-transition-normal),
+    transform var(--kanjo-transition-normal);
 }
 
-.kimochi-center-play.kimochi-hidden {
+.kanjo-center-play.kanjo-hidden {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8);
   pointer-events: none;
 }
 
-.kimochi-center-play-btn {
+.kanjo-center-play-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,25 +128,25 @@
   height: 72px;
   border: none;
   border-radius: 50%;
-  background: var(--kimochi-primary);
+  background: var(--kanjo-primary);
   color: #fff;
   cursor: pointer;
-  transition: transform var(--kimochi-transition-fast),
-    background var(--kimochi-transition-fast);
-  box-shadow: var(--kimochi-shadow);
+  transition: transform var(--kanjo-transition-fast),
+    background var(--kanjo-transition-fast);
+  box-shadow: var(--kanjo-shadow);
 }
 
-.kimochi-center-play-btn:hover {
-  background: var(--kimochi-primary-hover);
+.kanjo-center-play-btn:hover {
+  background: var(--kanjo-primary-hover);
   transform: scale(1.1);
 }
 
-.kimochi-center-play-btn:active {
-  background: var(--kimochi-primary-active);
+.kanjo-center-play-btn:active {
+  background: var(--kanjo-primary-active);
   transform: scale(1.05);
 }
 
-.kimochi-center-play-btn svg {
+.kanjo-center-play-btn svg {
   width: 36px;
   height: 36px;
 }
@@ -155,71 +155,71 @@
    Buttons
    ============================================================================ */
 
-.kimochi-btn {
+.kanjo-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--kimochi-btn-size);
-  height: var(--kimochi-btn-size);
+  width: var(--kanjo-btn-size);
+  height: var(--kanjo-btn-size);
   padding: 0;
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   cursor: pointer;
-  transition: background var(--kimochi-transition-fast),
-    color var(--kimochi-transition-fast);
+  transition: background var(--kanjo-transition-fast),
+    color var(--kanjo-transition-fast);
 }
 
-.kimochi-btn:hover {
-  background: var(--kimochi-bg-hover);
+.kanjo-btn:hover {
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-btn:active {
-  background: var(--kimochi-bg-active);
+.kanjo-btn:active {
+  background: var(--kanjo-bg-active);
 }
 
-.kimochi-btn:disabled {
+.kanjo-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.kimochi-btn svg {
-  width: var(--kimochi-icon-size);
-  height: var(--kimochi-icon-size);
+.kanjo-btn svg {
+  width: var(--kanjo-icon-size);
+  height: var(--kanjo-icon-size);
 }
 
 /* ============================================================================
    Time Display
    ============================================================================ */
 
-.kimochi-time-display {
+.kanjo-time-display {
   font-size: 13px;
   font-variant-numeric: tabular-nums;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   white-space: nowrap;
   padding: 0 8px;
 }
 
-.kimochi-time-current {
-  color: var(--kimochi-text);
+.kanjo-time-current {
+  color: var(--kanjo-text);
 }
 
-.kimochi-time-duration {
-  color: var(--kimochi-text-secondary);
+.kanjo-time-duration {
+  color: var(--kanjo-text-secondary);
 }
 
 /* ============================================================================
    Progress Bar
    ============================================================================ */
 
-.kimochi-progress-wrapper {
+.kanjo-progress-wrapper {
   position: relative;
   width: 100%;
   padding: 8px 0;
 }
 
-.kimochi-progress-container {
+.kanjo-progress-container {
   position: relative;
   width: 100%;
   height: 20px;
@@ -228,87 +228,87 @@
   align-items: center;
 }
 
-.kimochi-progress-container:focus {
+.kanjo-progress-container:focus {
   outline: none;
 }
 
-.kimochi-progress-container:focus-visible .kimochi-progress-scrubber {
+.kanjo-progress-container:focus-visible .kanjo-progress-scrubber {
   box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.5);
 }
 
-.kimochi-progress-track {
+.kanjo-progress-track {
   position: relative;
   width: 100%;
-  height: var(--kimochi-progress-height);
-  background: var(--kimochi-progress-bg);
+  height: var(--kanjo-progress-height);
+  background: var(--kanjo-progress-bg);
   border-radius: 2px;
   overflow: visible;
-  transition: height var(--kimochi-transition-fast);
+  transition: height var(--kanjo-transition-fast);
 }
 
-.kimochi-progress-container:hover .kimochi-progress-track {
-  height: var(--kimochi-progress-height-hover);
+.kanjo-progress-container:hover .kanjo-progress-track {
+  height: var(--kanjo-progress-height-hover);
 }
 
-.kimochi-progress-buffered {
+.kanjo-progress-buffered {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
-  background: var(--kimochi-progress-buffered);
+  background: var(--kanjo-progress-buffered);
   border-radius: 2px;
   transition: width 200ms ease-out;
 }
 
-.kimochi-progress-played {
+.kanjo-progress-played {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
-  background: var(--kimochi-progress-filled);
+  background: var(--kanjo-progress-filled);
   border-radius: 2px;
 }
 
-.kimochi-progress-scrubber {
+.kanjo-progress-scrubber {
   position: absolute;
   top: 50%;
-  width: var(--kimochi-scrubber-size);
-  height: var(--kimochi-scrubber-size);
-  background: var(--kimochi-scrubber-color);
+  width: var(--kanjo-scrubber-size);
+  height: var(--kanjo-scrubber-size);
+  background: var(--kanjo-scrubber-color);
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
-  transition: transform var(--kimochi-transition-fast);
-  box-shadow: var(--kimochi-shadow-sm);
+  transition: transform var(--kanjo-transition-fast);
+  box-shadow: var(--kanjo-shadow-sm);
 }
 
-.kimochi-progress-container:hover .kimochi-progress-scrubber,
-.kimochi-progress-container.kimochi-dragging .kimochi-progress-scrubber {
+.kanjo-progress-container:hover .kanjo-progress-scrubber,
+.kanjo-progress-container.kanjo-dragging .kanjo-progress-scrubber {
   transform: translate(-50%, -50%) scale(1);
 }
 
 /* Hover time display */
-.kimochi-progress-hover-time {
+.kanjo-progress-hover-time {
   position: absolute;
   bottom: 100%;
   transform: translateX(-50%);
   padding: 4px 8px;
-  background: var(--kimochi-bg);
+  background: var(--kanjo-bg);
   border-radius: 4px;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast);
   margin-bottom: 8px;
 }
 
-.kimochi-progress-hover-time.kimochi-visible {
+.kanjo-progress-hover-time.kanjo-visible {
   opacity: 1;
 }
 
-.kimochi-progress-hover-time.kimochi-marker-time {
-  background: var(--kimochi-primary);
+.kanjo-progress-hover-time.kanjo-marker-time {
+  background: var(--kanjo-primary);
   color: #fff;
   font-weight: 600;
   padding: 6px 10px;
@@ -320,50 +320,50 @@
    Volume Control
    ============================================================================ */
 
-.kimochi-volume-control {
+.kanjo-volume-control {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.kimochi-volume-slider-container {
+.kanjo-volume-slider-container {
   width: 0;
   overflow: hidden;
-  transition: width var(--kimochi-transition-normal);
+  transition: width var(--kanjo-transition-normal);
 }
 
-.kimochi-volume-control:hover .kimochi-volume-slider-container {
+.kanjo-volume-control:hover .kanjo-volume-slider-container {
   width: 80px;
 }
 
-.kimochi-volume-slider {
+.kanjo-volume-slider {
   width: 80px;
   height: 4px;
   -webkit-appearance: none;
   appearance: none;
-  background: var(--kimochi-progress-bg);
+  background: var(--kanjo-progress-bg);
   border-radius: 2px;
   cursor: pointer;
 }
 
-.kimochi-volume-slider::-webkit-slider-thumb {
+.kanjo-volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 12px;
   height: 12px;
-  background: var(--kimochi-text);
+  background: var(--kanjo-text);
   border-radius: 50%;
   cursor: pointer;
-  transition: transform var(--kimochi-transition-fast);
+  transition: transform var(--kanjo-transition-fast);
 }
 
-.kimochi-volume-slider::-webkit-slider-thumb:hover {
+.kanjo-volume-slider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
 }
 
-.kimochi-volume-slider::-moz-range-thumb {
+.kanjo-volume-slider::-moz-range-thumb {
   width: 12px;
   height: 12px;
-  background: var(--kimochi-text);
+  background: var(--kanjo-text);
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -373,67 +373,67 @@
    Settings Menu
    ============================================================================ */
 
-.kimochi-settings-container {
+.kanjo-settings-container {
   position: relative;
 }
 
-.kimochi-settings-btn.kimochi-active {
-  background: var(--kimochi-bg-active);
+.kanjo-settings-btn.kanjo-active {
+  background: var(--kanjo-bg-active);
 }
 
-.kimochi-settings-menu {
+.kanjo-settings-menu {
   position: absolute;
   bottom: calc(100% + 8px);
   right: 0;
-  width: var(--kimochi-menu-width);
-  background: var(--kimochi-menu-bg);
-  border-radius: var(--kimochi-menu-radius);
-  box-shadow: var(--kimochi-shadow);
+  width: var(--kanjo-menu-width);
+  background: var(--kanjo-menu-bg);
+  border-radius: var(--kanjo-menu-radius);
+  box-shadow: var(--kanjo-shadow);
   opacity: 0;
   visibility: hidden;
   transform: translateY(8px);
-  transition: opacity var(--kimochi-transition-fast),
-    transform var(--kimochi-transition-fast),
-    visibility var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast);
   overflow: hidden;
-  z-index: var(--kimochi-z-menu);
+  z-index: var(--kanjo-z-menu);
 }
 
-.kimochi-settings-menu.kimochi-open {
+.kanjo-settings-menu.kanjo-open {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
 /* Main menu */
-.kimochi-settings-main {
+.kanjo-settings-main {
   padding: 8px 0;
 }
 
-.kimochi-settings-menu.kimochi-submenu-open .kimochi-settings-main {
+.kanjo-settings-menu.kanjo-submenu-open .kanjo-settings-main {
   display: none;
 }
 
 /* Menu items */
-.kimochi-settings-item {
+.kanjo-settings-item {
   display: flex;
   align-items: center;
   width: 100%;
   padding: 12px 16px;
   border: none;
   background: transparent;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   font-size: 14px;
   text-align: left;
   cursor: pointer;
-  transition: background var(--kimochi-transition-fast);
+  transition: background var(--kanjo-transition-fast);
 }
 
-.kimochi-settings-item:hover {
-  background: var(--kimochi-bg-hover);
+.kanjo-settings-item:hover {
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-settings-item-icon {
+.kanjo-settings-item-icon {
   width: 24px;
   height: 24px;
   margin-right: 12px;
@@ -442,65 +442,65 @@
   justify-content: center;
 }
 
-.kimochi-settings-item-icon svg {
+.kanjo-settings-item-icon svg {
   width: 20px;
   height: 20px;
 }
 
-.kimochi-settings-item-label {
+.kanjo-settings-item-label {
   flex: 1;
 }
 
-.kimochi-settings-item-value {
-  color: var(--kimochi-text-secondary);
+.kanjo-settings-item-value {
+  color: var(--kanjo-text-secondary);
   font-size: 13px;
   margin-right: 8px;
 }
 
-.kimochi-settings-item-chevron {
+.kanjo-settings-item-chevron {
   width: 20px;
   height: 20px;
-  color: var(--kimochi-text-muted);
+  color: var(--kanjo-text-muted);
 }
 
-.kimochi-settings-item-chevron svg {
+.kanjo-settings-item-chevron svg {
   width: 20px;
   height: 20px;
 }
 
 /* Submenu */
-.kimochi-settings-submenu {
+.kanjo-settings-submenu {
   display: none;
   padding: 8px 0;
 }
 
-.kimochi-settings-submenu.kimochi-visible {
+.kanjo-settings-submenu.kanjo-visible {
   display: block;
 }
 
 /* Back button */
-.kimochi-settings-back {
+.kanjo-settings-back {
   display: flex;
   align-items: center;
   width: 100%;
   padding: 12px 16px;
   border: none;
-  border-bottom: 1px solid var(--kimochi-menu-border);
+  border-bottom: 1px solid var(--kanjo-menu-border);
   background: transparent;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   font-size: 14px;
   font-weight: 500;
   text-align: left;
   cursor: pointer;
-  transition: background var(--kimochi-transition-fast);
+  transition: background var(--kanjo-transition-fast);
   margin-bottom: 8px;
 }
 
-.kimochi-settings-back:hover {
-  background: var(--kimochi-bg-hover);
+.kanjo-settings-back:hover {
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-settings-back-icon {
+.kanjo-settings-back-icon {
   width: 20px;
   height: 20px;
   margin-right: 8px;
@@ -510,31 +510,31 @@
   justify-content: center;
 }
 
-.kimochi-settings-back-icon svg {
+.kanjo-settings-back-icon svg {
   width: 20px;
   height: 20px;
 }
 
 /* Speed options */
-.kimochi-settings-option {
+.kanjo-settings-option {
   display: flex;
   align-items: center;
   width: 100%;
   padding: 10px 16px;
   border: none;
   background: transparent;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   font-size: 14px;
   text-align: left;
   cursor: pointer;
-  transition: background var(--kimochi-transition-fast);
+  transition: background var(--kanjo-transition-fast);
 }
 
-.kimochi-settings-option:hover {
-  background: var(--kimochi-bg-hover);
+.kanjo-settings-option:hover {
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-settings-option-check {
+.kanjo-settings-option-check {
   width: 24px;
   height: 24px;
   margin-right: 12px;
@@ -544,141 +544,141 @@
   justify-content: center;
 }
 
-.kimochi-settings-option-check svg {
+.kanjo-settings-option-check svg {
   width: 18px;
   height: 18px;
-  color: var(--kimochi-primary);
+  color: var(--kanjo-primary);
 }
 
-.kimochi-settings-option.kimochi-active .kimochi-settings-option-check {
+.kanjo-settings-option.kanjo-active .kanjo-settings-option-check {
   opacity: 1;
 }
 
-.kimochi-settings-option.kimochi-active {
-  color: var(--kimochi-primary);
+.kanjo-settings-option.kanjo-active {
+  color: var(--kanjo-primary);
 }
 
 /* ============================================================================
    A/B Loop Control
    ============================================================================ */
 
-.kimochi-abloop-control {
+.kanjo-abloop-control {
   display: flex;
   align-items: center;
   gap: 2px;
   margin-right: 4px;
 }
 
-.kimochi-abloop-btn {
+.kanjo-abloop-btn {
   opacity: 0.7;
-  transition: opacity var(--kimochi-transition-fast),
-    background var(--kimochi-transition-fast),
-    color var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast),
+    background var(--kanjo-transition-fast),
+    color var(--kanjo-transition-fast);
 }
 
-.kimochi-abloop-btn:hover {
+.kanjo-abloop-btn:hover {
   opacity: 1;
 }
 
-.kimochi-abloop-btn.kimochi-active {
+.kanjo-abloop-btn.kanjo-active {
   opacity: 1;
-  background: var(--kimochi-primary);
+  background: var(--kanjo-primary);
   color: #fff;
 }
 
-.kimochi-abloop-btn.kimochi-active:hover {
-  background: var(--kimochi-primary-hover);
+.kanjo-abloop-btn.kanjo-active:hover {
+  background: var(--kanjo-primary-hover);
 }
 
-.kimochi-abloop-start,
-.kimochi-abloop-end {
+.kanjo-abloop-start,
+.kanjo-abloop-end {
   display: flex;
   align-items: center;
   gap: 0;
   width: auto;
   padding: 0 8px;
-  font-family: var(--kimochi-font-mono, 'SF Mono', 'Monaco', 'Consolas', monospace);
+  font-family: var(--kanjo-font-mono, 'SF Mono', 'Monaco', 'Consolas', monospace);
 }
 
-.kimochi-abloop-label {
+.kanjo-abloop-label {
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.kimochi-abloop-time {
+.kanjo-abloop-time {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 500;
   white-space: nowrap;
 }
 
-.kimochi-abloop-time:empty {
+.kanjo-abloop-time:empty {
   display: none;
 }
 
-.kimochi-abloop-clear {
+.kanjo-abloop-clear {
   opacity: 0.5;
 }
 
-.kimochi-abloop-clear:hover {
+.kanjo-abloop-clear:hover {
   opacity: 1;
 }
 
-.kimochi-abloop-toggle {
+.kanjo-abloop-toggle {
   opacity: 0.5;
 }
 
-.kimochi-abloop-toggle:not(:disabled) {
+.kanjo-abloop-toggle:not(:disabled) {
   opacity: 0.7;
 }
 
-.kimochi-abloop-toggle:not(:disabled):hover {
+.kanjo-abloop-toggle:not(:disabled):hover {
   opacity: 1;
 }
 
-.kimochi-abloop-toggle.kimochi-active {
+.kanjo-abloop-toggle.kanjo-active {
   opacity: 1;
-  background: var(--kimochi-primary);
+  background: var(--kanjo-primary);
   color: #fff;
 }
 
-.kimochi-abloop-toggle.kimochi-active:hover {
-  background: var(--kimochi-primary-hover);
+.kanjo-abloop-toggle.kanjo-active:hover {
+  background: var(--kanjo-primary-hover);
 }
 
-.kimochi-abloop-toggle:disabled {
+.kanjo-abloop-toggle:disabled {
   cursor: not-allowed;
 }
 
 /* Download Button */
-.kimochi-abloop-download {
+.kanjo-abloop-download {
   padding: 4px 8px;
 }
 
-.kimochi-abloop-download:not(:disabled) {
-  color: var(--kimochi-text);
+.kanjo-abloop-download:not(:disabled) {
+  color: var(--kanjo-text);
 }
 
-.kimochi-abloop-download:not(:disabled):hover {
-  background: var(--kimochi-bg-hover);
-  color: var(--kimochi-primary);
+.kanjo-abloop-download:not(:disabled):hover {
+  background: var(--kanjo-bg-hover);
+  color: var(--kanjo-primary);
 }
 
-.kimochi-abloop-download.kimochi-downloading {
-  color: var(--kimochi-primary);
+.kanjo-abloop-download.kanjo-downloading {
+  color: var(--kanjo-primary);
 }
 
-.kimochi-abloop-download.kimochi-downloading svg {
-  animation: kimochi-spin 1s linear infinite;
+.kanjo-abloop-download.kanjo-downloading svg {
+  animation: kanjo-spin 1s linear infinite;
 }
 
-.kimochi-abloop-download.kimochi-disabled {
+.kanjo-abloop-download.kanjo-disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-@keyframes kimochi-spin {
+@keyframes kanjo-spin {
   from {
     transform: rotate(0deg);
   }
@@ -688,7 +688,7 @@
 }
 
 /* Loop Region Highlight */
-.kimochi-loop-region {
+.kanjo-loop-region {
   position: absolute;
   top: 0;
   height: 100%;
@@ -696,19 +696,19 @@
   border-radius: 2px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast);
 }
 
-.kimochi-loop-region.kimochi-visible {
+.kanjo-loop-region.kanjo-visible {
   opacity: 1;
 }
 
-.kimochi-loop-region.kimochi-active {
+.kanjo-loop-region.kanjo-active {
   background: rgba(233, 69, 96, 0.35);
 }
 
 /* Loop Markers */
-.kimochi-loop-marker {
+.kanjo-loop-marker {
   position: absolute;
   top: 50%;
   width: 16px;
@@ -717,23 +717,23 @@
   cursor: ew-resize;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast);
   z-index: 5;
 }
 
-.kimochi-loop-marker.kimochi-visible {
+.kanjo-loop-marker.kanjo-visible {
   opacity: 1;
   pointer-events: auto;
 }
 
-.kimochi-loop-marker-handle {
+.kanjo-loop-marker-handle {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 16px;
   height: 20px;
-  background: var(--kimochi-primary);
+  background: var(--kanjo-primary);
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -741,24 +741,24 @@
   font-size: 10px;
   font-weight: 700;
   color: #fff;
-  box-shadow: var(--kimochi-shadow-sm);
-  transition: transform var(--kimochi-transition-fast),
-    background var(--kimochi-transition-fast);
+  box-shadow: var(--kanjo-shadow-sm);
+  transition: transform var(--kanjo-transition-fast),
+    background var(--kanjo-transition-fast);
 }
 
-.kimochi-loop-marker:hover .kimochi-loop-marker-handle {
+.kanjo-loop-marker:hover .kanjo-loop-marker-handle {
   transform: translate(-50%, -50%) scale(1.1);
-  background: var(--kimochi-primary-hover);
+  background: var(--kanjo-primary-hover);
 }
 
-.kimochi-loop-marker-start .kimochi-loop-marker-handle {
+.kanjo-loop-marker-start .kanjo-loop-marker-handle {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-.kimochi-loop-marker-end .kimochi-loop-marker-handle {
+.kanjo-loop-marker-end .kanjo-loop-marker-handle {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-top-right-radius: 3px;
@@ -769,85 +769,85 @@
    Zoom Mode for Fine-tuning Markers
    ============================================================================ */
 
-.kimochi-zoom-indicator {
+.kanjo-zoom-indicator {
   position: absolute;
   bottom: 100%;
   left: 0;
   right: 0;
   padding: 8px 12px;
-  background: var(--kimochi-bg);
+  background: var(--kanjo-bg);
   border-radius: 6px;
   margin-bottom: 8px;
   opacity: 0;
   visibility: hidden;
   transform: translateY(4px);
-  transition: opacity var(--kimochi-transition-fast),
-    transform var(--kimochi-transition-fast),
-    visibility var(--kimochi-transition-fast);
-  z-index: var(--kimochi-z-tooltip);
-  box-shadow: var(--kimochi-shadow);
-  border: 1px solid var(--kimochi-primary);
+  transition: opacity var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast);
+  z-index: var(--kanjo-z-tooltip);
+  box-shadow: var(--kanjo-shadow);
+  border: 1px solid var(--kanjo-primary);
 }
 
-.kimochi-zoom-indicator.kimochi-visible {
+.kanjo-zoom-indicator.kanjo-visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.kimochi-zoom-label {
+.kanjo-zoom-label {
   font-size: 11px;
   font-weight: 600;
-  color: var(--kimochi-primary);
+  color: var(--kanjo-primary);
   text-align: center;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.kimochi-zoom-range {
+.kanjo-zoom-range {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
-  color: var(--kimochi-text-secondary);
+  color: var(--kanjo-text-secondary);
 }
 
-.kimochi-zoom-time-center {
+.kanjo-zoom-time-center {
   font-size: 10px;
-  color: var(--kimochi-text-muted);
+  color: var(--kanjo-text-muted);
 }
 
 /* Zoomed progress bar styling */
-.kimochi-progress-container.kimochi-zoomed {
+.kanjo-progress-container.kanjo-zoomed {
   background: rgba(233, 69, 96, 0.15);
   border-radius: 4px;
   padding: 4px;
   margin: -4px;
 }
 
-.kimochi-progress-container.kimochi-zoomed .kimochi-progress-track {
+.kanjo-progress-container.kanjo-zoomed .kanjo-progress-track {
   height: 12px;
-  background: var(--kimochi-progress-bg);
+  background: var(--kanjo-progress-bg);
   border: 1px solid rgba(233, 69, 96, 0.5);
   border-radius: 4px;
 }
 
-.kimochi-progress-container.kimochi-zoomed .kimochi-loop-marker {
+.kanjo-progress-container.kanjo-zoomed .kanjo-loop-marker {
   height: 32px;
 }
 
-.kimochi-progress-container.kimochi-zoomed .kimochi-loop-marker-handle {
+.kanjo-progress-container.kanjo-zoomed .kanjo-loop-marker-handle {
   transform: translate(-50%, -50%) scale(1.3);
-  box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3), var(--kimochi-shadow);
+  box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3), var(--kanjo-shadow);
 }
 
-.kimochi-progress-container.kimochi-zoomed .kimochi-loop-region {
+.kanjo-progress-container.kanjo-zoomed .kanjo-loop-region {
   background: rgba(233, 69, 96, 0.4);
 }
 
-.kimochi-progress-container.kimochi-zoomed .kimochi-progress-scrubber {
+.kanjo-progress-container.kanjo-zoomed .kanjo-progress-scrubber {
   transform: translate(-50%, -50%) scale(0.8);
   opacity: 0.5;
 }
@@ -856,7 +856,7 @@
    Thumbnail Preview
    ============================================================================ */
 
-.kimochi-thumbnail-preview {
+.kanjo-thumbnail-preview {
   position: absolute;
   bottom: 100%;
   left: 0;
@@ -864,38 +864,38 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(8px);
-  transition: opacity var(--kimochi-transition-fast),
-    transform var(--kimochi-transition-fast),
-    visibility var(--kimochi-transition-fast);
-  z-index: var(--kimochi-z-tooltip);
+  transition: opacity var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast);
+  z-index: var(--kanjo-z-tooltip);
 }
 
-.kimochi-thumbnail-preview.kimochi-visible {
+.kanjo-thumbnail-preview.kanjo-visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.kimochi-thumbnail-image {
-  width: var(--kimochi-thumbnail-width);
-  height: var(--kimochi-thumbnail-height);
+.kanjo-thumbnail-image {
+  width: var(--kanjo-thumbnail-width);
+  height: var(--kanjo-thumbnail-height);
   background: #000;
-  border-radius: var(--kimochi-thumbnail-radius);
+  border-radius: var(--kanjo-thumbnail-radius);
   overflow: hidden;
-  box-shadow: var(--kimochi-shadow);
+  box-shadow: var(--kanjo-shadow);
 }
 
-.kimochi-thumbnail-image.kimochi-loading {
-  background: var(--kimochi-bg);
+.kanjo-thumbnail-image.kanjo-loading {
+  background: var(--kanjo-bg);
 }
 
-.kimochi-thumbnail-time {
+.kanjo-thumbnail-time {
   position: absolute;
   bottom: -24px;
   left: 50%;
   transform: translateX(-50%);
   padding: 4px 8px;
-  background: var(--kimochi-bg);
+  background: var(--kanjo-bg);
   border-radius: 4px;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
@@ -906,36 +906,36 @@
    Loading Indicator
    ============================================================================ */
 
-.kimochi-loading-indicator {
+.kanjo-loading-indicator {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--kimochi-transition-normal);
-  z-index: var(--kimochi-z-controls);
+  transition: opacity var(--kanjo-transition-normal);
+  z-index: var(--kanjo-z-controls);
 }
 
-.kimochi-controls-overlay.kimochi-loading .kimochi-loading-indicator {
+.kanjo-controls-overlay.kanjo-loading .kanjo-loading-indicator {
   opacity: 1;
 }
 
-.kimochi-controls-overlay.kimochi-loading .kimochi-center-play {
+.kanjo-controls-overlay.kanjo-loading .kanjo-center-play {
   opacity: 0;
   pointer-events: none;
 }
 
-.kimochi-spinner {
+.kanjo-spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid var(--kimochi-text-muted);
-  border-top-color: var(--kimochi-primary);
+  border: 3px solid var(--kanjo-text-muted);
+  border-top-color: var(--kanjo-primary);
   border-radius: 50%;
-  animation: kimochi-spin 0.8s linear infinite;
+  animation: kanjo-spin 0.8s linear infinite;
 }
 
-@keyframes kimochi-spin {
+@keyframes kanjo-spin {
   to {
     transform: rotate(360deg);
   }
@@ -945,11 +945,11 @@
    Utility Classes
    ============================================================================ */
 
-.kimochi-hidden {
+.kanjo-hidden {
   display: none !important;
 }
 
-.kimochi-sr-only {
+.kanjo-sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -965,25 +965,25 @@
    Fullscreen Adjustments
    ============================================================================ */
 
-.kimochi-player:fullscreen,
-.kimochi-player:-webkit-full-screen {
+.kanjo-player:fullscreen,
+.kanjo-player:-webkit-full-screen {
   width: 100vw;
   height: 100vh;
 }
 
-.kimochi-player:fullscreen .kimochi-controls-bottom,
-.kimochi-player:-webkit-full-screen .kimochi-controls-bottom {
+.kanjo-player:fullscreen .kanjo-controls-bottom,
+.kanjo-player:-webkit-full-screen .kanjo-controls-bottom {
   padding: 16px 24px;
 }
 
-.kimochi-player:fullscreen .kimochi-center-play-btn,
-.kimochi-player:-webkit-full-screen .kimochi-center-play-btn {
+.kanjo-player:fullscreen .kanjo-center-play-btn,
+.kanjo-player:-webkit-full-screen .kanjo-center-play-btn {
   width: 96px;
   height: 96px;
 }
 
-.kimochi-player:fullscreen .kimochi-center-play-btn svg,
-.kimochi-player:-webkit-full-screen .kimochi-center-play-btn svg {
+.kanjo-player:fullscreen .kanjo-center-play-btn svg,
+.kanjo-player:-webkit-full-screen .kanjo-center-play-btn svg {
   width: 48px;
   height: 48px;
 }
@@ -993,30 +993,30 @@
    ============================================================================ */
 
 @media (max-width: 480px) {
-  .kimochi-btn {
-    --kimochi-btn-size: 36px;
-    --kimochi-icon-size: 20px;
+  .kanjo-btn {
+    --kanjo-btn-size: 36px;
+    --kanjo-icon-size: 20px;
   }
 
-  .kimochi-time-display {
+  .kanjo-time-display {
     font-size: 12px;
     padding: 0 4px;
   }
 
-  .kimochi-volume-slider-container {
+  .kanjo-volume-slider-container {
     display: none;
   }
 
-  .kimochi-settings-menu {
-    --kimochi-menu-width: 240px;
+  .kanjo-settings-menu {
+    --kanjo-menu-width: 240px;
   }
 
-  .kimochi-center-play-btn {
+  .kanjo-center-play-btn {
     width: 56px;
     height: 56px;
   }
 
-  .kimochi-center-play-btn svg {
+  .kanjo-center-play-btn svg {
     width: 28px;
     height: 28px;
   }
@@ -1026,18 +1026,18 @@
    Download Overlay
    ============================================================================ */
 
-.kimochi-download-overlay {
+.kanjo-download-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   pointer-events: none;
-  z-index: var(--kimochi-z-menu);
+  z-index: var(--kanjo-z-menu);
 }
 
 /* Progress Indicator (top-right corner) */
-.kimochi-download-progress-container {
+.kanjo-download-progress-container {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -1048,98 +1048,98 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
-  transition: opacity var(--kimochi-transition-fast),
-    visibility var(--kimochi-transition-fast),
-    transform var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast);
   pointer-events: auto;
-  box-shadow: var(--kimochi-shadow);
+  box-shadow: var(--kanjo-shadow);
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
 
-.kimochi-download-progress-content {
+.kanjo-download-progress-content {
   flex: 1;
   min-width: 0;
 }
 
-.kimochi-download-progress-close {
+.kanjo-download-progress-close {
   flex-shrink: 0;
   width: 18px;
   height: 18px;
   padding: 0;
   border: none;
   background: transparent;
-  color: var(--kimochi-text-secondary);
+  color: var(--kanjo-text-secondary);
   cursor: pointer;
   opacity: 0.6;
-  transition: opacity var(--kimochi-transition-fast), color var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast), color var(--kanjo-transition-fast);
   margin-top: -2px;
 }
 
-.kimochi-download-progress-close:hover {
+.kanjo-download-progress-close:hover {
   opacity: 1;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
 }
 
-.kimochi-download-progress-close svg {
+.kanjo-download-progress-close svg {
   width: 100%;
   height: 100%;
 }
 
-.kimochi-download-progress-container.kimochi-visible {
+.kanjo-download-progress-container.kanjo-visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.kimochi-download-progress-container.kimochi-error {
+.kanjo-download-progress-container.kanjo-error {
   border: 1px solid #e74c3c;
 }
 
-.kimochi-download-progress-container.kimochi-error .kimochi-download-progress-text {
+.kanjo-download-progress-container.kanjo-error .kanjo-download-progress-text {
   color: #e74c3c;
 }
 
-.kimochi-download-progress-text {
+.kanjo-download-progress-text {
   font-size: 12px;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   margin-bottom: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.kimochi-download-progress-track {
+.kanjo-download-progress-track {
   height: 4px;
-  background: var(--kimochi-progress-bg);
+  background: var(--kanjo-progress-bg);
   border-radius: 2px;
   overflow: hidden;
 }
 
-.kimochi-download-progress-bar {
+.kanjo-download-progress-bar {
   height: 100%;
-  background: var(--kimochi-primary);
+  background: var(--kanjo-primary);
   border-radius: 2px;
   width: 0%;
   transition: width 0.2s ease;
 }
 
 /* Indeterminate progress animation - barber pole style */
-.kimochi-indeterminate .kimochi-download-progress-bar {
+.kanjo-indeterminate .kanjo-download-progress-bar {
   width: 100%;
   background: repeating-linear-gradient(
     -45deg,
-    var(--kimochi-primary),
-    var(--kimochi-primary) 10px,
+    var(--kanjo-primary),
+    var(--kanjo-primary) 10px,
     rgba(255, 255, 255, 0.2) 10px,
     rgba(255, 255, 255, 0.2) 20px
   );
   background-size: 200% 100%;
-  animation: kimochi-barber-pole 1s linear infinite;
+  animation: kanjo-barber-pole 1s linear infinite;
 }
 
-@keyframes kimochi-barber-pole {
+@keyframes kanjo-barber-pole {
   0% {
     background-position: 0 0;
   }
@@ -1149,7 +1149,7 @@
 }
 
 /* Dialog Overlay (center) */
-.kimochi-download-dialog-overlay {
+.kanjo-download-dialog-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -1161,105 +1161,105 @@
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--kimochi-transition-normal),
-    visibility var(--kimochi-transition-normal);
+  transition: opacity var(--kanjo-transition-normal),
+    visibility var(--kanjo-transition-normal);
   pointer-events: auto;
 }
 
-.kimochi-download-dialog-overlay.kimochi-visible {
+.kanjo-download-dialog-overlay.kanjo-visible {
   opacity: 1;
   visibility: visible;
 }
 
-.kimochi-download-dialog {
-  background: var(--kimochi-menu-bg);
+.kanjo-download-dialog {
+  background: var(--kanjo-menu-bg);
   border-radius: 12px;
   padding: 24px 32px;
   text-align: center;
   max-width: 320px;
-  box-shadow: var(--kimochi-shadow);
+  box-shadow: var(--kanjo-shadow);
   transform: scale(0.95);
-  transition: transform var(--kimochi-transition-normal);
+  transition: transform var(--kanjo-transition-normal);
 }
 
-.kimochi-download-dialog-overlay.kimochi-visible .kimochi-download-dialog {
+.kanjo-download-dialog-overlay.kanjo-visible .kanjo-download-dialog {
   transform: scale(1);
 }
 
-.kimochi-download-dialog-icon {
+.kanjo-download-dialog-icon {
   width: 48px;
   height: 48px;
   margin: 0 auto 16px;
-  color: var(--kimochi-primary);
+  color: var(--kanjo-primary);
 }
 
-.kimochi-download-dialog-icon svg {
+.kanjo-download-dialog-icon svg {
   width: 100%;
   height: 100%;
 }
 
-.kimochi-download-dialog-title {
+.kanjo-download-dialog-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   margin-bottom: 8px;
 }
 
-.kimochi-download-dialog-message {
+.kanjo-download-dialog-message {
   font-size: 14px;
-  color: var(--kimochi-text-secondary);
+  color: var(--kanjo-text-secondary);
   margin-bottom: 20px;
   line-height: 1.5;
 }
 
-.kimochi-download-dialog-buttons {
+.kanjo-download-dialog-buttons {
   display: flex;
   gap: 12px;
   justify-content: center;
 }
 
-.kimochi-download-dialog-btn {
+.kanjo-download-dialog-btn {
   padding: 10px 24px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   border: none;
-  transition: background var(--kimochi-transition-fast),
-    transform var(--kimochi-transition-fast);
+  transition: background var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast);
 }
 
-.kimochi-download-dialog-btn:hover {
+.kanjo-download-dialog-btn:hover {
   transform: translateY(-1px);
 }
 
-.kimochi-download-dialog-btn:active {
+.kanjo-download-dialog-btn:active {
   transform: translateY(0);
 }
 
-.kimochi-download-dialog-btn-cancel {
-  background: var(--kimochi-bg-hover);
-  color: var(--kimochi-text);
+.kanjo-download-dialog-btn-cancel {
+  background: var(--kanjo-bg-hover);
+  color: var(--kanjo-text);
 }
 
-.kimochi-download-dialog-btn-cancel:hover {
-  background: var(--kimochi-bg-active);
+.kanjo-download-dialog-btn-cancel:hover {
+  background: var(--kanjo-bg-active);
 }
 
-.kimochi-download-dialog-btn-download {
-  background: var(--kimochi-primary);
+.kanjo-download-dialog-btn-download {
+  background: var(--kanjo-primary);
   color: #fff;
 }
 
-.kimochi-download-dialog-btn-download:hover {
-  background: var(--kimochi-primary-hover);
+.kanjo-download-dialog-btn-download:hover {
+  background: var(--kanjo-primary-hover);
 }
 
 /* ============================================================================
    Video Adjustments Panel
    ============================================================================ */
 
-.kimochi-adjustments-panel {
+.kanjo-adjustments-panel {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -1270,33 +1270,33 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
-  transition: opacity var(--kimochi-transition-fast),
-    visibility var(--kimochi-transition-fast),
-    transform var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast);
   pointer-events: auto;
-  box-shadow: var(--kimochi-shadow);
-  z-index: var(--kimochi-z-menu);
+  box-shadow: var(--kanjo-shadow);
+  z-index: var(--kanjo-z-menu);
 }
 
-.kimochi-adjustments-panel.kimochi-visible {
+.kanjo-adjustments-panel.kanjo-visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.kimochi-adjustments-header {
+.kanjo-adjustments-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--kimochi-menu-border);
+  border-bottom: 1px solid var(--kanjo-menu-border);
   font-size: 13px;
   font-weight: 600;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
 }
 
-.kimochi-adjustments-close {
+.kanjo-adjustments-close {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1305,78 +1305,78 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: var(--kimochi-text-secondary);
+  color: var(--kanjo-text-secondary);
   cursor: pointer;
   border-radius: 4px;
-  transition: color var(--kimochi-transition-fast),
-    background var(--kimochi-transition-fast);
+  transition: color var(--kanjo-transition-fast),
+    background var(--kanjo-transition-fast);
 }
 
-.kimochi-adjustments-close:hover {
-  color: var(--kimochi-text);
-  background: var(--kimochi-bg-hover);
+.kanjo-adjustments-close:hover {
+  color: var(--kanjo-text);
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-adjustments-close svg {
+.kanjo-adjustments-close svg {
   width: 14px;
   height: 14px;
 }
 
-.kimochi-adjustments-sliders {
+.kanjo-adjustments-sliders {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.kimochi-adjustments-row {
+.kanjo-adjustments-row {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.kimochi-adjustments-label {
+.kanjo-adjustments-label {
   flex-shrink: 0;
   width: 75px;
   font-size: 12px;
-  color: var(--kimochi-text-secondary);
+  color: var(--kanjo-text-secondary);
 }
 
-.kimochi-adjustments-slider {
+.kanjo-adjustments-slider {
   flex: 1;
   height: 4px;
   -webkit-appearance: none;
   appearance: none;
-  background: var(--kimochi-progress-bg);
+  background: var(--kanjo-progress-bg);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
 }
 
-.kimochi-adjustments-slider::-webkit-slider-thumb {
+.kanjo-adjustments-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 14px;
   height: 14px;
-  background: var(--kimochi-primary);
+  background: var(--kanjo-primary);
   border-radius: 50%;
   cursor: pointer;
-  transition: transform var(--kimochi-transition-fast);
+  transition: transform var(--kanjo-transition-fast);
 }
 
-.kimochi-adjustments-slider::-webkit-slider-thumb:hover {
+.kanjo-adjustments-slider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
 }
 
-.kimochi-adjustments-slider::-moz-range-thumb {
+.kanjo-adjustments-slider::-moz-range-thumb {
   width: 14px;
   height: 14px;
-  background: var(--kimochi-primary);
+  background: var(--kanjo-primary);
   border: none;
   border-radius: 50%;
   cursor: pointer;
 }
 
-.kimochi-adjustments-reset {
+.kanjo-adjustments-reset {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1386,135 +1386,135 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: var(--kimochi-text-muted);
+  color: var(--kanjo-text-muted);
   cursor: pointer;
   border-radius: 4px;
-  transition: color var(--kimochi-transition-fast),
-    background var(--kimochi-transition-fast);
+  transition: color var(--kanjo-transition-fast),
+    background var(--kanjo-transition-fast);
 }
 
-.kimochi-adjustments-reset:hover {
-  color: var(--kimochi-text);
-  background: var(--kimochi-bg-hover);
+.kanjo-adjustments-reset:hover {
+  color: var(--kanjo-text);
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-adjustments-reset svg {
+.kanjo-adjustments-reset svg {
   width: 14px;
   height: 14px;
 }
 
-.kimochi-adjustments-reset-all {
+.kanjo-adjustments-reset-all {
   display: block;
   width: 100%;
   margin-top: 12px;
   padding: 8px 12px;
-  border: 1px solid var(--kimochi-menu-border);
+  border: 1px solid var(--kanjo-menu-border);
   background: transparent;
-  color: var(--kimochi-text-secondary);
+  color: var(--kanjo-text-secondary);
   font-size: 12px;
   border-radius: 4px;
   cursor: pointer;
-  transition: color var(--kimochi-transition-fast),
-    border-color var(--kimochi-transition-fast),
-    background var(--kimochi-transition-fast);
+  transition: color var(--kanjo-transition-fast),
+    border-color var(--kanjo-transition-fast),
+    background var(--kanjo-transition-fast);
 }
 
-.kimochi-adjustments-reset-all:hover {
-  color: var(--kimochi-text);
-  border-color: var(--kimochi-primary);
-  background: var(--kimochi-bg-hover);
+.kanjo-adjustments-reset-all:hover {
+  color: var(--kanjo-text);
+  border-color: var(--kanjo-primary);
+  background: var(--kanjo-bg-hover);
 }
 
 /* ============================================================================
    Custom Button Area
    ============================================================================ */
 
-.kimochi-custom-button-area {
+.kanjo-custom-button-area {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  padding: 8px var(--kimochi-controls-padding);
+  padding: 8px var(--kanjo-controls-padding);
   min-height: 40px;
   position: relative;
 }
 
-.kimochi-custom-btn {
+.kanjo-custom-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: var(--kimochi-btn-size);
+  height: var(--kanjo-btn-size);
   padding: 0 12px;
-  background: var(--kimochi-bg-hover);
+  background: var(--kanjo-bg-hover);
   border: none;
   border-radius: 4px;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   font-size: 0.875rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: background var(--kimochi-transition-fast);
+  transition: background var(--kanjo-transition-fast);
   width: auto;
 }
 
-.kimochi-custom-btn:hover {
-  background: var(--kimochi-bg-active);
+.kanjo-custom-btn:hover {
+  background: var(--kanjo-bg-active);
 }
 
-.kimochi-custom-btn i {
-  font-size: var(--kimochi-icon-size);
+.kanjo-custom-btn i {
+  font-size: var(--kanjo-icon-size);
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.kimochi-custom-btn-text {
+.kanjo-custom-btn-text {
   font-weight: 500;
 }
 
 /* Overflow menu button */
-.kimochi-custom-overflow-btn {
+.kanjo-custom-overflow-btn {
   display: none;
-  width: var(--kimochi-btn-size);
+  width: var(--kanjo-btn-size);
   padding: 0;
   background: transparent;
 }
 
-.kimochi-custom-overflow-btn:hover {
-  background: var(--kimochi-bg-hover);
+.kanjo-custom-overflow-btn:hover {
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-custom-overflow-btn.kimochi-active {
-  background: var(--kimochi-bg-active);
+.kanjo-custom-overflow-btn.kanjo-active {
+  background: var(--kanjo-bg-active);
 }
 
 /* Overflow dropdown menu */
-.kimochi-custom-overflow-menu {
+.kanjo-custom-overflow-menu {
   position: absolute;
   bottom: calc(100% + 4px);
-  right: var(--kimochi-controls-padding);
-  background: var(--kimochi-menu-bg);
-  border: 1px solid var(--kimochi-menu-border);
-  border-radius: var(--kimochi-menu-radius);
+  right: var(--kanjo-controls-padding);
+  background: var(--kanjo-menu-bg);
+  border: 1px solid var(--kanjo-menu-border);
+  border-radius: var(--kanjo-menu-radius);
   padding: 8px 0;
   min-width: 160px;
-  box-shadow: var(--kimochi-shadow);
-  z-index: var(--kimochi-z-menu);
+  box-shadow: var(--kanjo-shadow);
+  z-index: var(--kanjo-z-menu);
   opacity: 0;
   visibility: hidden;
   transform: translateY(8px);
-  transition: opacity var(--kimochi-transition-fast),
-    transform var(--kimochi-transition-fast),
-    visibility var(--kimochi-transition-fast);
+  transition: opacity var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast);
 }
 
-.kimochi-custom-overflow-menu.kimochi-visible {
+.kanjo-custom-overflow-menu.kanjo-visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.kimochi-custom-overflow-item {
+.kanjo-custom-overflow-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1522,18 +1522,18 @@
   padding: 8px 16px;
   background: none;
   border: none;
-  color: var(--kimochi-text);
+  color: var(--kanjo-text);
   font-size: 0.875rem;
   text-align: left;
   cursor: pointer;
-  transition: background var(--kimochi-transition-fast);
+  transition: background var(--kanjo-transition-fast);
 }
 
-.kimochi-custom-overflow-item:hover {
-  background: var(--kimochi-bg-hover);
+.kanjo-custom-overflow-item:hover {
+  background: var(--kanjo-bg-hover);
 }
 
-.kimochi-custom-overflow-item i {
-  font-size: var(--kimochi-icon-size);
+.kanjo-custom-overflow-item i {
+  font-size: var(--kanjo-icon-size);
   line-height: 1;
 }

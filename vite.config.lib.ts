@@ -18,9 +18,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/lib/index.ts'),
-      name: 'KimochiPlayer',
+      name: 'KanjoPlayer',
       formats: ['es', 'umd'],
-      fileName: (format) => `kimochi-player.${format}.js`,
+      fileName: (format) => `kanjo-player.${format}.js`,
     },
     rollupOptions: {
       // Externalize peer dependencies
@@ -35,7 +35,7 @@ export default defineConfig({
         // Preserve CSS imports
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'style.css') {
-            return 'kimochi-player.css';
+            return 'kanjo-player.css';
           }
           return assetInfo.name || 'asset';
         },

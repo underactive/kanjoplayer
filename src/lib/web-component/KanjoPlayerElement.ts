@@ -1,17 +1,17 @@
 /**
- * KimochiPlayer Web Component
- * <kimochi-player src="video.mp4" controls></kimochi-player>
+ * KanjoPlayer Web Component
+ * <kanjo-player src="video.mp4" controls></kanjo-player>
  */
 
 /// <reference path="../vite-env.d.ts" />
 
-import { KimochiPlayer } from '../core/KimochiPlayer';
-import type { KimochiPlayerOptions, KimochiPlayerAPI } from '../core/types';
+import { KanjoPlayer } from '../core/KanjoPlayer';
+import type { KanjoPlayerOptions, KanjoPlayerAPI } from '../core/types';
 
 // Import styles - will be inlined by bundler
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - CSS imports handled by bundler
-import styles from '../styles/kimochi-player.css?inline';
+import styles from '../styles/kanjo-player.css?inline';
 
 const OBSERVED_ATTRIBUTES = [
   'src',
@@ -28,10 +28,10 @@ const OBSERVED_ATTRIBUTES = [
 
 type ObservedAttribute = (typeof OBSERVED_ATTRIBUTES)[number];
 
-export class KimochiPlayerElement extends HTMLElement {
+export class KanjoPlayerElement extends HTMLElement {
   static observedAttributes = OBSERVED_ATTRIBUTES;
 
-  private player: KimochiPlayer | null = null;
+  private player: KanjoPlayer | null = null;
   private container: HTMLDivElement | null = null;
   private styleElement: HTMLStyleElement | null = null;
 
@@ -111,7 +111,7 @@ export class KimochiPlayerElement extends HTMLElement {
 
     // Create container
     this.container = document.createElement('div');
-    this.container.className = 'kimochi-player-wrapper';
+    this.container.className = 'kanjo-player-wrapper';
     this.container.style.cssText = 'width: 100%; height: 100%;';
     this.shadowRoot!.appendChild(this.container);
 
@@ -119,7 +119,7 @@ export class KimochiPlayerElement extends HTMLElement {
     const options = this.getOptionsFromAttributes();
 
     // Create player
-    this.player = new KimochiPlayer({
+    this.player = new KanjoPlayer({
       ...options,
       container: this.container,
     });
@@ -166,8 +166,8 @@ export class KimochiPlayerElement extends HTMLElement {
     }
   }
 
-  private getOptionsFromAttributes(): Partial<KimochiPlayerOptions> {
-    const options: Partial<KimochiPlayerOptions> = {};
+  private getOptionsFromAttributes(): Partial<KanjoPlayerOptions> {
+    const options: Partial<KanjoPlayerOptions> = {};
 
     // Source
     const src = this.getAttribute('src');
@@ -245,7 +245,7 @@ export class KimochiPlayerElement extends HTMLElement {
   /**
    * Get the underlying player instance
    */
-  getPlayer(): KimochiPlayerAPI | null {
+  getPlayer(): KanjoPlayerAPI | null {
     return this.player;
   }
 
@@ -365,13 +365,13 @@ export class KimochiPlayerElement extends HTMLElement {
 }
 
 // Register the custom element
-if (typeof customElements !== 'undefined' && !customElements.get('kimochi-player')) {
-  customElements.define('kimochi-player', KimochiPlayerElement);
+if (typeof customElements !== 'undefined' && !customElements.get('kanjo-player')) {
+  customElements.define('kanjo-player', KanjoPlayerElement);
 }
 
 // Export for manual registration
-export function registerKimochiPlayerElement(tagName = 'kimochi-player'): void {
+export function registerKanjoPlayerElement(tagName = 'kanjo-player'): void {
   if (typeof customElements !== 'undefined' && !customElements.get(tagName)) {
-    customElements.define(tagName, KimochiPlayerElement);
+    customElements.define(tagName, KanjoPlayerElement);
   }
 }

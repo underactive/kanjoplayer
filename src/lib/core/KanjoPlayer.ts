@@ -1,28 +1,28 @@
 /**
- * KimochiPlayer - Main player engine
+ * KanjoPlayer - Main player engine
  */
 
 import { EventEmitter } from './EventEmitter';
 import { MediaController } from './MediaController';
 import { StateManager } from './StateManager';
 import type {
-  KimochiPlayerOptions,
-  KimochiPlayerState,
-  KimochiPlayerEvents,
-  KimochiPlayerAPI,
-  KimochiPlugin,
+  KanjoPlayerOptions,
+  KanjoPlayerState,
+  KanjoPlayerEvents,
+  KanjoPlayerAPI,
+  KanjoPlugin,
   ToolbarButtonConfig,
   MenuItemConfig,
   ThumbnailData,
 } from './types';
 
-export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements KimochiPlayerAPI {
+export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements KanjoPlayerAPI {
   private container: HTMLElement;
   private video: HTMLVideoElement;
   private mediaController: MediaController;
   private stateManager: StateManager;
-  private plugins: Map<string, KimochiPlugin> = new Map();
-  private options: Required<KimochiPlayerOptions>;
+  private plugins: Map<string, KanjoPlugin> = new Map();
+  private options: Required<KanjoPlayerOptions>;
   private controlsOverlay: HTMLElement | null = null;
   private controlsTimeout: ReturnType<typeof setTimeout> | null = null;
   private isDestroyed = false;
@@ -34,7 +34,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   // Thumbnail manager (lazy loaded)
   private thumbnailManager: unknown = null;
 
-  constructor(options: KimochiPlayerOptions) {
+  constructor(options: KanjoPlayerOptions) {
     super();
 
     // Merge with defaults
@@ -42,9 +42,9 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
 
     // Get or create container
     this.container = this.resolveContainer(options.container);
-    this.container.classList.add('kimochi-player');
+    this.container.classList.add('kanjo-player');
     if (this.options.theme) {
-      this.container.classList.add(`kimochi-theme-${this.options.theme}`);
+      this.container.classList.add(`kanjo-theme-${this.options.theme}`);
     }
     if (this.options.className) {
       this.container.classList.add(this.options.className);
@@ -91,8 +91,8 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   // Initialization Helpers
   // ============================================================================
 
-  private mergeOptions(options: KimochiPlayerOptions): Required<KimochiPlayerOptions> {
-    const defaults: Omit<Required<KimochiPlayerOptions>, 'container'> = {
+  private mergeOptions(options: KanjoPlayerOptions): Required<KanjoPlayerOptions> {
+    const defaults: Omit<Required<KanjoPlayerOptions>, 'container'> = {
       src: '',
       sourceType: 'mp4',
       autoplay: false,
@@ -118,7 +118,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
       },
       watermark: {
         enabled: true,
-        text: 'Downloaded from KimochiPlayer PoC',
+        text: 'Downloaded from KanjoPlayer PoC',
         fontSize: 18,
         color: 'white',
         opacity: 0.5,
@@ -155,7 +155,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
         ...defaults.customButtons,
         ...options.customButtons,
       },
-    } as Required<KimochiPlayerOptions>;
+    } as Required<KanjoPlayerOptions>;
   }
 
   private resolveContainer(container: HTMLElement | string): HTMLElement {
@@ -171,7 +171,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
 
   private createVideoElement(): HTMLVideoElement {
     const video = document.createElement('video');
-    video.className = 'kimochi-video';
+    video.className = 'kanjo-video';
     video.playsInline = true;
     video.preload = this.options.preload;
     // Enable CORS for cross-origin HLS streams
@@ -197,7 +197,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
 
   private bindMediaEvents(): void {
     // Forward media controller events
-    const forwardEvents: (keyof KimochiPlayerEvents)[] = [
+    const forwardEvents: (keyof KanjoPlayerEvents)[] = [
       'play', 'pause', 'ended', 'timeupdate', 'seeking', 'seeked',
       'ratechange', 'loadstart', 'loadedmetadata', 'loadeddata',
       'canplay', 'canplaythrough', 'waiting', 'playing', 'progress',
@@ -206,7 +206,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
 
     forwardEvents.forEach((event) => {
       this.mediaController.on(event as keyof typeof this.mediaController extends EventEmitter<infer E> ? keyof E : never, (data: unknown) => {
-        this.emit(event, data as KimochiPlayerEvents[typeof event]);
+        this.emit(event, data as KanjoPlayerEvents[typeof event]);
       });
     });
   }
@@ -327,7 +327,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Playback Control (KimochiPlayerAPI)
+  // Playback Control (KanjoPlayerAPI)
   // ============================================================================
 
   async play(): Promise<void> {
@@ -359,7 +359,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Volume Control (KimochiPlayerAPI)
+  // Volume Control (KanjoPlayerAPI)
   // ============================================================================
 
   setVolume(volume: number): void {
@@ -383,7 +383,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Playback Rate (KimochiPlayerAPI)
+  // Playback Rate (KanjoPlayerAPI)
   // ============================================================================
 
   setPlaybackRate(rate: number): void {
@@ -395,7 +395,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Fullscreen (KimochiPlayerAPI)
+  // Fullscreen (KanjoPlayerAPI)
   // ============================================================================
 
   async enterFullscreen(): Promise<void> {
@@ -431,7 +431,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Picture-in-Picture (KimochiPlayerAPI)
+  // Picture-in-Picture (KanjoPlayerAPI)
   // ============================================================================
 
   async enterPiP(): Promise<void> {
@@ -447,7 +447,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Source (KimochiPlayerAPI)
+  // Source (KanjoPlayerAPI)
   // ============================================================================
 
   setSrc(src: string, type?: 'mp4' | 'webm' | 'hls'): void {
@@ -479,10 +479,10 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // State (KimochiPlayerAPI)
+  // State (KanjoPlayerAPI)
   // ============================================================================
 
-  getState(): KimochiPlayerState {
+  getState(): KanjoPlayerState {
     return this.stateManager.getState();
   }
 
@@ -507,7 +507,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // UI Customization (KimochiPlayerAPI)
+  // UI Customization (KanjoPlayerAPI)
   // ============================================================================
 
   addToolbarButton(config: ToolbarButtonConfig): void {
@@ -540,10 +540,10 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Plugins (KimochiPlayerAPI)
+  // Plugins (KanjoPlayerAPI)
   // ============================================================================
 
-  async use(plugin: KimochiPlugin): Promise<void> {
+  async use(plugin: KanjoPlugin): Promise<void> {
     if (this.plugins.has(plugin.name)) {
       console.warn(`Plugin "${plugin.name}" is already installed`);
       return;
@@ -568,12 +568,12 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
     }
   }
 
-  getPlugin<T extends KimochiPlugin>(name: string): T | undefined {
+  getPlugin<T extends KanjoPlugin>(name: string): T | undefined {
     return this.plugins.get(name) as T | undefined;
   }
 
   // ============================================================================
-  // Thumbnails (KimochiPlayerAPI)
+  // Thumbnails (KanjoPlayerAPI)
   // ============================================================================
 
   async getThumbnail(time: number): Promise<ThumbnailData | null> {
@@ -591,7 +591,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
   }
 
   // ============================================================================
-  // Internal Access (KimochiPlayerAPI)
+  // Internal Access (KanjoPlayerAPI)
   // ============================================================================
 
   getVideoElement(): HTMLVideoElement {
@@ -642,7 +642,7 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
 
     // Clear container
     this.container.innerHTML = '';
-    this.container.classList.remove('kimochi-player');
+    this.container.classList.remove('kanjo-player');
 
     // Clear event listeners
     this.removeAllListeners();

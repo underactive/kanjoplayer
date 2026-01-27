@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-KimochiPlayer is a framework-agnostic video player library built with TypeScript. It supports HTML5 video, HLS streaming (via hls.js plugin), WebAssembly-powered thumbnail generation, A/B loop controls, and video adjustments. The library can be used as an ES module, UMD bundle, Web Component, or Vue 3 component.
+KanjoPlayer is a framework-agnostic video player library built with TypeScript. It supports HTML5 video, HLS streaming (via hls.js plugin), WebAssembly-powered thumbnail generation, A/B loop controls, and video adjustments. The library can be used as an ES module, UMD bundle, Web Component, or Vue 3 component.
 
 ## Commands
 
@@ -25,7 +25,7 @@ npm run typecheck
 ## Architecture
 
 ### Core Layer (`src/lib/core/`)
-- **KimochiPlayer.ts**: Main orchestrator that wires together state, media, plugins, and UI
+- **KanjoPlayer.ts**: Main orchestrator that wires together state, media, plugins, and UI
 - **StateManager.ts**: Reactive state with batched updates and subscriptions
 - **MediaController.ts**: Wrapper around HTMLVideoElement with unified API
 - **EventEmitter.ts**: Type-safe event system for player events
@@ -46,14 +46,14 @@ The ThumbnailManager coordinates strategies and uses LRU caching (ThumbnailCache
 
 ### Plugin System (`src/lib/plugins/`)
 - **PluginManager.ts**: Manages plugin lifecycle (install/destroy)
-- **types.ts**: `KimochiPlugin` interface and `BasePlugin` class
+- **types.ts**: `KanjoPlugin` interface and `BasePlugin` class
 - **built-in/HlsPlugin.ts**: HLS.js integration
 - **built-in/KeyboardPlugin.ts**: Keyboard shortcuts
 
 ### Delivery Formats
 - **ES/UMD Library**: `src/lib/index.ts` exports public API
-- **Web Component**: `src/lib/web-component/KimochiPlayerElement.ts` (`<kimochi-player>`)
-- **Vue Wrapper**: `src/vue/KimochiPlayerVue.vue`
+- **Web Component**: `src/lib/web-component/KanjoPlayerElement.ts` (`<kanjo-player>`)
+- **Vue Wrapper**: `src/vue/KanjoPlayerVue.vue`
 
 ## Key Patterns
 
@@ -61,7 +61,7 @@ The ThumbnailManager coordinates strategies and uses LRU caching (ThumbnailCache
 - UI controls receive player instance and subscribe to state changes
 - Plugins implement `install(player)` and `destroy()` lifecycle methods
 - Thumbnail extraction uses strategy pattern with automatic fallback
-- CSS variables enable theming (`--kimochi-*` custom properties)
+- CSS variables enable theming (`--kanjo-*` custom properties)
 
 ## Build Configuration
 

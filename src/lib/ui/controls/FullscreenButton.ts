@@ -2,14 +2,14 @@
  * Fullscreen toggle button
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import { UIBuilder } from '../UIBuilder';
 
 export class FullscreenButton {
   private element: HTMLButtonElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KanjoPlayer) {
     this.player = player;
     this.element = this.createButton();
     this.bindEvents();
@@ -17,7 +17,7 @@ export class FullscreenButton {
 
   private createButton(): HTMLButtonElement {
     return UIBuilder.button({
-      className: 'kimochi-fullscreen-btn',
+      className: 'kanjo-fullscreen-btn',
       icon: UIBuilder.icons.fullscreen,
       tooltip: 'Fullscreen (F)',
       onClick: () => this.player.toggleFullscreen(),

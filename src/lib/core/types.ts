@@ -1,5 +1,5 @@
 /**
- * Core types for KimochiPlayer
+ * Core types for KanjoPlayer
  */
 
 // ============================================================================
@@ -89,7 +89,7 @@ export interface WatermarkConfig {
   padding?: number;
 }
 
-export interface KimochiPlayerOptions {
+export interface KanjoPlayerOptions {
   /** Container element or selector */
   container: HTMLElement | string;
   /** Video source URL */
@@ -121,7 +121,7 @@ export interface KimochiPlayerOptions {
   /** Custom buttons configuration */
   customButtons?: CustomButtonsConfig;
   /** Plugins to load */
-  plugins?: KimochiPlugin[];
+  plugins?: KanjoPlugin[];
   /** Custom CSS class for container */
   className?: string;
   /** Keyboard shortcuts enabled */
@@ -136,7 +136,7 @@ export interface KimochiPlayerOptions {
 // Player State
 // ============================================================================
 
-export interface KimochiPlayerState {
+export interface KanjoPlayerState {
   /** Current playback time in seconds */
   currentTime: number;
   /** Total duration in seconds */
@@ -190,7 +190,7 @@ export interface TimeRangeInfo {
 // Events
 // ============================================================================
 
-export interface KimochiPlayerEvents {
+export interface KanjoPlayerEvents {
   // Playback events
   play: void;
   pause: void;
@@ -214,7 +214,7 @@ export interface KimochiPlayerEvents {
   volumechange: { volume: number; muted: boolean };
 
   // State events
-  statechange: KimochiPlayerState;
+  statechange: KanjoPlayerState;
   fullscreenchange: { isFullscreen: boolean };
   enterpictureinpicture: void;
   leavepictureinpicture: void;
@@ -263,13 +263,13 @@ export interface HlsLevel {
 // Plugin System
 // ============================================================================
 
-export interface KimochiPlugin {
+export interface KanjoPlugin {
   /** Unique plugin name */
   name: string;
   /** Plugin version */
   version?: string;
   /** Install plugin (called when player initializes) */
-  install(player: KimochiPlayerAPI): void | Promise<void>;
+  install(player: KanjoPlayerAPI): void | Promise<void>;
   /** Cleanup plugin (called when player destroys) */
   destroy?(): void;
   /** UI extensions */
@@ -319,7 +319,7 @@ export interface MenuItemConfig {
 // Public API Interface
 // ============================================================================
 
-export interface KimochiPlayerAPI {
+export interface KanjoPlayerAPI {
   // Playback control
   play(): Promise<void>;
   pause(): void;
@@ -355,7 +355,7 @@ export interface KimochiPlayerAPI {
   getSrc(): string;
 
   // State
-  getState(): KimochiPlayerState;
+  getState(): KanjoPlayerState;
   isPlaying(): boolean;
   isPaused(): boolean;
   isEnded(): boolean;
@@ -365,17 +365,17 @@ export interface KimochiPlayerAPI {
   getDuration(): number;
 
   // Events
-  on<K extends keyof KimochiPlayerEvents>(
+  on<K extends keyof KanjoPlayerEvents>(
     event: K,
-    handler: (data: KimochiPlayerEvents[K]) => void
+    handler: (data: KanjoPlayerEvents[K]) => void
   ): void;
-  off<K extends keyof KimochiPlayerEvents>(
+  off<K extends keyof KanjoPlayerEvents>(
     event: K,
-    handler: (data: KimochiPlayerEvents[K]) => void
+    handler: (data: KanjoPlayerEvents[K]) => void
   ): void;
-  once<K extends keyof KimochiPlayerEvents>(
+  once<K extends keyof KanjoPlayerEvents>(
     event: K,
-    handler: (data: KimochiPlayerEvents[K]) => void
+    handler: (data: KanjoPlayerEvents[K]) => void
   ): void;
 
   // UI customization
@@ -385,8 +385,8 @@ export interface KimochiPlayerAPI {
   removeMenuItem(id: string): void;
 
   // Plugins
-  use(plugin: KimochiPlugin): Promise<void>;
-  getPlugin<T extends KimochiPlugin>(name: string): T | undefined;
+  use(plugin: KanjoPlugin): Promise<void>;
+  getPlugin<T extends KanjoPlugin>(name: string): T | undefined;
 
   // Thumbnails
   getThumbnail(time: number): Promise<ThumbnailData | null>;
@@ -424,10 +424,10 @@ export interface ThumbnailData {
 export type EventHandler<T> = (data: T) => void;
 
 export interface StateSubscriber {
-  (state: KimochiPlayerState): void;
+  (state: KanjoPlayerState): void;
 }
 
-export const DEFAULT_OPTIONS: Partial<KimochiPlayerOptions> = {
+export const DEFAULT_OPTIONS: Partial<KanjoPlayerOptions> = {
   autoplay: false,
   muted: false,
   controls: true,
@@ -453,7 +453,7 @@ export const DEFAULT_OPTIONS: Partial<KimochiPlayerOptions> = {
   },
   watermark: {
     enabled: true,
-    text: 'Downloaded from KimochiPlayer PoC',
+    text: 'Downloaded from KanjoPlayer PoC',
     fontSize: 18,
     color: 'white',
     opacity: 0.5,

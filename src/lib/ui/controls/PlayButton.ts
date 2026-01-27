@@ -2,14 +2,14 @@
  * Play/Pause button component
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import { UIBuilder } from '../UIBuilder';
 
 export class PlayButton {
   private element: HTMLButtonElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KanjoPlayer) {
     this.player = player;
     this.element = this.createButton();
     this.bindEvents();
@@ -17,7 +17,7 @@ export class PlayButton {
 
   private createButton(): HTMLButtonElement {
     const btn = UIBuilder.button({
-      className: 'kimochi-play-btn',
+      className: 'kanjo-play-btn',
       icon: UIBuilder.icons.play,
       tooltip: 'Play (Space)',
       onClick: () => this.player.togglePlay(),
@@ -45,9 +45,9 @@ export class PlayButton {
 
 export class CenterPlayButton {
   private element: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KanjoPlayer) {
     this.player = player;
     this.element = this.createElement();
     this.bindEvents();
@@ -55,11 +55,11 @@ export class CenterPlayButton {
 
   private createElement(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-center-play',
+      className: 'kanjo-center-play',
       children: [
         {
           tag: 'button',
-          className: 'kimochi-center-play-btn',
+          className: 'kanjo-center-play-btn',
           html: UIBuilder.icons.play,
           attrs: {
             type: 'button',
@@ -78,26 +78,26 @@ export class CenterPlayButton {
   }
 
   private bindEvents(): void {
-    const btn = this.element.querySelector('.kimochi-center-play-btn')!;
+    const btn = this.element.querySelector('.kanjo-center-play-btn')!;
 
     this.player.on('play', () => {
       btn.innerHTML = UIBuilder.icons.pause;
-      this.element.classList.add('kimochi-hidden');
+      this.element.classList.add('kanjo-hidden');
     });
 
     this.player.on('pause', () => {
       btn.innerHTML = UIBuilder.icons.play;
-      this.element.classList.remove('kimochi-hidden');
+      this.element.classList.remove('kanjo-hidden');
     });
 
     this.player.on('ended', () => {
       btn.innerHTML = UIBuilder.icons.replay;
-      this.element.classList.remove('kimochi-hidden');
+      this.element.classList.remove('kanjo-hidden');
     });
 
     this.player.on('sourcechange', () => {
       btn.innerHTML = UIBuilder.icons.play;
-      this.element.classList.remove('kimochi-hidden');
+      this.element.classList.remove('kanjo-hidden');
     });
   }
 

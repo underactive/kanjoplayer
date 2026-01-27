@@ -2,21 +2,21 @@
  * Plugin Manager - Handles plugin registration and lifecycle
  */
 
-import type { KimochiPlayerAPI, KimochiPlugin } from '../core/types';
+import type { KanjoPlayerAPI, KanjoPlugin } from '../core/types';
 import type { PluginRegistration } from './types';
 
 export class PluginManager {
   private plugins: Map<string, PluginRegistration> = new Map();
-  private player: KimochiPlayerAPI;
+  private player: KanjoPlayerAPI;
 
-  constructor(player: KimochiPlayerAPI) {
+  constructor(player: KanjoPlayerAPI) {
     this.player = player;
   }
 
   /**
    * Register and install a plugin
    */
-  async register(plugin: KimochiPlugin, priority = 0): Promise<void> {
+  async register(plugin: KanjoPlugin, priority = 0): Promise<void> {
     if (this.plugins.has(plugin.name)) {
       console.warn(`Plugin "${plugin.name}" is already registered`);
       return;
@@ -57,7 +57,7 @@ export class PluginManager {
   /**
    * Get a plugin by name
    */
-  get<T extends KimochiPlugin>(name: string): T | undefined {
+  get<T extends KanjoPlugin>(name: string): T | undefined {
     const registration = this.plugins.get(name);
     return registration?.plugin as T | undefined;
   }
@@ -72,7 +72,7 @@ export class PluginManager {
   /**
    * Get all registered plugins sorted by priority
    */
-  getAll(): KimochiPlugin[] {
+  getAll(): KanjoPlugin[] {
     return Array.from(this.plugins.values())
       .sort((a, b) => a.priority - b.priority)
       .map((r) => r.plugin);

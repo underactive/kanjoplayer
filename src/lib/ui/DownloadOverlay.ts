@@ -24,14 +24,14 @@ export class DownloadOverlay {
   constructor(container: HTMLElement) {
     // Create progress indicator (top-right corner)
     this.progressContainer = this.createProgressContainer();
-    this.progressBar = this.progressContainer.querySelector('.kimochi-download-progress-bar')!;
-    this.progressText = this.progressContainer.querySelector('.kimochi-download-progress-text')!;
+    this.progressBar = this.progressContainer.querySelector('.kanjo-download-progress-bar')!;
+    this.progressText = this.progressContainer.querySelector('.kanjo-download-progress-text')!;
 
     // Create dialog overlay (center)
     this.dialogOverlay = this.createDialogOverlay();
 
     // Main element wrapper
-    this.element = UIBuilder.create({ className: 'kimochi-download-overlay' });
+    this.element = UIBuilder.create({ className: 'kanjo-download-overlay' });
     this.element.appendChild(this.progressContainer);
     this.element.appendChild(this.dialogOverlay);
 
@@ -41,22 +41,22 @@ export class DownloadOverlay {
 
   private createProgressContainer(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-download-progress-container',
+      className: 'kanjo-download-progress-container',
       html: `
-        <div class="kimochi-download-progress-content">
-          <div class="kimochi-download-progress-text">Preparing download...</div>
-          <div class="kimochi-download-progress-track">
-            <div class="kimochi-download-progress-bar"></div>
+        <div class="kanjo-download-progress-content">
+          <div class="kanjo-download-progress-text">Preparing download...</div>
+          <div class="kanjo-download-progress-track">
+            <div class="kanjo-download-progress-bar"></div>
           </div>
         </div>
-        <button class="kimochi-download-progress-close" title="Cancel download">
+        <button class="kanjo-download-progress-close" title="Cancel download">
           ${UIBuilder.icons.close}
         </button>
       `,
     });
 
     // Bind close button event
-    const closeBtn = container.querySelector('.kimochi-download-progress-close')!;
+    const closeBtn = container.querySelector('.kanjo-download-progress-close')!;
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       this.handleProgressCancel();
@@ -67,25 +67,25 @@ export class DownloadOverlay {
 
   private createDialogOverlay(): HTMLElement {
     const overlay = UIBuilder.create({
-      className: 'kimochi-download-dialog-overlay',
+      className: 'kanjo-download-dialog-overlay',
       html: `
-        <div class="kimochi-download-dialog">
-          <div class="kimochi-download-dialog-icon">
+        <div class="kanjo-download-dialog">
+          <div class="kanjo-download-dialog-icon">
             ${UIBuilder.icons.download}
           </div>
-          <div class="kimochi-download-dialog-title">Download Ready</div>
-          <div class="kimochi-download-dialog-message">Your clip is ready. Do you want to download it?</div>
-          <div class="kimochi-download-dialog-buttons">
-            <button class="kimochi-download-dialog-btn kimochi-download-dialog-btn-cancel">Cancel</button>
-            <button class="kimochi-download-dialog-btn kimochi-download-dialog-btn-download">Download</button>
+          <div class="kanjo-download-dialog-title">Download Ready</div>
+          <div class="kanjo-download-dialog-message">Your clip is ready. Do you want to download it?</div>
+          <div class="kanjo-download-dialog-buttons">
+            <button class="kanjo-download-dialog-btn kanjo-download-dialog-btn-cancel">Cancel</button>
+            <button class="kanjo-download-dialog-btn kanjo-download-dialog-btn-download">Download</button>
           </div>
         </div>
       `,
     });
 
     // Bind button events
-    const cancelBtn = overlay.querySelector('.kimochi-download-dialog-btn-cancel')!;
-    const downloadBtn = overlay.querySelector('.kimochi-download-dialog-btn-download')!;
+    const cancelBtn = overlay.querySelector('.kanjo-download-dialog-btn-cancel')!;
+    const downloadBtn = overlay.querySelector('.kanjo-download-dialog-btn-download')!;
 
     cancelBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -111,17 +111,17 @@ export class DownloadOverlay {
    * Show progress indicator
    */
   showProgress(progress: DownloadProgress, onCancel?: () => void): void {
-    this.progressContainer.classList.add('kimochi-visible');
+    this.progressContainer.classList.add('kanjo-visible');
     this.onCancel = onCancel || null;
 
     if (progress.progress < 0) {
       // Indeterminate progress - show barber pole animation
       this.progressBar.style.width = '100%';
-      this.progressContainer.classList.add('kimochi-indeterminate');
+      this.progressContainer.classList.add('kanjo-indeterminate');
     } else {
       // Determinate progress
       this.progressBar.style.width = `${progress.progress}%`;
-      this.progressContainer.classList.remove('kimochi-indeterminate');
+      this.progressContainer.classList.remove('kanjo-indeterminate');
     }
 
     this.progressText.textContent = progress.message;
@@ -141,8 +141,8 @@ export class DownloadOverlay {
    * Hide progress indicator
    */
   hideProgress(): void {
-    this.progressContainer.classList.remove('kimochi-visible');
-    this.progressContainer.classList.remove('kimochi-indeterminate');
+    this.progressContainer.classList.remove('kanjo-visible');
+    this.progressContainer.classList.remove('kanjo-indeterminate');
   }
 
   /**
@@ -159,19 +159,19 @@ export class DownloadOverlay {
       ? `${(sizeKB / 1024).toFixed(1)} MB`
       : `${sizeKB} KB`;
 
-    const message = this.dialogOverlay.querySelector('.kimochi-download-dialog-message')!;
+    const message = this.dialogOverlay.querySelector('.kanjo-download-dialog-message')!;
     message.textContent = `Your clip (${sizeText}) is ready. Do you want to download it?`;
 
     // Hide progress, show dialog
     this.hideProgress();
-    this.dialogOverlay.classList.add('kimochi-visible');
+    this.dialogOverlay.classList.add('kanjo-visible');
   }
 
   /**
    * Hide the dialog
    */
   hideDialog(): void {
-    this.dialogOverlay.classList.remove('kimochi-visible');
+    this.dialogOverlay.classList.remove('kanjo-visible');
   }
 
   /**
@@ -224,12 +224,12 @@ export class DownloadOverlay {
    */
   showError(message: string): void {
     this.progressText.textContent = message;
-    this.progressContainer.classList.add('kimochi-error');
+    this.progressContainer.classList.add('kanjo-error');
 
     // Auto-hide after 3 seconds
     setTimeout(() => {
       this.hideProgress();
-      this.progressContainer.classList.remove('kimochi-error');
+      this.progressContainer.classList.remove('kanjo-error');
     }, 3000);
   }
 

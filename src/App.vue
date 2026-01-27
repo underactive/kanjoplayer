@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import VideoPlayer from './components/VideoPlayer.vue'
-import KimochiPlayerDemo from './components/KimochiPlayerDemo.vue'
+import KanjoPlayerDemo from './components/KanjoPlayerDemo.vue'
 
-const activeTab = ref<'kimochi' | 'original'>('kimochi')
+const activeTab = ref<'kanjo' | 'original'>('kanjo')
 const isDarkMode = ref(false)
 
 function handleCustomEvent(e: Event) {
@@ -18,27 +18,27 @@ function handleCustomEvent(e: Event) {
 }
 
 onMounted(() => {
-  document.addEventListener('kimochi-custom-event', handleCustomEvent)
+  document.addEventListener('kanjo-custom-event', handleCustomEvent)
 })
 
 onUnmounted(() => {
-  document.removeEventListener('kimochi-custom-event', handleCustomEvent)
+  document.removeEventListener('kanjo-custom-event', handleCustomEvent)
 })
 </script>
 
 <template>
   <div class="app">
     <header>
-      <h1>KimochiPlayer PoC</h1>
+      <h1>KanjoPlayer PoC</h1>
       <p class="subtitle">WebAssembly Video Player Test Harness</p>
 
       <!-- Tab Switcher -->
       <div class="tabs">
         <button
-          :class="{ active: activeTab === 'kimochi' }"
-          @click="activeTab = 'kimochi'"
+          :class="{ active: activeTab === 'kanjo' }"
+          @click="activeTab = 'kanjo'"
         >
-          KimochiPlayer
+          KanjoPlayer
         </button>
         <button
           :class="{ active: activeTab === 'original' }"
@@ -49,7 +49,7 @@ onUnmounted(() => {
       </div>
     </header>
     <main>
-      <KimochiPlayerDemo v-if="activeTab === 'kimochi'" />
+      <KanjoPlayerDemo v-if="activeTab === 'kanjo'" />
       <VideoPlayer v-else />
     </main>
   </div>

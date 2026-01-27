@@ -2,7 +2,7 @@
  * Volume control with mute button and slider
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import { UIBuilder } from '../UIBuilder';
 
 export class VolumeControl {
@@ -10,9 +10,9 @@ export class VolumeControl {
   private muteBtn: HTMLButtonElement;
   private slider: HTMLInputElement;
   private sliderContainer: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KanjoPlayer) {
     this.player = player;
     this.muteBtn = this.createMuteButton();
     this.slider = this.createSlider();
@@ -23,7 +23,7 @@ export class VolumeControl {
 
   private createMuteButton(): HTMLButtonElement {
     return UIBuilder.button({
-      className: 'kimochi-volume-btn',
+      className: 'kanjo-volume-btn',
       icon: UIBuilder.icons.volumeHigh,
       tooltip: 'Mute (M)',
       onClick: () => this.player.toggleMute(),
@@ -32,7 +32,7 @@ export class VolumeControl {
 
   private createSlider(): HTMLInputElement {
     const slider = UIBuilder.slider({
-      className: 'kimochi-volume-slider',
+      className: 'kanjo-volume-slider',
       min: 0,
       max: 100,
       step: 1,
@@ -48,14 +48,14 @@ export class VolumeControl {
   }
 
   private createSliderContainer(): HTMLElement {
-    const container = UIBuilder.create({ className: 'kimochi-volume-slider-container' });
+    const container = UIBuilder.create({ className: 'kanjo-volume-slider-container' });
     container.appendChild(this.slider);
     return container;
   }
 
   private createElement(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-volume-control',
+      className: 'kanjo-volume-control',
     });
 
     container.appendChild(this.muteBtn);
@@ -92,7 +92,7 @@ export class VolumeControl {
   }
 
   private updateSliderBackground(percent: number): void {
-    const gradient = `linear-gradient(to right, var(--kimochi-primary) ${percent}%, var(--kimochi-progress-bg) ${percent}%)`;
+    const gradient = `linear-gradient(to right, var(--kanjo-primary) ${percent}%, var(--kanjo-progress-bg) ${percent}%)`;
     this.slider.style.background = gradient;
   }
 

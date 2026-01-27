@@ -55,11 +55,11 @@ function clearEvents() {
 }
 
 onMounted(() => {
-  document.addEventListener('kimochi-custom-event', handleCustomEvent);
+  document.addEventListener('kanjo-custom-event', handleCustomEvent);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('kimochi-custom-event', handleCustomEvent);
+  document.removeEventListener('kanjo-custom-event', handleCustomEvent);
 });
 </script>
 
