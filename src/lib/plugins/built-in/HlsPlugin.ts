@@ -2,8 +2,8 @@
  * HLS.js Plugin for HLS streaming support
  */
 
-import type { KimochiPlugin, HlsLevel } from '../../core/types';
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlugin, HlsLevel } from '../../core/types';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 
 // HLS.js types (minimal)
 interface HlsConfig {
@@ -61,11 +61,11 @@ export interface HlsPluginOptions {
   qualitySelector?: boolean;
 }
 
-export class HlsPlugin implements KimochiPlugin {
+export class HlsPlugin implements KanjoPlugin {
   name = 'hls';
   version = '1.0.0';
 
-  private player: KimochiPlayer | null = null;
+  private player: KanjoPlayer | null = null;
   private hls: HlsInstance | null = null;
   private options: HlsPluginOptions;
   private Hls: HlsConstructor | null = null;
@@ -80,8 +80,8 @@ export class HlsPlugin implements KimochiPlugin {
     };
   }
 
-  async install(player: KimochiPlayer): Promise<void> {
-    this.player = player as KimochiPlayer;
+  async install(player: KanjoPlayer): Promise<void> {
+    this.player = player as KanjoPlayer;
 
     // Try to get HLS.js
     this.Hls = await this.getHls();

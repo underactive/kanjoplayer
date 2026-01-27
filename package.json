@@ -1,21 +1,21 @@
 {
-  "name": "kimochi-player",
+  "name": "kanjo-player",
   "version": "0.1.0",
   "description": "Framework-agnostic video player library with WebAssembly-powered thumbnail previews",
   "type": "module",
-  "main": "./dist/kimochi-player.umd.js",
-  "module": "./dist/kimochi-player.es.js",
+  "main": "./dist/kanjo-player.umd.js",
+  "module": "./dist/kanjo-player.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/kimochi-player.es.js",
-      "require": "./dist/kimochi-player.umd.js"
+      "import": "./dist/kanjo-player.es.js",
+      "require": "./dist/kanjo-player.umd.js"
     },
-    "./style.css": "./dist/kimochi-player.css",
+    "./style.css": "./dist/kanjo-player.css",
     "./vue": {
-      "import": "./dist/vue/KimochiPlayerVue.js",
-      "types": "./dist/vue/KimochiPlayerVue.d.ts"
+      "import": "./dist/vue/KanjoPlayerVue.js",
+      "types": "./dist/vue/KanjoPlayerVue.d.ts"
     }
   },
   "files": [

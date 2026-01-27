@@ -3,14 +3,14 @@
  * Includes debouncing and request cancellation to prevent excessive loading
  */
 
-import type { KimochiPlayer } from '../core/KimochiPlayer';
+import type { KanjoPlayer } from '../core/KanjoPlayer';
 import { UIBuilder } from './UIBuilder';
 
 export class ThumbnailPreview {
   private element: HTMLElement;
   private imageContainer: HTMLElement;
   private timeLabel: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
 
   // State tracking
   private currentTime = -1;
@@ -27,16 +27,16 @@ export class ThumbnailPreview {
   // Minimum time difference to trigger a new load (in seconds)
   private readonly minTimeDelta = 0.5;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KanjoPlayer) {
     this.player = player;
-    this.imageContainer = UIBuilder.create({ className: 'kimochi-thumbnail-image' });
-    this.timeLabel = UIBuilder.create({ className: 'kimochi-thumbnail-time' });
+    this.imageContainer = UIBuilder.create({ className: 'kanjo-thumbnail-image' });
+    this.timeLabel = UIBuilder.create({ className: 'kanjo-thumbnail-time' });
     this.element = this.createElement();
   }
 
   private createElement(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-thumbnail-preview',
+      className: 'kanjo-thumbnail-preview',
     });
 
     container.appendChild(this.imageContainer);
@@ -59,7 +59,7 @@ export class ThumbnailPreview {
     this.element.style.left = `${left}px`;
 
     // Show the preview
-    this.element.classList.add('kimochi-visible');
+    this.element.classList.add('kanjo-visible');
 
     // Update current target time
     this.currentTime = time;
@@ -85,7 +85,7 @@ export class ThumbnailPreview {
   }
 
   hide(): void {
-    this.element.classList.remove('kimochi-visible');
+    this.element.classList.remove('kanjo-visible');
 
     // Cancel any pending request
     if (this.debounceTimer) {
@@ -101,7 +101,7 @@ export class ThumbnailPreview {
     }
 
     this.isLoading = true;
-    this.imageContainer.classList.add('kimochi-loading');
+    this.imageContainer.classList.add('kanjo-loading');
 
     // Track this request
     const thisRequestId = ++this.requestId;
@@ -142,7 +142,7 @@ export class ThumbnailPreview {
       // Only clear loading state if this is still the current request
       if (thisRequestId === this.requestId) {
         this.isLoading = false;
-        this.imageContainer.classList.remove('kimochi-loading');
+        this.imageContainer.classList.remove('kanjo-loading');
       }
     }
   }
@@ -166,6 +166,6 @@ export class ThumbnailPreview {
     }
 
     this.imageContainer.style.backgroundImage = '';
-    this.imageContainer.classList.remove('kimochi-loading');
+    this.imageContainer.classList.remove('kanjo-loading');
   }
 }

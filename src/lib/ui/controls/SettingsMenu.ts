@@ -2,7 +2,7 @@
  * Settings menu with speed, download, and PiP options
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import type { SettingsMenuConfig } from '../../core/types';
 import { UIBuilder } from '../UIBuilder';
 
@@ -26,12 +26,12 @@ export class SettingsMenu {
   private element: HTMLElement;
   private toggleBtn: HTMLButtonElement;
   private menuPanel: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private options: SettingsMenuOptions;
   private isOpen = false;
   private onAdjustmentsClick: (() => void) | null = null;
 
-  constructor(player: KimochiPlayer, config?: SettingsMenuConfig) {
+  constructor(player: KanjoPlayer, config?: SettingsMenuConfig) {
     this.player = player;
     this.options = {
       ...DEFAULT_SETTINGS_OPTIONS,
@@ -48,7 +48,7 @@ export class SettingsMenu {
 
   private createToggleButton(): HTMLButtonElement {
     return UIBuilder.button({
-      className: 'kimochi-settings-btn',
+      className: 'kanjo-settings-btn',
       icon: UIBuilder.icons.settings,
       tooltip: 'Settings',
       onClick: () => this.toggle(),
@@ -57,11 +57,11 @@ export class SettingsMenu {
 
   private createMenuPanel(): HTMLElement {
     const panel = UIBuilder.create({
-      className: 'kimochi-settings-menu',
+      className: 'kanjo-settings-menu',
     });
 
     // Main menu items
-    const mainMenu = UIBuilder.create({ className: 'kimochi-settings-main' });
+    const mainMenu = UIBuilder.create({ className: 'kanjo-settings-main' });
 
     // Speed option
     if (this.options.showSpeed) {
@@ -72,7 +72,7 @@ export class SettingsMenu {
         hasSubmenu: true,
         onClick: () => this.showSubmenu('speed'),
       });
-      speedItem.id = 'kimochi-speed-item';
+      speedItem.id = 'kanjo-speed-item';
       mainMenu.appendChild(speedItem);
     }
 
@@ -137,7 +137,7 @@ export class SettingsMenu {
   }): HTMLElement {
     const item = UIBuilder.create({
       tag: 'button',
-      className: 'kimochi-settings-item',
+      className: 'kanjo-settings-item',
       attrs: { type: 'button' },
       events: {
         click: (e) => {
@@ -148,12 +148,12 @@ export class SettingsMenu {
     });
 
     const iconEl = UIBuilder.create({
-      className: 'kimochi-settings-item-icon',
+      className: 'kanjo-settings-item-icon',
       html: options.icon,
     });
 
     const labelEl = UIBuilder.create({
-      className: 'kimochi-settings-item-label',
+      className: 'kanjo-settings-item-label',
       text: options.label,
     });
 
@@ -162,7 +162,7 @@ export class SettingsMenu {
 
     if (options.value) {
       const valueEl = UIBuilder.create({
-        className: 'kimochi-settings-item-value',
+        className: 'kanjo-settings-item-value',
         text: options.value,
       });
       item.appendChild(valueEl);
@@ -170,7 +170,7 @@ export class SettingsMenu {
 
     if (options.hasSubmenu) {
       const chevron = UIBuilder.create({
-        className: 'kimochi-settings-item-chevron',
+        className: 'kanjo-settings-item-chevron',
         html: UIBuilder.icons.chevronRight,
       });
       item.appendChild(chevron);
@@ -181,14 +181,14 @@ export class SettingsMenu {
 
   private createSpeedSubmenu(): HTMLElement {
     const submenu = UIBuilder.create({
-      className: 'kimochi-settings-submenu',
+      className: 'kanjo-settings-submenu',
       attrs: { 'data-submenu': 'speed' },
     });
 
     // Back button
     const backBtn = UIBuilder.create({
       tag: 'button',
-      className: 'kimochi-settings-back',
+      className: 'kanjo-settings-back',
       attrs: { type: 'button' },
       events: {
         click: (e) => {
@@ -198,7 +198,7 @@ export class SettingsMenu {
       },
     });
     backBtn.innerHTML = `
-      <span class="kimochi-settings-back-icon">${UIBuilder.icons.chevronRight}</span>
+      <span class="kanjo-settings-back-icon">${UIBuilder.icons.chevronRight}</span>
       <span>Playback speed</span>
     `;
     submenu.appendChild(backBtn);
@@ -207,7 +207,7 @@ export class SettingsMenu {
     PLAYBACK_RATES.forEach((rate) => {
       const option = UIBuilder.create({
         tag: 'button',
-        className: 'kimochi-settings-option',
+        className: 'kanjo-settings-option',
         attrs: { type: 'button', 'data-rate': String(rate) },
         events: {
           click: (e) => {
@@ -220,12 +220,12 @@ export class SettingsMenu {
       });
 
       const checkIcon = UIBuilder.create({
-        className: 'kimochi-settings-option-check',
+        className: 'kanjo-settings-option-check',
         html: UIBuilder.icons.check,
       });
 
       const label = UIBuilder.create({
-        className: 'kimochi-settings-option-label',
+        className: 'kanjo-settings-option-label',
         text: rate === 1 ? 'Normal' : `${rate}x`,
       });
 
@@ -233,7 +233,7 @@ export class SettingsMenu {
       option.appendChild(label);
 
       if (rate === 1) {
-        option.classList.add('kimochi-active');
+        option.classList.add('kanjo-active');
       }
 
       submenu.appendChild(option);
@@ -244,7 +244,7 @@ export class SettingsMenu {
 
   private createElement(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-settings-container',
+      className: 'kanjo-settings-container',
     });
 
     container.appendChild(this.menuPanel);
@@ -282,43 +282,43 @@ export class SettingsMenu {
 
   private open(): void {
     this.isOpen = true;
-    this.menuPanel.classList.add('kimochi-open');
-    this.toggleBtn.classList.add('kimochi-active');
+    this.menuPanel.classList.add('kanjo-open');
+    this.toggleBtn.classList.add('kanjo-active');
   }
 
   private close(): void {
     this.isOpen = false;
-    this.menuPanel.classList.remove('kimochi-open');
-    this.toggleBtn.classList.remove('kimochi-active');
+    this.menuPanel.classList.remove('kanjo-open');
+    this.toggleBtn.classList.remove('kanjo-active');
     this.hideSubmenu();
   }
 
   private showSubmenu(name: string): void {
-    this.menuPanel.classList.add('kimochi-submenu-open');
+    this.menuPanel.classList.add('kanjo-submenu-open');
     const submenu = this.menuPanel.querySelector(`[data-submenu="${name}"]`);
     if (submenu) {
-      submenu.classList.add('kimochi-visible');
+      submenu.classList.add('kanjo-visible');
     }
   }
 
   private hideSubmenu(): void {
-    this.menuPanel.classList.remove('kimochi-submenu-open');
-    const submenus = this.menuPanel.querySelectorAll('.kimochi-settings-submenu');
-    submenus.forEach((sm) => sm.classList.remove('kimochi-visible'));
+    this.menuPanel.classList.remove('kanjo-submenu-open');
+    const submenus = this.menuPanel.querySelectorAll('.kanjo-settings-submenu');
+    submenus.forEach((sm) => sm.classList.remove('kanjo-visible'));
   }
 
   private updateSpeedDisplay(rate: number): void {
     // Update value in main menu
-    const speedItem = this.element.querySelector('#kimochi-speed-item .kimochi-settings-item-value');
+    const speedItem = this.element.querySelector('#kanjo-speed-item .kanjo-settings-item-value');
     if (speedItem) {
       speedItem.textContent = rate === 1 ? 'Normal' : `${rate}x`;
     }
 
     // Update active state in submenu
-    const options = this.menuPanel.querySelectorAll('.kimochi-settings-option');
+    const options = this.menuPanel.querySelectorAll('.kanjo-settings-option');
     options.forEach((opt) => {
       const optRate = parseFloat((opt as HTMLElement).dataset.rate || '1');
-      opt.classList.toggle('kimochi-active', optRate === rate);
+      opt.classList.toggle('kanjo-active', optRate === rate);
     });
   }
 

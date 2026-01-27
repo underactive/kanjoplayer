@@ -1,5 +1,5 @@
 /**
- * Type-safe event emitter for KimochiPlayer
+ * Type-safe event emitter for KanjoPlayer
  */
 
 import type { EventHandler } from './types';

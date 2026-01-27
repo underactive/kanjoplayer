@@ -2,7 +2,7 @@
  * Progress bar with scrubber, buffered indicator, and thumbnail preview
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import { UIBuilder } from '../UIBuilder';
 import { ThumbnailPreview } from '../ThumbnailPreview';
 import type { ABLoopState } from './ABLoopControl';
@@ -16,7 +16,7 @@ export class ProgressBar {
   private scrubber: HTMLElement;
   private hoverTime: HTMLElement;
   private thumbnailPreview: ThumbnailPreview;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private isDragging = false;
 
   // Loop markers
@@ -36,23 +36,23 @@ export class ProgressBar {
   private currentLoopEnd: number | null = null;
   private isDraggingMarker = false;
 
-  constructor(player: KimochiPlayer) {
+  constructor(player: KanjoPlayer) {
     this.player = player;
     this.thumbnailPreview = new ThumbnailPreview(player);
-    this.playedBar = UIBuilder.create({ className: 'kimochi-progress-played' });
-    this.bufferedBar = UIBuilder.create({ className: 'kimochi-progress-buffered' });
-    this.scrubber = UIBuilder.create({ className: 'kimochi-progress-scrubber' });
-    this.hoverTime = UIBuilder.create({ className: 'kimochi-progress-hover-time' });
+    this.playedBar = UIBuilder.create({ className: 'kanjo-progress-played' });
+    this.bufferedBar = UIBuilder.create({ className: 'kanjo-progress-buffered' });
+    this.scrubber = UIBuilder.create({ className: 'kanjo-progress-scrubber' });
+    this.hoverTime = UIBuilder.create({ className: 'kanjo-progress-hover-time' });
 
     // Loop markers
-    this.loopRegion = UIBuilder.create({ className: 'kimochi-loop-region' });
+    this.loopRegion = UIBuilder.create({ className: 'kanjo-loop-region' });
     this.loopStartMarker = this.createLoopMarker('start');
     this.loopEndMarker = this.createLoopMarker('end');
 
     // Zoom indicator for fine-tuning
-    this.zoomIndicator = UIBuilder.create({ className: 'kimochi-zoom-indicator' });
+    this.zoomIndicator = UIBuilder.create({ className: 'kanjo-zoom-indicator' });
 
-    this.track = UIBuilder.create({ className: 'kimochi-progress-track' });
+    this.track = UIBuilder.create({ className: 'kanjo-progress-track' });
     this.progressContainer = this.createProgressContainer();
     this.element = this.createElement();
     this.bindEvents();
@@ -60,7 +60,7 @@ export class ProgressBar {
 
   private createLoopMarker(type: 'start' | 'end'): HTMLElement {
     const marker = UIBuilder.create({
-      className: `kimochi-loop-marker kimochi-loop-marker-${type}`,
+      className: `kanjo-loop-marker kanjo-loop-marker-${type}`,
       attrs: {
         'data-type': type,
         title: type === 'start' ? 'Loop start (drag to move)' : 'Loop end (drag to move)',
@@ -68,7 +68,7 @@ export class ProgressBar {
     });
 
     // Inner handle for better visibility
-    const handle = UIBuilder.create({ className: 'kimochi-loop-marker-handle' });
+    const handle = UIBuilder.create({ className: 'kanjo-loop-marker-handle' });
     handle.textContent = type === 'start' ? '[' : ']';
     marker.appendChild(handle);
 
@@ -77,7 +77,7 @@ export class ProgressBar {
 
   private createProgressContainer(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-progress-container',
+      className: 'kanjo-progress-container',
       attrs: {
         role: 'slider',
         'aria-label': 'Video progress',
@@ -103,7 +103,7 @@ export class ProgressBar {
   }
 
   private createElement(): HTMLElement {
-    const wrapper = UIBuilder.create({ className: 'kimochi-progress-wrapper' });
+    const wrapper = UIBuilder.create({ className: 'kanjo-progress-wrapper' });
     wrapper.appendChild(this.thumbnailPreview.getElement());
     wrapper.appendChild(this.zoomIndicator);
     wrapper.appendChild(this.progressContainer);
@@ -175,7 +175,7 @@ export class ProgressBar {
     }
 
     this.isDragging = true;
-    this.progressContainer.classList.add('kimochi-dragging');
+    this.progressContainer.classList.add('kanjo-dragging');
 
     const percent = this.getPercentFromEvent(e);
     this.updateProgress(percent);
@@ -189,7 +189,7 @@ export class ProgressBar {
 
     const onMouseUp = () => {
       this.isDragging = false;
-      this.progressContainer.classList.remove('kimochi-dragging');
+      this.progressContainer.classList.remove('kanjo-dragging');
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -199,7 +199,7 @@ export class ProgressBar {
   }
 
   private getMarkerType(target: HTMLElement): 'start' | 'end' | null {
-    const marker = target.closest('.kimochi-loop-marker') as HTMLElement;
+    const marker = target.closest('.kanjo-loop-marker') as HTMLElement;
     if (marker) {
       return marker.dataset.type as 'start' | 'end';
     }
@@ -279,7 +279,7 @@ export class ProgressBar {
       }
 
       // Hide hover time display and remove marker styling
-      this.hoverTime.classList.remove('kimochi-visible', 'kimochi-marker-time');
+      this.hoverTime.classList.remove('kanjo-visible', 'kanjo-marker-time');
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -322,16 +322,16 @@ export class ProgressBar {
 
     // Update zoom indicator
     this.zoomIndicator.innerHTML = `
-      <div class="kimochi-zoom-label">Fine Tuning: ${draggingMarker === 'start' ? 'Start' : 'End'} Point</div>
-      <div class="kimochi-zoom-range">
-        <span class="kimochi-zoom-time-start">${UIBuilder.formatTime(this.zoomStartTime)}</span>
-        <span class="kimochi-zoom-time-center">${UIBuilder.formatTime(this.zoomEndTime - this.zoomStartTime)} window</span>
-        <span class="kimochi-zoom-time-end">${UIBuilder.formatTime(this.zoomEndTime)}</span>
+      <div class="kanjo-zoom-label">Fine Tuning: ${draggingMarker === 'start' ? 'Start' : 'End'} Point</div>
+      <div class="kanjo-zoom-range">
+        <span class="kanjo-zoom-time-start">${UIBuilder.formatTime(this.zoomStartTime)}</span>
+        <span class="kanjo-zoom-time-center">${UIBuilder.formatTime(this.zoomEndTime - this.zoomStartTime)} window</span>
+        <span class="kanjo-zoom-time-end">${UIBuilder.formatTime(this.zoomEndTime)}</span>
       </div>
     `;
 
-    this.progressContainer.classList.add('kimochi-zoomed');
-    this.zoomIndicator.classList.add('kimochi-visible');
+    this.progressContainer.classList.add('kanjo-zoomed');
+    this.zoomIndicator.classList.add('kanjo-visible');
 
     // Update the view to show zoomed state
     this.updateZoomedView();
@@ -339,8 +339,8 @@ export class ProgressBar {
 
   private exitZoomMode(): void {
     this.isZoomed = false;
-    this.progressContainer.classList.remove('kimochi-zoomed');
-    this.zoomIndicator.classList.remove('kimochi-visible');
+    this.progressContainer.classList.remove('kanjo-zoomed');
+    this.zoomIndicator.classList.remove('kanjo-visible');
 
     // Restore normal view
     this.updateNormalView();
@@ -362,7 +362,7 @@ export class ProgressBar {
     // Use hover time element to show the marker time
     this.hoverTime.textContent = UIBuilder.formatTime(time);
     this.hoverTime.style.left = `${x}px`;
-    this.hoverTime.classList.add('kimochi-visible', 'kimochi-marker-time');
+    this.hoverTime.classList.add('kanjo-visible', 'kanjo-marker-time');
   }
 
   private getZoomedPercent(time: number): number {
@@ -454,7 +454,7 @@ export class ProgressBar {
     // Update hover time display
     this.hoverTime.textContent = UIBuilder.formatTime(time);
     this.hoverTime.style.left = `${x}px`;
-    this.hoverTime.classList.add('kimochi-visible');
+    this.hoverTime.classList.add('kanjo-visible');
 
     // Update thumbnail preview (use actual time, not zoomed)
     const actualTime = this.isZoomed ? time : time;
@@ -463,7 +463,7 @@ export class ProgressBar {
 
   private onMouseLeave(): void {
     if (!this.isDragging && !this.isDraggingMarker) {
-      this.hoverTime.classList.remove('kimochi-visible');
+      this.hoverTime.classList.remove('kanjo-visible');
       this.thumbnailPreview.hide();
     }
   }
@@ -529,9 +529,9 @@ export class ProgressBar {
   }
 
   private resetLoopMarkers(): void {
-    this.loopStartMarker.classList.remove('kimochi-visible');
-    this.loopEndMarker.classList.remove('kimochi-visible');
-    this.loopRegion.classList.remove('kimochi-visible', 'kimochi-active');
+    this.loopStartMarker.classList.remove('kanjo-visible');
+    this.loopEndMarker.classList.remove('kanjo-visible');
+    this.loopRegion.classList.remove('kanjo-visible', 'kanjo-active');
     this.loopRegion.style.left = '0%';
     this.loopRegion.style.width = '0%';
   }
@@ -558,18 +558,18 @@ export class ProgressBar {
     if (state.startTime !== null) {
       const startPercent = (state.startTime / duration) * 100;
       this.loopStartMarker.style.left = `${startPercent}%`;
-      this.loopStartMarker.classList.add('kimochi-visible');
+      this.loopStartMarker.classList.add('kanjo-visible');
     } else {
-      this.loopStartMarker.classList.remove('kimochi-visible');
+      this.loopStartMarker.classList.remove('kanjo-visible');
     }
 
     // Update end marker
     if (state.endTime !== null) {
       const endPercent = (state.endTime / duration) * 100;
       this.loopEndMarker.style.left = `${endPercent}%`;
-      this.loopEndMarker.classList.add('kimochi-visible');
+      this.loopEndMarker.classList.add('kanjo-visible');
     } else {
-      this.loopEndMarker.classList.remove('kimochi-visible');
+      this.loopEndMarker.classList.remove('kanjo-visible');
     }
 
     // Update loop region highlight
@@ -578,15 +578,15 @@ export class ProgressBar {
       const endPercent = (state.endTime / duration) * 100;
       this.loopRegion.style.left = `${startPercent}%`;
       this.loopRegion.style.width = `${endPercent - startPercent}%`;
-      this.loopRegion.classList.add('kimochi-visible');
+      this.loopRegion.classList.add('kanjo-visible');
 
       if (state.enabled) {
-        this.loopRegion.classList.add('kimochi-active');
+        this.loopRegion.classList.add('kanjo-active');
       } else {
-        this.loopRegion.classList.remove('kimochi-active');
+        this.loopRegion.classList.remove('kanjo-active');
       }
     } else {
-      this.loopRegion.classList.remove('kimochi-visible', 'kimochi-active');
+      this.loopRegion.classList.remove('kanjo-visible', 'kanjo-active');
     }
   }
 

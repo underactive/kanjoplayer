@@ -2,7 +2,7 @@
  * A/B Loop Control - Set start and end points for looped playback
  */
 
-import type { KimochiPlayer } from '../../core/KimochiPlayer';
+import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import type { WatermarkConfig } from '../../core/types';
 import { UIBuilder } from '../UIBuilder';
 import { LoopDownloader } from '../../download/LoopDownloader';
@@ -23,7 +23,7 @@ const MAX_LOOP_DURATION = 30;
 
 export class ABLoopControl {
   private element: HTMLElement;
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private options: ABLoopControlOptions;
   private state: ABLoopState = {
     enabled: false,
@@ -46,25 +46,25 @@ export class ABLoopControl {
   // Markers on progress bar (managed externally via callbacks)
   private onStateChange: ((state: ABLoopState) => void) | null = null;
 
-  constructor(player: KimochiPlayer, options?: ABLoopControlOptions) {
+  constructor(player: KanjoPlayer, options?: ABLoopControlOptions) {
     this.player = player;
     this.options = options || {};
 
     // Create buttons with text labels (A [ time) and (time ] B)
     this.startBtn = this.createLoopPointButton('start', 'Set loop start point [', () => this.setStartPoint());
-    this.startBtn.classList.add('kimochi-abloop-start');
+    this.startBtn.classList.add('kanjo-abloop-start');
 
     this.endBtn = this.createLoopPointButton('end', 'Set loop end point ]', () => this.setEndPoint());
-    this.endBtn.classList.add('kimochi-abloop-end');
+    this.endBtn.classList.add('kanjo-abloop-end');
 
     this.clearBtn = this.createIconButton(UIBuilder.icons.clearLoop, 'Clear loop points', () => this.clearPoints());
-    this.clearBtn.classList.add('kimochi-abloop-clear');
+    this.clearBtn.classList.add('kanjo-abloop-clear');
 
     this.toggleBtn = this.createIconButton(UIBuilder.icons.loop, 'Toggle A/B loop', () => this.toggleLoop());
-    this.toggleBtn.classList.add('kimochi-abloop-toggle');
+    this.toggleBtn.classList.add('kanjo-abloop-toggle');
 
     this.downloadBtn = this.createIconButton(UIBuilder.icons.downloadLoop, 'Download loop clip', () => this.downloadLoop());
-    this.downloadBtn.classList.add('kimochi-abloop-download');
+    this.downloadBtn.classList.add('kanjo-abloop-download');
 
     this.element = this.createElement();
     this.bindEvents();
@@ -74,7 +74,7 @@ export class ABLoopControl {
   private createIconButton(icon: string, tooltip: string, onClick: () => void): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'kimochi-btn kimochi-abloop-btn';
+    btn.className = 'kanjo-btn kanjo-abloop-btn';
     btn.innerHTML = icon;
     btn.title = tooltip;
     btn.setAttribute('aria-label', tooltip);
@@ -88,26 +88,26 @@ export class ABLoopControl {
   private createLoopPointButton(type: 'start' | 'end', tooltip: string, onClick: () => void): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'kimochi-btn kimochi-abloop-btn kimochi-abloop-point-btn';
+    btn.className = 'kanjo-btn kanjo-abloop-btn kanjo-abloop-point-btn';
 
     if (type === 'start') {
       // Format: "A [ time" or "A [" when no time
       const labelSpan = document.createElement('span');
-      labelSpan.className = 'kimochi-abloop-label';
+      labelSpan.className = 'kanjo-abloop-label';
       labelSpan.textContent = 'A [';
       btn.appendChild(labelSpan);
 
       const timeSpan = document.createElement('span');
-      timeSpan.className = 'kimochi-abloop-time';
+      timeSpan.className = 'kanjo-abloop-time';
       btn.appendChild(timeSpan);
     } else {
       // Format: "time ] B" or "] B" when no time
       const timeSpan = document.createElement('span');
-      timeSpan.className = 'kimochi-abloop-time';
+      timeSpan.className = 'kanjo-abloop-time';
       btn.appendChild(timeSpan);
 
       const labelSpan = document.createElement('span');
-      labelSpan.className = 'kimochi-abloop-label';
+      labelSpan.className = 'kanjo-abloop-label';
       labelSpan.textContent = '] B';
       btn.appendChild(labelSpan);
     }
@@ -123,7 +123,7 @@ export class ABLoopControl {
 
   private createElement(): HTMLElement {
     const container = UIBuilder.create({
-      className: 'kimochi-abloop-control',
+      className: 'kanjo-abloop-control',
     });
 
     container.appendChild(this.startBtn);
@@ -337,12 +337,12 @@ export class ABLoopControl {
   private updateDownloadButtonState(state: 'idle' | 'downloading'): void {
     if (state === 'downloading') {
       this.downloadBtn.innerHTML = UIBuilder.icons.spinner;
-      this.downloadBtn.classList.add('kimochi-downloading');
+      this.downloadBtn.classList.add('kanjo-downloading');
       this.downloadBtn.disabled = true;
       this.downloadBtn.title = 'Preparing...';
     } else {
       this.downloadBtn.innerHTML = UIBuilder.icons.downloadLoop;
-      this.downloadBtn.classList.remove('kimochi-downloading');
+      this.downloadBtn.classList.remove('kanjo-downloading');
       this.downloadBtn.disabled = false;
       this.updateButtonStates(); // Restore proper title
 
@@ -354,36 +354,36 @@ export class ABLoopControl {
   }
 
   private updateButtonStates(): void {
-    const startTimeSpan = this.startBtn.querySelector('.kimochi-abloop-time');
-    const endTimeSpan = this.endBtn.querySelector('.kimochi-abloop-time');
+    const startTimeSpan = this.startBtn.querySelector('.kanjo-abloop-time');
+    const endTimeSpan = this.endBtn.querySelector('.kanjo-abloop-time');
 
     // Update start button - format: "A [ 4:20" or "A [" when no time
     if (this.state.startTime !== null) {
-      this.startBtn.classList.add('kimochi-active');
+      this.startBtn.classList.add('kanjo-active');
       this.startBtn.title = `Loop start: ${UIBuilder.formatTime(this.state.startTime)} (click to update)`;
       if (startTimeSpan) startTimeSpan.textContent = ' ' + UIBuilder.formatTime(this.state.startTime);
     } else {
-      this.startBtn.classList.remove('kimochi-active');
+      this.startBtn.classList.remove('kanjo-active');
       this.startBtn.title = 'Set loop start point [';
       if (startTimeSpan) startTimeSpan.textContent = '';
     }
 
     // Update end button - format: "4:33 ] B" or "] B" when no time
     if (this.state.endTime !== null) {
-      this.endBtn.classList.add('kimochi-active');
+      this.endBtn.classList.add('kanjo-active');
       this.endBtn.title = `Loop end: ${UIBuilder.formatTime(this.state.endTime)} (click to update)`;
       if (endTimeSpan) endTimeSpan.textContent = UIBuilder.formatTime(this.state.endTime) + ' ';
     } else {
-      this.endBtn.classList.remove('kimochi-active');
+      this.endBtn.classList.remove('kanjo-active');
       this.endBtn.title = 'Set loop end point ]';
       if (endTimeSpan) endTimeSpan.textContent = '';
     }
 
     // Update clear button visibility
     if (this.state.startTime !== null || this.state.endTime !== null) {
-      this.clearBtn.classList.remove('kimochi-hidden');
+      this.clearBtn.classList.remove('kanjo-hidden');
     } else {
-      this.clearBtn.classList.add('kimochi-hidden');
+      this.clearBtn.classList.add('kanjo-hidden');
     }
 
     // Update toggle button
@@ -391,10 +391,10 @@ export class ABLoopControl {
     this.toggleBtn.disabled = !canToggle;
 
     if (this.state.enabled) {
-      this.toggleBtn.classList.add('kimochi-active');
+      this.toggleBtn.classList.add('kanjo-active');
       this.toggleBtn.title = 'Disable A/B loop';
     } else {
-      this.toggleBtn.classList.remove('kimochi-active');
+      this.toggleBtn.classList.remove('kanjo-active');
       this.toggleBtn.title = canToggle ? 'Enable A/B loop' : 'Set A and B points first';
     }
 
@@ -406,22 +406,22 @@ export class ABLoopControl {
       if (canDownload) {
         const duration = this.state.endTime! - this.state.startTime!;
         if (duration > MAX_LOOP_DURATION) {
-          this.downloadBtn.classList.add('kimochi-disabled');
+          this.downloadBtn.classList.add('kanjo-disabled');
           this.downloadBtn.title = `Clip too long (${Math.round(duration)}s). Max: ${MAX_LOOP_DURATION}s`;
         } else {
-          this.downloadBtn.classList.remove('kimochi-disabled');
+          this.downloadBtn.classList.remove('kanjo-disabled');
           this.downloadBtn.title = `Download ${Math.round(duration)}s clip`;
         }
       } else {
-        this.downloadBtn.classList.add('kimochi-hidden');
+        this.downloadBtn.classList.add('kanjo-hidden');
         this.downloadBtn.title = 'Set A and B points to download';
       }
 
       // Show/hide download button based on whether loop is set
       if (canDownload) {
-        this.downloadBtn.classList.remove('kimochi-hidden');
+        this.downloadBtn.classList.remove('kanjo-hidden');
       } else {
-        this.downloadBtn.classList.add('kimochi-hidden');
+        this.downloadBtn.classList.add('kanjo-hidden');
       }
     }
   }

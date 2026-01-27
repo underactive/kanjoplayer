@@ -2,7 +2,7 @@
  * Keyboard shortcuts plugin
  */
 
-import type { KimochiPlayerAPI, KimochiPlugin } from '../../core/types';
+import type { KanjoPlayerAPI, KanjoPlugin } from '../../core/types';
 
 export interface KeyboardPluginOptions {
   /** Enable global keyboard shortcuts (outside player focus) */
@@ -51,11 +51,11 @@ const DEFAULT_BINDINGS: KeyBindings = {
 
 const SPEED_STEPS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
-export class KeyboardPlugin implements KimochiPlugin {
+export class KeyboardPlugin implements KanjoPlugin {
   name = 'keyboard';
   version = '1.0.0';
 
-  private player: KimochiPlayerAPI | null = null;
+  private player: KanjoPlayerAPI | null = null;
   private options: KeyboardPluginOptions;
   private bindings: KeyBindings;
   private handleKeyDown: ((e: KeyboardEvent) => void) | null = null;
@@ -68,7 +68,7 @@ export class KeyboardPlugin implements KimochiPlugin {
     this.bindings = { ...DEFAULT_BINDINGS, ...options.bindings };
   }
 
-  install(player: KimochiPlayerAPI): void {
+  install(player: KanjoPlayerAPI): void {
     this.player = player;
 
     this.handleKeyDown = this.onKeyDown.bind(this);

@@ -1,78 +1,78 @@
 /**
- * KimochiPlayer CSS Custom Properties (Theme Variables)
+ * KanjoPlayer CSS Custom Properties (Theme Variables)
  */
 
 :root {
   /* Primary colors - Blue */
-  --kimochi-primary: #2E82FF;
-  --kimochi-primary-hover: #5a9eff;
-  --kimochi-primary-active: #1a6ae0;
+  --kanjo-primary: #2E82FF;
+  --kanjo-primary-hover: #5a9eff;
+  --kanjo-primary-active: #1a6ae0;
 
   /* Background colors */
-  --kimochi-bg: rgba(0, 0, 0, 0.85);
-  --kimochi-bg-hover: rgba(255, 255, 255, 0.1);
-  --kimochi-bg-active: rgba(255, 255, 255, 0.2);
+  --kanjo-bg: rgba(0, 0, 0, 0.85);
+  --kanjo-bg-hover: rgba(255, 255, 255, 0.1);
+  --kanjo-bg-active: rgba(255, 255, 255, 0.2);
 
   /* Text colors */
-  --kimochi-text: #ffffff;
-  --kimochi-text-secondary: rgba(255, 255, 255, 0.7);
-  --kimochi-text-muted: rgba(255, 255, 255, 0.5);
+  --kanjo-text: #ffffff;
+  --kanjo-text-secondary: rgba(255, 255, 255, 0.7);
+  --kanjo-text-muted: rgba(255, 255, 255, 0.5);
 
   /* Progress bar */
-  --kimochi-progress-bg: rgba(255, 255, 255, 0.2);
-  --kimochi-progress-buffered: rgba(255, 255, 255, 0.4);
-  --kimochi-progress-filled: var(--kimochi-primary);
-  --kimochi-progress-height: 4px;
-  --kimochi-progress-height-hover: 6px;
+  --kanjo-progress-bg: rgba(255, 255, 255, 0.2);
+  --kanjo-progress-buffered: rgba(255, 255, 255, 0.4);
+  --kanjo-progress-filled: var(--kanjo-primary);
+  --kanjo-progress-height: 4px;
+  --kanjo-progress-height-hover: 6px;
 
   /* Scrubber */
-  --kimochi-scrubber-size: 14px;
-  --kimochi-scrubber-color: var(--kimochi-primary);
+  --kanjo-scrubber-size: 14px;
+  --kanjo-scrubber-color: var(--kanjo-primary);
 
   /* Controls */
-  --kimochi-controls-padding: 12px;
-  --kimochi-controls-gap: 8px;
-  --kimochi-btn-size: 40px;
-  --kimochi-icon-size: 24px;
+  --kanjo-controls-padding: 12px;
+  --kanjo-controls-gap: 8px;
+  --kanjo-btn-size: 40px;
+  --kanjo-icon-size: 24px;
 
   /* Menu */
-  --kimochi-menu-bg: rgba(28, 28, 28, 0.98);
-  --kimochi-menu-border: rgba(255, 255, 255, 0.1);
-  --kimochi-menu-width: 280px;
-  --kimochi-menu-radius: 8px;
+  --kanjo-menu-bg: rgba(28, 28, 28, 0.98);
+  --kanjo-menu-border: rgba(255, 255, 255, 0.1);
+  --kanjo-menu-width: 280px;
+  --kanjo-menu-radius: 8px;
 
   /* Thumbnail preview */
-  --kimochi-thumbnail-width: 160px;
-  --kimochi-thumbnail-height: 90px;
-  --kimochi-thumbnail-radius: 4px;
+  --kanjo-thumbnail-width: 160px;
+  --kanjo-thumbnail-height: 90px;
+  --kanjo-thumbnail-radius: 4px;
 
   /* Transitions */
-  --kimochi-transition-fast: 150ms ease;
-  --kimochi-transition-normal: 250ms ease;
-  --kimochi-transition-slow: 400ms ease;
+  --kanjo-transition-fast: 150ms ease;
+  --kanjo-transition-normal: 250ms ease;
+  --kanjo-transition-slow: 400ms ease;
 
   /* Shadows */
-  --kimochi-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  --kimochi-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --kanjo-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --kanjo-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
 
   /* Z-index layers */
-  --kimochi-z-video: 1;
-  --kimochi-z-overlay: 10;
-  --kimochi-z-controls: 20;
-  --kimochi-z-menu: 30;
-  --kimochi-z-tooltip: 40;
+  --kanjo-z-video: 1;
+  --kanjo-z-overlay: 10;
+  --kanjo-z-controls: 20;
+  --kanjo-z-menu: 30;
+  --kanjo-z-tooltip: 40;
 }
 
 /* Light theme overrides */
-.kimochi-theme-light {
-  --kimochi-bg: rgba(255, 255, 255, 0.95);
-  --kimochi-bg-hover: rgba(0, 0, 0, 0.05);
-  --kimochi-bg-active: rgba(0, 0, 0, 0.1);
-  --kimochi-text: #1a1a1a;
-  --kimochi-text-secondary: rgba(0, 0, 0, 0.7);
-  --kimochi-text-muted: rgba(0, 0, 0, 0.5);
-  --kimochi-progress-bg: rgba(0, 0, 0, 0.15);
-  --kimochi-progress-buffered: rgba(0, 0, 0, 0.25);
-  --kimochi-menu-bg: rgba(255, 255, 255, 0.98);
-  --kimochi-menu-border: rgba(0, 0, 0, 0.1);
+.kanjo-theme-light {
+  --kanjo-bg: rgba(255, 255, 255, 0.95);
+  --kanjo-bg-hover: rgba(0, 0, 0, 0.05);
+  --kanjo-bg-active: rgba(0, 0, 0, 0.1);
+  --kanjo-text: #1a1a1a;
+  --kanjo-text-secondary: rgba(0, 0, 0, 0.7);
+  --kanjo-text-muted: rgba(0, 0, 0, 0.5);
+  --kanjo-progress-bg: rgba(0, 0, 0, 0.15);
+  --kanjo-progress-buffered: rgba(0, 0, 0, 0.25);
+  --kanjo-menu-bg: rgba(255, 255, 255, 0.98);
+  --kanjo-menu-border: rgba(0, 0, 0, 0.1);
 }

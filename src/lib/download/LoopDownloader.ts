@@ -3,7 +3,7 @@
  * Supports both direct video files (MP4/WebM) and HLS streams
  */
 
-import type { KimochiPlayer } from '../core/KimochiPlayer';
+import type { KanjoPlayer } from '../core/KanjoPlayer';
 import type { WatermarkConfig } from '../core/types';
 
 export interface LoopDownloaderOptions {
@@ -40,7 +40,7 @@ interface FFmpegInstance {
 }
 
 export class LoopDownloader {
-  private player: KimochiPlayer;
+  private player: KanjoPlayer;
   private options: Required<Omit<LoopDownloaderOptions, 'watermark'>> & { watermark?: WatermarkConfig };
   private ffmpeg: FFmpegInstance | null = null;
   private isInitialized = false;
@@ -50,7 +50,7 @@ export class LoopDownloader {
   private isCancelled = false;
   private isHlsExtraction = false;
 
-  constructor(player: KimochiPlayer, options: LoopDownloaderOptions = {}) {
+  constructor(player: KanjoPlayer, options: LoopDownloaderOptions = {}) {
     this.player = player;
     this.options = {
       maxDuration: options.maxDuration ?? DEFAULT_MAX_DURATION,
@@ -718,7 +718,7 @@ export class LoopDownloader {
    */
   private createWatermarkImage(): { data: Uint8Array; width: number; height: number } {
     const wm = this.options.watermark!;
-    const text = wm.text || 'Downloaded from KimochiPlayer PoC';
+    const text = wm.text || 'Downloaded from KanjoPlayer PoC';
     const fontSize = wm.fontSize ?? 18;
     const color = wm.color ?? 'white';
     const opacity = wm.opacity ?? 0.5;

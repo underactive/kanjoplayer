@@ -1,22 +1,22 @@
 /**
- * KimochiPlayer - Framework-agnostic video player library
+ * KanjoPlayer - Framework-agnostic video player library
  *
  * @packageDocumentation
  */
 
 // Core exports
-export { KimochiPlayer } from './core/KimochiPlayer';
+export { KanjoPlayer } from './core/KanjoPlayer';
 export { EventEmitter } from './core/EventEmitter';
 export { StateManager, createInitialState } from './core/StateManager';
 export { MediaController } from './core/MediaController';
 
 // Type exports
 export type {
-  KimochiPlayerOptions,
-  KimochiPlayerState,
-  KimochiPlayerEvents,
-  KimochiPlayerAPI,
-  KimochiPlugin,
+  KanjoPlayerOptions,
+  KanjoPlayerState,
+  KanjoPlayerEvents,
+  KanjoPlayerAPI,
+  KanjoPlugin,
   ToolbarButtonConfig,
   MenuItemConfig,
   ThumbnailConfig,
@@ -40,4 +40,4 @@ export { KeyboardPlugin } from './plugins/built-in/KeyboardPlugin';
 export { ThumbnailManager } from './thumbnails/ThumbnailManager';
 
 // Web Component
-export { KimochiPlayerElement } from './web-component/KimochiPlayerElement';
+export { KanjoPlayerElement } from './web-component/KanjoPlayerElement';
