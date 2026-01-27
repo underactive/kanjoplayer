@@ -350,7 +350,7 @@ export class LoopDownloader {
 
       // Create and write watermark image if enabled
       if (hasWatermark) {
-        const watermark = this.createWatermarkImage();
+        const watermark = await this.createWatermarkImage();
         await this.ffmpeg.writeFile('watermark.png', watermark.data);
       }
 
@@ -490,7 +490,7 @@ export class LoopDownloader {
 
       // Create and write watermark image if enabled
       if (hasWatermark) {
-        const watermark = this.createWatermarkImage();
+        const watermark = await this.createWatermarkImage();
         await this.ffmpeg.writeFile('watermark.png', watermark.data);
       }
 
@@ -716,7 +716,7 @@ export class LoopDownloader {
    * Create watermark image using Canvas API
    * Returns the image data as Uint8Array (PNG format)
    */
-  private createWatermarkImage(): { data: Uint8Array; width: number; height: number } {
+  private async createWatermarkImage(): Promise<{ data: Uint8Array; width: number; height: number }> {
     const wm = this.options.watermark!;
     const text = wm.text || 'Downloaded from KanjoPlayer PoC';
     const fontSize = wm.fontSize ?? 18;
@@ -752,15 +752,15 @@ export class LoopDownloader {
     ctx.textBaseline = 'middle';
     ctx.fillText(text, 10, canvas.height / 2 + 1);
 
-    // Convert canvas to PNG data
-    const dataUrl = canvas.toDataURL('image/png');
-    const base64 = dataUrl.split(',')[1];
-    const binaryString = atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
+    // Convert canvas to PNG using toBlob (faster than toDataURL + base64 decode)
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (b) => (b ? resolve(b) : reject(new Error('Failed to create watermark blob'))),
+        'image/png'
+      );
+    });
 
+    const bytes = new Uint8Array(await blob.arrayBuffer());
     return { data: bytes, width: canvas.width, height: canvas.height };
   }
 
