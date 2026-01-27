@@ -70,11 +70,6 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
       this.emit('statechange', state);
     });
 
-    // Set initial source
-    if (this.options.src) {
-      this.setSrc(this.options.src, this.options.sourceType);
-    }
-
     // Initialize controls overlay
     if (this.options.controls) {
       this.initControls();
@@ -83,8 +78,13 @@ export class KimochiPlayer extends EventEmitter<KimochiPlayerEvents> implements 
     // Initialize fullscreen handlers
     this.initFullscreen();
 
-    // Load plugins
-    this.loadPlugins();
+    // Load plugins first, then set initial source
+    // This ensures HLS plugin is ready before HLS sources are set
+    this.loadPlugins().then(() => {
+      if (this.options.src) {
+        this.setSrc(this.options.src, this.options.sourceType);
+      }
+    });
   }
 
   // ============================================================================
