@@ -3,6 +3,7 @@
  */
 
 import type { KimochiPlayer } from '../core/KimochiPlayer';
+import type { SettingsMenuConfig, WatermarkConfig } from '../core/types';
 import { UIBuilder } from './UIBuilder';
 import { PlayButton, CenterPlayButton } from './controls/PlayButton';
 import { TimeDisplay } from './controls/TimeDisplay';
@@ -11,11 +12,18 @@ import { VolumeControl } from './controls/VolumeControl';
 import { FullscreenButton } from './controls/FullscreenButton';
 import { SettingsMenu } from './controls/SettingsMenu';
 import { ABLoopControl } from './controls/ABLoopControl';
+import { DownloadOverlay } from './DownloadOverlay';
+
+export interface ControlsOverlayOptions {
+  settings?: SettingsMenuConfig;
+  watermark?: WatermarkConfig;
+}
 
 export class ControlsOverlay {
   private element: HTMLElement;
   private player: KimochiPlayer;
   private bottomBar: HTMLElement;
+  private options: ControlsOverlayOptions;
 
   // Control components
   private centerPlayButton: CenterPlayButton;
@@ -24,11 +32,13 @@ export class ControlsOverlay {
   private progressBar: ProgressBar;
   private volumeControl: VolumeControl;
   private fullscreenButton: FullscreenButton;
-  private settingsMenu: SettingsMenu;
+  private settingsMenu: SettingsMenu | null = null;
   private abLoopControl: ABLoopControl;
+  private downloadOverlay: DownloadOverlay;
 
-  constructor(player: KimochiPlayer, container: HTMLElement) {
+  constructor(player: KimochiPlayer, container: HTMLElement, options?: ControlsOverlayOptions) {
     this.player = player;
+    this.options = options || {};
 
     // Create control components
     this.centerPlayButton = new CenterPlayButton(player);
@@ -37,8 +47,15 @@ export class ControlsOverlay {
     this.progressBar = new ProgressBar(player);
     this.volumeControl = new VolumeControl(player);
     this.fullscreenButton = new FullscreenButton(player);
-    this.settingsMenu = new SettingsMenu(player);
-    this.abLoopControl = new ABLoopControl(player);
+
+    // Settings menu (conditionally created based on enabled flag)
+    const settingsEnabled = this.options.settings?.enabled !== false;
+    if (settingsEnabled) {
+      this.settingsMenu = new SettingsMenu(player, this.options.settings);
+    }
+
+    this.abLoopControl = new ABLoopControl(player, { watermark: this.options.watermark });
+    this.downloadOverlay = new DownloadOverlay(container);
 
     // Wire up A/B loop control with progress bar
     this.abLoopControl.setStateChangeCallback((state) => {
@@ -51,6 +68,9 @@ export class ControlsOverlay {
         this.abLoopControl.updateEndTime(time);
       }
     });
+
+    // Wire up A/B loop control with download overlay
+    this.abLoopControl.setDownloadOverlay(this.downloadOverlay);
 
     // Build the overlay
     this.bottomBar = this.createBottomBar();
@@ -114,7 +134,9 @@ export class ControlsOverlay {
       className: 'kimochi-controls-right',
     });
     rightControls.appendChild(this.abLoopControl.getElement());
-    rightControls.appendChild(this.settingsMenu.getElement());
+    if (this.settingsMenu) {
+      rightControls.appendChild(this.settingsMenu.getElement());
+    }
     rightControls.appendChild(this.fullscreenButton.getElement());
 
     controlsRow.appendChild(leftControls);
