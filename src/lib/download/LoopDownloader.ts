@@ -626,10 +626,12 @@ export class LoopDownloader {
 
     // Accurate seeking (after input for frame-accurate start)
     // Placing -ss after -i decodes frame-by-frame for precise timing
-    args.push('-ss', startTime.toFixed(3));
+    // Use toFixed(6) for microsecond precision to avoid truncation errors
+    args.push('-ss', startTime.toFixed(6));
 
-    // Duration
-    args.push('-t', duration.toFixed(3));
+    // Duration - add small buffer (1ms) to ensure last frame is fully included
+    // FFmpeg's -t is exclusive, so without buffer we may cut the final frame short
+    args.push('-t', (duration + 0.001).toFixed(6));
 
     // Add watermark overlay filter if enabled
     if (hasWatermark) {
