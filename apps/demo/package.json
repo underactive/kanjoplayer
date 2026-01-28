@@ -2,25 +2,7 @@
   "name": "kanjo-player-demo",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview",
-    "typecheck": "vue-tsc --noEmit"
-  },
-  "dependencies": {
-    "kanjo-player": "*",
-    "hls.js": "^1.5.17",
-    "vue": "^3.5.13"
-  },
-  "devDependencies": {
-    "@jsquash/jpeg": "^1.6.0",
-    "@vitejs/plugin-vue": "^5.2.1",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.5",
-    "vite-plugin-top-level-await": "^1.6.0",
-    "vite-plugin-wasm": "^3.5.0",
-    "vue-tsc": "^2.2.0"
+    "dev": "npx serve ../.. -l 5173 --cors"
   }
 }
