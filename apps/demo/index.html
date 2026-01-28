@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KanjoPlayer Demo</title>
-  <link rel="stylesheet" href="/packages/kanjo-player/dist/kanjo-player.css">
+  <link rel="stylesheet" href="/lib/kanjo-player.css">
   <style>
     * {
       box-sizing: border-box;
@@ -28,8 +28,37 @@
     h1 {
       font-size: 2rem;
       color: #2E82FF;
-      margin-bottom: 24px;
+      margin-bottom: 8px;
       text-align: center;
+    }
+
+    .demo-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .demo-links a {
+      color: #b0b3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #3e4042;
+      transition: all 0.2s;
+    }
+
+    .demo-links a:hover {
+      color: #2E82FF;
+      border-color: #2E82FF;
+    }
+
+    .demo-links a.active {
+      color: #2E82FF;
+      border-color: #2E82FF;
+      background: rgba(46, 130, 255, 0.1);
     }
 
     .player-wrapper {
@@ -75,6 +104,12 @@
 <body>
   <div class="container">
     <h1>KanjoPlayer Demo</h1>
+    <nav class="demo-links">
+      <a href="/" class="active">Plain HTML</a>
+      <a href="/vue/">Vue</a>
+      <a href="/react/">React</a>
+      <a href="/svelte/">Svelte</a>
+    </nav>
     <div id="player" class="player-wrapper"></div>
     <div class="shortcuts-panel">
       <h4>Keyboard Shortcuts</h4>
@@ -99,7 +134,7 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 
   <!-- Load KanjoPlayer UMD bundle -->
-  <script src="/packages/kanjo-player/dist/kanjo-player.umd.js"></script>
+  <script src="/lib/kanjo-player.umd.js"></script>
 
   <script>
     // KanjoPlayer is available as a global via the UMD bundle

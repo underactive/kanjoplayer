@@ -11,7 +11,7 @@
     "dev:react": "npm run dev -w kanjo-player-demo-react",
     "dev:svelte": "npm run dev -w kanjo-player-demo-svelte",
     "build": "npm run build -w kanjo-player",
-    "build:all": "npm run build -w kanjo-player && npm run build -w kanjo-player-demo-vue",
+    "build:netlify": "bash scripts/build-netlify.sh",
     "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
