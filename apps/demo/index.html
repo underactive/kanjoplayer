@@ -1,50 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KanjoPlayer PoC - Video Stats Harness</title>
-    <!-- Heroicons CSS for custom button icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/heroicons@2.1.1/24/solid/style.min.css" />
-    <style>
-      /* Heroicons solid icon classes */
-      .hero-bookmark-solid {
-        display: inline-block;
-        width: 1em;
-        height: 1em;
-        background: currentColor;
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
-        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
-      }
-      .hero-share-solid {
-        display: inline-block;
-        width: 1em;
-        height: 1em;
-        background: currentColor;
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
-        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
-      }
-      .hero-sun-solid {
-        display: inline-block;
-        width: 1em;
-        height: 1em;
-        background: currentColor;
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z'/%3E%3C/svg%3E") center/contain no-repeat;
-        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z'/%3E%3C/svg%3E") center/contain no-repeat;
-      }
-      .hero-moon-solid {
-        display: inline-block;
-        width: 1em;
-        height: 1em;
-        background: currentColor;
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
-        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KanjoPlayer Demo</title>
+  <link rel="stylesheet" href="/packages/kanjo-player/dist/kanjo-player.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: #18191a;
+      color: #e4e6eb;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #2E82FF;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .player-wrapper {
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      max-height: 600px;
+      margin-bottom: 24px;
+    }
+
+    .shortcuts-panel {
+      background: #242526;
+      border-radius: 8px;
+      padding: 20px 24px;
+      border: 1px solid #3e4042;
+    }
+
+    .shortcuts-panel h4 {
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      color: #b0b3b8;
+    }
+
+    .shortcuts-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 24px;
+      font-size: 0.85rem;
+    }
+
+    .shortcuts-grid kbd {
+      display: inline-block;
+      padding: 2px 6px;
+      background: #3a3b3c;
+      border: 1px solid #4e4f50;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>KanjoPlayer Demo</h1>
+    <div id="player" class="player-wrapper"></div>
+    <div class="shortcuts-panel">
+      <h4>Keyboard Shortcuts</h4>
+      <div class="shortcuts-grid">
+        <div><kbd>Space</kbd> / <kbd>K</kbd> Play/Pause</div>
+        <div><kbd>M</kbd> Mute</div>
+        <div><kbd>F</kbd> Fullscreen</div>
+        <div><kbd>←</kbd> Rewind 10s</div>
+        <div><kbd>→</kbd> Forward 10s</div>
+        <div><kbd>↑</kbd> / <kbd>↓</kbd> Volume</div>
+        <div><kbd>&lt;</kbd> / <kbd>&gt;</kbd> Speed</div>
+        <div><kbd>0-9</kbd> Seek to %</div>
+        <div><kbd>[</kbd> Set loop start (A)</div>
+        <div><kbd>]</kbd> Set loop end (B)</div>
+        <div><kbd>\</kbd> Clear loop</div>
+        <div><kbd>L</kbd> Toggle loop</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load hls.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+
+  <!-- Load KanjoPlayer UMD bundle -->
+  <script src="/packages/kanjo-player/dist/kanjo-player.umd.js"></script>
+
+  <script>
+    // KanjoPlayer is available as a global via the UMD bundle
+    const player = new KanjoPlayer.KanjoPlayer({
+      container: document.getElementById('player'),
+      src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      sourceType: 'hls',
+      controls: true,
+      theme: 'dark',
+      autoplay: false,
+      muted: false,
+      thumbnails: { enabled: true },
+      plugins: [new KanjoPlayer.HlsPlugin()],
+    });
+  </script>
+</body>
 </html>

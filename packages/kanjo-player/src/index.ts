@@ -44,6 +44,3 @@ export { ThumbnailManager } from './thumbnails/ThumbnailManager';
 
 // Web Component
 export { KanjoPlayerElement } from './web-component/KanjoPlayerElement';
-
-// Vue Component
-export { default as KanjoPlayerVue } from './vue/KanjoPlayerVue.vue';

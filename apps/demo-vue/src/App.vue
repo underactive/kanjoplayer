@@ -29,8 +29,8 @@ onUnmounted(() => {
 <template>
   <div class="app">
     <header>
-      <h1>KanjoPlayer PoC</h1>
-      <p class="subtitle">WebAssembly Video Player Test Harness</p>
+      <h1>KanjoPlayer Demo</h1>
+      <p class="subtitle">Vue.js Implementation</p>
 
       <!-- Tab Switcher -->
       <div class="tabs">

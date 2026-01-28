@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "video",
@@ -37,20 +37,15 @@
     "type": "git",
     "url": ""
   },
+  "dependencies": {
+    "hls.js": "^1.5.17"
+  },
   "peerDependencies": {
-    "hls.js": "^1.5.17",
-    "vue": "^3.5.13",
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
     "@jsquash/jpeg": "^1.4.0"
   },
   "peerDependenciesMeta": {
-    "hls.js": {
-      "optional": true
-    },
-    "vue": {
-      "optional": true
-    },
     "@ffmpeg/ffmpeg": {
       "optional": true
     },
@@ -62,12 +57,9 @@
     }
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
     "terser": "^5.27.0",
     "typescript": "~5.6.2",
     "vite": "^6.0.5",
-    "vite-plugin-dts": "^4.0.0",
-    "vue": "^3.5.13",
-    "vue-tsc": "^2.2.0"
+    "vite-plugin-dts": "^4.0.0"
   }
 }

@@ -5,13 +5,11 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
-import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   plugins: [
-    vue(),
     dts({
-      include: ['src/**/*.ts', 'src/**/*.vue'],
+      include: ['src/**/*.ts'],
       exclude: ['src/**/*.worker.ts'],
       outDir: 'dist',
       rollupTypes: true,
@@ -26,7 +24,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // Externalize peer dependencies
-      external: ['hls.js', '@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg', 'vue'],
+      external: ['hls.js', '@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
       output: {
         // Global variables for UMD build
         globals: {
@@ -34,7 +32,6 @@ export default defineConfig({
           '@ffmpeg/ffmpeg': 'FFmpeg',
           '@ffmpeg/util': 'FFmpegUtil',
           '@jsquash/jpeg': 'jSquashJpeg',
-          'vue': 'Vue',
         },
         // Preserve CSS imports
         assetFileNames: (assetInfo) => {
