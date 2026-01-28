@@ -4,6 +4,9 @@
  * @packageDocumentation
  */
 
+// Import styles so they get bundled
+import './styles/kanjo-player.css';
+
 // Core exports
 export { KanjoPlayer } from './core/KanjoPlayer';
 export { EventEmitter } from './core/EventEmitter';
@@ -41,3 +44,6 @@ export { ThumbnailManager } from './thumbnails/ThumbnailManager';
 
 // Web Component
 export { KanjoPlayerElement } from './web-component/KanjoPlayerElement';
+
+// Vue Component
+export { default as KanjoPlayerVue } from './vue/KanjoPlayerVue.vue';

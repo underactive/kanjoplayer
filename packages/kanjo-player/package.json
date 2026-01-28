@@ -1,0 +1,73 @@
+{
+  "name": "kanjo-player",
+  "version": "0.1.0",
+  "description": "Framework-agnostic video player library with WebAssembly-powered thumbnail previews",
+  "type": "module",
+  "main": "./dist/kanjo-player.umd.js",
+  "module": "./dist/kanjo-player.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/kanjo-player.es.js",
+      "require": "./dist/kanjo-player.umd.js"
+    },
+    "./style.css": "./dist/kanjo-player.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "keywords": [
+    "video",
+    "player",
+    "hls",
+    "webassembly",
+    "wasm",
+    "ffmpeg",
+    "thumbnails",
+    "web-component"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "peerDependencies": {
+    "hls.js": "^1.5.17",
+    "vue": "^3.5.13",
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/util": "^0.12.1",
+    "@jsquash/jpeg": "^1.4.0"
+  },
+  "peerDependenciesMeta": {
+    "hls.js": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "@ffmpeg/ffmpeg": {
+      "optional": true
+    },
+    "@ffmpeg/util": {
+      "optional": true
+    },
+    "@jsquash/jpeg": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "terser": "^5.27.0",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.5",
+    "vite-plugin-dts": "^4.0.0",
+    "vue": "^3.5.13",
+    "vue-tsc": "^2.2.0"
+  }
+}

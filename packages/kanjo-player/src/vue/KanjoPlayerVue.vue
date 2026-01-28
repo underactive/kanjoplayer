@@ -3,7 +3,7 @@
  * Vue wrapper component for KanjoPlayer
  */
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
-import { KanjoPlayer } from '../lib/core/KanjoPlayer';
+import { KanjoPlayer } from '../core/KanjoPlayer';
 import type {
   KanjoPlayerOptions,
   KanjoPlayerState,
@@ -11,7 +11,7 @@ import type {
   KanjoPlugin,
   ThumbnailConfig,
   KanjoPlayerAPI
-} from '../lib/core/types';
+} from '../core/types';
 
 // Props
 interface Props {

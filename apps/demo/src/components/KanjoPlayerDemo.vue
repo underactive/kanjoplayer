@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { KanjoPlayer } from '../lib/core/KanjoPlayer';
-import { HlsPlugin } from '../lib/plugins/built-in/HlsPlugin';
+import { KanjoPlayer, HlsPlugin } from 'kanjo-player';
+import 'kanjo-player/style.css';
 import StatsPanel from './StatsPanel.vue';
 import EventLog from './EventLog.vue';
 import CustomEventsLog from './CustomEventsLog.vue';
@@ -12,9 +12,6 @@ import {
   NETWORK_STATE_MAP,
   READY_STATE_MAP,
 } from '../types/video-stats';
-
-// Import styles
-import '../lib/styles/kanjo-player.css';
 
 const VIDEO_SOURCES: VideoSource[] = [
   // HLS Sources

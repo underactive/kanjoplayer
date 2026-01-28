@@ -1,79 +1,17 @@
 {
-  "name": "kanjo-player",
-  "version": "0.1.0",
-  "description": "Framework-agnostic video player library with WebAssembly-powered thumbnail previews",
-  "type": "module",
-  "main": "./dist/kanjo-player.umd.js",
-  "module": "./dist/kanjo-player.es.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/kanjo-player.es.js",
-      "require": "./dist/kanjo-player.umd.js"
-    },
-    "./style.css": "./dist/kanjo-player.css",
-    "./vue": {
-      "import": "./dist/vue/KanjoPlayerVue.js",
-      "types": "./dist/vue/KanjoPlayerVue.d.ts"
-    }
-  },
-  "files": [
-    "dist"
+  "name": "kanjoplayer-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "build:lib": "vite build --config vite.config.lib.ts",
-    "build:all": "npm run build && npm run build:lib",
-    "preview": "vite preview",
-    "typecheck": "vue-tsc --noEmit"
-  },
-  "keywords": [
-    "video",
-    "player",
-    "hls",
-    "webassembly",
-    "wasm",
-    "ffmpeg",
-    "thumbnails",
-    "web-component"
-  ],
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "dependencies": {
-    "hls.js": "^1.5.17",
-    "vue": "^3.5.13"
-  },
-  "peerDependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.10",
-    "@ffmpeg/util": "^0.12.1",
-    "@jsquash/jpeg": "^1.4.0"
-  },
-  "peerDependenciesMeta": {
-    "@ffmpeg/ffmpeg": {
-      "optional": true
-    },
-    "@ffmpeg/util": {
-      "optional": true
-    },
-    "@jsquash/jpeg": {
-      "optional": true
-    }
+    "dev": "npm run dev -w kanjo-player-demo",
+    "build": "npm run build -w kanjo-player",
+    "build:all": "npm run build -w kanjo-player && npm run build -w kanjo-player-demo",
+    "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
-    "@jsquash/jpeg": "^1.6.0",
-    "@vitejs/plugin-vue": "^5.2.1",
-    "terser": "^5.27.0",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.5",
-    "vite-plugin-dts": "^4.0.0",
-    "vite-plugin-top-level-await": "^1.6.0",
-    "vite-plugin-wasm": "^3.5.0",
-    "vue-tsc": "^2.2.0"
+    "typescript": "~5.6.2"
   }
 }

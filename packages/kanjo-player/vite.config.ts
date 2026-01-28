@@ -1,30 +1,32 @@
 /**
- * Vite configuration for library build
+ * Vite configuration for kanjo-player library build
  */
 
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   plugins: [
+    vue(),
     dts({
-      include: ['src/lib/**/*.ts'],
-      exclude: ['src/lib/**/*.worker.ts'],
+      include: ['src/**/*.ts', 'src/**/*.vue'],
+      exclude: ['src/**/*.worker.ts'],
       outDir: 'dist',
       rollupTypes: true,
     }),
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/lib/index.ts'),
+      entry: resolve(__dirname, 'src/index.ts'),
       name: 'KanjoPlayer',
       formats: ['es', 'umd'],
       fileName: (format) => `kanjo-player.${format}.js`,
     },
     rollupOptions: {
       // Externalize peer dependencies
-      external: ['hls.js', '@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
+      external: ['hls.js', '@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg', 'vue'],
       output: {
         // Global variables for UMD build
         globals: {
@@ -32,6 +34,7 @@ export default defineConfig({
           '@ffmpeg/ffmpeg': 'FFmpeg',
           '@ffmpeg/util': 'FFmpegUtil',
           '@jsquash/jpeg': 'jSquashJpeg',
+          'vue': 'Vue',
         },
         // Preserve CSS imports
         assetFileNames: (assetInfo) => {
