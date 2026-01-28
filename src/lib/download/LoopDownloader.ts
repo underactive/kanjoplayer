@@ -616,16 +616,17 @@ export class LoopDownloader {
   ): string[] {
     const args: string[] = [];
 
-    // Input seeking (fast seek before input)
-    args.push('-ss', startTime.toFixed(3));
-
-    // Input file
+    // Input file first
     args.push('-i', inputFileName);
 
     // Watermark image input (if enabled)
     if (hasWatermark) {
       args.push('-i', 'watermark.png');
     }
+
+    // Accurate seeking (after input for frame-accurate start)
+    // Placing -ss after -i decodes frame-by-frame for precise timing
+    args.push('-ss', startTime.toFixed(3));
 
     // Duration
     args.push('-t', duration.toFixed(3));
