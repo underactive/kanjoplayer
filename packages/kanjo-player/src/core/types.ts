@@ -98,6 +98,18 @@ export interface SkipControlConfig {
   defaultDuration?: number;
 }
 
+export interface AirPlayConfig {
+  /** Enable AirPlay button (default: false, shows only when available) */
+  enabled?: boolean;
+}
+
+export interface CastConfig {
+  /** Enable Cast button (default: false, shows only when available) */
+  enabled?: boolean;
+  /** Cast receiver application ID (default: uses default media receiver) */
+  receiverApplicationId?: string;
+}
+
 export interface KanjoPlayerOptions {
   /** Container element or selector */
   container: HTMLElement | string;
@@ -131,6 +143,10 @@ export interface KanjoPlayerOptions {
   customButtons?: CustomButtonsConfig;
   /** Skip controls configuration */
   skipControls?: SkipControlConfig;
+  /** AirPlay configuration (Safari only) */
+  airPlay?: AirPlayConfig;
+  /** Google Cast configuration */
+  cast?: CastConfig;
   /** Plugins to load */
   plugins?: KanjoPlugin[];
   /** Custom CSS class for container */
@@ -475,5 +491,11 @@ export const DEFAULT_OPTIONS: Partial<KanjoPlayerOptions> = {
     enabled: false,
     durations: [5, 10, 15, 30, 60],
     defaultDuration: 10,
+  },
+  airPlay: {
+    enabled: false,
+  },
+  cast: {
+    enabled: false,
   },
 };

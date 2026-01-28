@@ -1,5 +1,6 @@
 /**
  * Time display component (current / duration)
+ * Shows only current time by default, expands on hover to show duration
  */
 
 import type { KanjoPlayer } from '../../core/KanjoPlayer';
@@ -9,6 +10,7 @@ export class TimeDisplay {
   private element: HTMLElement;
   private currentTimeEl: HTMLSpanElement;
   private durationEl: HTMLSpanElement;
+  private durationWrapper: HTMLSpanElement;
   private player: KanjoPlayer;
 
   constructor(player: KanjoPlayer) {
@@ -18,8 +20,11 @@ export class TimeDisplay {
     this.currentTimeEl.textContent = '0:00';
 
     this.durationEl = document.createElement('span');
-    this.durationEl.className = 'kanjo-time-duration';
+    this.durationEl.className = 'kanjo-time-duration-text';
     this.durationEl.textContent = '0:00';
+
+    this.durationWrapper = document.createElement('span');
+    this.durationWrapper.className = 'kanjo-time-duration';
 
     this.element = this.createElement();
     this.bindEvents();
@@ -30,9 +35,16 @@ export class TimeDisplay {
       className: 'kanjo-time-display',
     });
 
+    // Separator and duration are wrapped for animated expansion
+    const separator = document.createElement('span');
+    separator.className = 'kanjo-time-separator';
+    separator.textContent = ' / ';
+
+    this.durationWrapper.appendChild(separator);
+    this.durationWrapper.appendChild(this.durationEl);
+
     container.appendChild(this.currentTimeEl);
-    container.appendChild(document.createTextNode(' / '));
-    container.appendChild(this.durationEl);
+    container.appendChild(this.durationWrapper);
 
     return container;
   }

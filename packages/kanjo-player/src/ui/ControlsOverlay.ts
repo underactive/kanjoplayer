@@ -3,7 +3,7 @@
  */
 
 import type { KanjoPlayer } from '../core/KanjoPlayer';
-import type { SettingsMenuConfig, WatermarkConfig, CustomButtonsConfig, SkipControlConfig } from '../core/types';
+import type { SettingsMenuConfig, WatermarkConfig, CustomButtonsConfig, SkipControlConfig, AirPlayConfig, CastConfig } from '../core/types';
 import { UIBuilder } from './UIBuilder';
 import { PlayButton, CenterPlayButton } from './controls/PlayButton';
 import { TimeDisplay } from './controls/TimeDisplay';
@@ -16,12 +16,16 @@ import { DownloadOverlay } from './DownloadOverlay';
 import { VideoAdjustmentsPanel } from './controls/VideoAdjustmentsPanel';
 import { CustomButtonArea } from './controls/CustomButtonArea';
 import { SkipControl } from './controls/SkipControl';
+import { AirPlayButton } from './controls/AirPlayButton';
+import { CastButton } from './controls/CastButton';
 
 export interface ControlsOverlayOptions {
   settings?: SettingsMenuConfig;
   watermark?: WatermarkConfig;
   customButtons?: CustomButtonsConfig;
   skipControls?: SkipControlConfig;
+  airPlay?: AirPlayConfig;
+  cast?: CastConfig;
 }
 
 export class ControlsOverlay {
@@ -42,6 +46,8 @@ export class ControlsOverlay {
   private downloadOverlay: DownloadOverlay;
   private videoAdjustmentsPanel: VideoAdjustmentsPanel;
   private skipControl: SkipControl | null = null;
+  private airPlayButton: AirPlayButton | null = null;
+  private castButton: CastButton | null = null;
   // Custom button area (kept as reference for potential future use/cleanup)
   private _customButtonArea: CustomButtonArea | null = null;
 
@@ -66,6 +72,16 @@ export class ControlsOverlay {
     // Skip controls (conditionally created based on enabled flag)
     if (this.options.skipControls?.enabled) {
       this.skipControl = new SkipControl(player, this.options.skipControls);
+    }
+
+    // AirPlay button (conditionally created based on enabled flag)
+    if (this.options.airPlay?.enabled) {
+      this.airPlayButton = new AirPlayButton(player);
+    }
+
+    // Cast button (conditionally created based on enabled flag)
+    if (this.options.cast?.enabled) {
+      this.castButton = new CastButton(player, this.options.cast);
     }
 
     this.abLoopControl = new ABLoopControl(player, { watermark: this.options.watermark });
@@ -168,6 +184,12 @@ export class ControlsOverlay {
       className: 'kanjo-controls-right',
     });
     rightControls.appendChild(this.abLoopControl.getElement());
+    if (this.airPlayButton) {
+      rightControls.appendChild(this.airPlayButton.getElement());
+    }
+    if (this.castButton) {
+      rightControls.appendChild(this.castButton.getElement());
+    }
     if (this.settingsMenu) {
       rightControls.appendChild(this.settingsMenu.getElement());
     }
@@ -211,6 +233,9 @@ export class ControlsOverlay {
   destroy(): void {
     if (this._customButtonArea) {
       this._customButtonArea.destroy();
+    }
+    if (this.castButton) {
+      this.castButton.destroy();
     }
   }
 }
