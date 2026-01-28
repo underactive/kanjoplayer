@@ -254,8 +254,10 @@ export class ProgressBar {
         this.onLoopMarkerDrag(type, time);
       }
 
-      // Show time above the marker being dragged
-      this.showMarkerTime(type, time, e);
+      // Show thumbnail preview at marker time during drag (includes time label)
+      const rect = this.progressContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      this.thumbnailPreview.show(time, x, rect.width);
 
       // Update zoomed view if in zoom mode
       if (this.isZoomed) {
@@ -278,8 +280,11 @@ export class ProgressBar {
         this.exitZoomMode();
       }
 
-      // Hide hover time display and remove marker styling
-      this.hoverTime.classList.remove('kanjo-visible', 'kanjo-marker-time');
+      // Hide hover time display
+      this.hoverTime.classList.remove('kanjo-visible');
+
+      // Hide thumbnail preview
+      this.thumbnailPreview.hide();
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -353,16 +358,6 @@ export class ProgressBar {
 
     // Map 0-1 to zoom range
     return this.zoomStartTime + percent * (this.zoomEndTime - this.zoomStartTime);
-  }
-
-  private showMarkerTime(_type: 'start' | 'end', time: number, e: MouseEvent): void {
-    const rect = this.progressContainer.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-
-    // Use hover time element to show the marker time
-    this.hoverTime.textContent = UIBuilder.formatTime(time);
-    this.hoverTime.style.left = `${x}px`;
-    this.hoverTime.classList.add('kanjo-visible', 'kanjo-marker-time');
   }
 
   private getZoomedPercent(time: number): number {
