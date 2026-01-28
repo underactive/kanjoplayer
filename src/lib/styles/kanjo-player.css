@@ -307,15 +307,6 @@
   opacity: 1;
 }
 
-.kanjo-progress-hover-time.kanjo-marker-time {
-  background: var(--kanjo-primary);
-  color: #fff;
-  font-weight: 600;
-  padding: 6px 10px;
-  font-size: 13px;
-  z-index: 50; /* Above zoom indicator (40) */
-}
-
 /* ============================================================================
    Volume Control
    ============================================================================ */
@@ -867,7 +858,7 @@
   transition: opacity var(--kanjo-transition-fast),
     transform var(--kanjo-transition-fast),
     visibility var(--kanjo-transition-fast);
-  z-index: var(--kanjo-z-tooltip);
+  z-index: calc(var(--kanjo-z-tooltip) + 10);
 }
 
 .kanjo-thumbnail-preview.kanjo-visible {
