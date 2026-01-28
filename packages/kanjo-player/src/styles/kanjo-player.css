@@ -1528,3 +1528,149 @@
   font-size: var(--kanjo-icon-size);
   line-height: 1;
 }
+
+/* ============================================================================
+   Skip Controls
+   ============================================================================ */
+
+.kanjo-skip-control {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.kanjo-skip-container {
+  position: relative;
+}
+
+.kanjo-skip-btn {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: auto;
+  padding: 0 6px;
+  height: var(--kanjo-btn-size);
+}
+
+.kanjo-skip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.kanjo-skip-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.kanjo-skip-label {
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 14px;
+  text-align: center;
+}
+
+.kanjo-skip-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: -2px;
+  opacity: 0.6;
+  transition: transform var(--kanjo-transition-fast), opacity var(--kanjo-transition-fast);
+}
+
+.kanjo-skip-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+
+.kanjo-skip-btn:hover .kanjo-skip-chevron {
+  opacity: 1;
+}
+
+.kanjo-skip-btn.kanjo-dropdown-open .kanjo-skip-chevron {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* Skip dropdown */
+.kanjo-skip-dropdown {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--kanjo-menu-bg);
+  border-radius: var(--kanjo-menu-radius);
+  box-shadow: var(--kanjo-shadow);
+  padding: 6px 0;
+  min-width: 70px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(8px);
+  transition: opacity var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast);
+  z-index: var(--kanjo-z-menu);
+}
+
+.kanjo-skip-dropdown.kanjo-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.kanjo-skip-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--kanjo-text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  cursor: pointer;
+  transition: background var(--kanjo-transition-fast), color var(--kanjo-transition-fast);
+}
+
+.kanjo-skip-option:hover {
+  background: var(--kanjo-bg-hover);
+}
+
+.kanjo-skip-option.kanjo-active {
+  color: var(--kanjo-primary);
+  font-weight: 600;
+}
+
+/* Responsive adjustments for skip controls */
+@media (max-width: 480px) {
+  .kanjo-skip-btn {
+    padding: 0 4px;
+  }
+
+  .kanjo-skip-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .kanjo-skip-label {
+    font-size: 10px;
+  }
+
+  .kanjo-skip-chevron {
+    width: 12px;
+    height: 12px;
+  }
+
+  .kanjo-skip-chevron svg {
+    width: 12px;
+    height: 12px;
+  }
+}

@@ -89,6 +89,15 @@ export interface WatermarkConfig {
   padding?: number;
 }
 
+export interface SkipControlConfig {
+  /** Enable skip controls (default: false) */
+  enabled?: boolean;
+  /** Available skip durations in seconds (default: [5, 10, 15, 30, 60]) */
+  durations?: number[];
+  /** Default skip duration in seconds (default: 10) */
+  defaultDuration?: number;
+}
+
 export interface KanjoPlayerOptions {
   /** Container element or selector */
   container: HTMLElement | string;
@@ -120,6 +129,8 @@ export interface KanjoPlayerOptions {
   watermark?: WatermarkConfig;
   /** Custom buttons configuration */
   customButtons?: CustomButtonsConfig;
+  /** Skip controls configuration */
+  skipControls?: SkipControlConfig;
   /** Plugins to load */
   plugins?: KanjoPlugin[];
   /** Custom CSS class for container */
@@ -459,5 +470,10 @@ export const DEFAULT_OPTIONS: Partial<KanjoPlayerOptions> = {
     opacity: 0.5,
     position: 'bottom-right',
     padding: 10,
+  },
+  skipControls: {
+    enabled: false,
+    durations: [5, 10, 15, 30, 60],
+    defaultDuration: 10,
   },
 };
