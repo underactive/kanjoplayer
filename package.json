@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "npm run dev -w kanjo-player-demo",
     "dev:vue": "npm run dev -w kanjo-player-demo-vue",
-    "dev:vanilla": "npm run dev -w kanjo-player-demo-vanilla",
     "dev:react": "npm run dev -w kanjo-player-demo-react",
     "dev:svelte": "npm run dev -w kanjo-player-demo-svelte",
     "build": "npm run build -w kanjo-player",
