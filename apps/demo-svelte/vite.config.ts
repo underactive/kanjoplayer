@@ -3,7 +3,8 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/svelte/' : '/',
   plugins: [svelte(), wasm(), topLevelAwait()],
   server: {
     headers: {
@@ -15,4 +16,4 @@ export default defineConfig({
     exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
   },
   assetsInclude: ['**/*.wasm'],
-})
+}))
