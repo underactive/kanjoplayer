@@ -74,6 +74,8 @@ const playerCode = `player.value = new KanjoPlayer({
   muted: false,
   thumbnails: { enabled: true },
   skipControls: { enabled: true },
+  airPlay: { enabled: true },
+  cast: { enabled: true },
   plugins: [new HlsPlugin()],
   customButtons: {
     enabled: true,
@@ -235,6 +237,8 @@ function initPlayer() {
     muted: false,
     thumbnails: { enabled: true },
     skipControls: { enabled: true },
+    airPlay: { enabled: true },
+    cast: { enabled: true },
     plugins: [new HlsPlugin()],
     customButtons: {
       enabled: true,

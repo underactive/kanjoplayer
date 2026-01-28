@@ -32,11 +32,14 @@ export class ABLoopControl {
   };
 
   // UI elements
-  private startBtn: HTMLButtonElement;
-  private endBtn: HTMLButtonElement;
-  private clearBtn: HTMLButtonElement;
-  private toggleBtn: HTMLButtonElement;
-  private downloadBtn: HTMLButtonElement;
+  private startBtn!: HTMLButtonElement;
+  private endBtn!: HTMLButtonElement;
+  private toggleBtn!: HTMLButtonElement;
+  private toggleDropdown!: HTMLElement;
+  private toggleContainer!: HTMLElement;
+  private clearMenuItem!: HTMLButtonElement;
+  private downloadMenuItem!: HTMLButtonElement;
+  private dropdownOpen = false;
 
   // Download functionality
   private loopDownloader: LoopDownloader | null = null;
@@ -57,32 +60,14 @@ export class ABLoopControl {
     this.endBtn = this.createLoopPointButton('end', 'Set loop end point ]', () => this.setEndPoint());
     this.endBtn.classList.add('kanjo-abloop-end');
 
-    this.clearBtn = this.createIconButton(UIBuilder.icons.clearLoop, 'Clear loop points', () => this.clearPoints());
-    this.clearBtn.classList.add('kanjo-abloop-clear');
-
-    this.toggleBtn = this.createIconButton(UIBuilder.icons.loop, 'Toggle A/B loop', () => this.toggleLoop());
-    this.toggleBtn.classList.add('kanjo-abloop-toggle');
-
-    this.downloadBtn = this.createIconButton(UIBuilder.icons.downloadLoop, 'Download loop clip', () => this.downloadLoop());
-    this.downloadBtn.classList.add('kanjo-abloop-download');
+    // Create toggle button with dropdown
+    this.toggleBtn = this.createToggleButton();
+    this.toggleDropdown = this.createToggleDropdown();
+    this.toggleContainer = this.createToggleContainer();
 
     this.element = this.createElement();
     this.bindEvents();
     this.updateButtonStates();
-  }
-
-  private createIconButton(icon: string, tooltip: string, onClick: () => void): HTMLButtonElement {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'kanjo-btn kanjo-abloop-btn';
-    btn.innerHTML = icon;
-    btn.title = tooltip;
-    btn.setAttribute('aria-label', tooltip);
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      onClick();
-    });
-    return btn;
   }
 
   private createLoopPointButton(type: 'start' | 'end', tooltip: string, onClick: () => void): HTMLButtonElement {
@@ -121,6 +106,104 @@ export class ABLoopControl {
     return btn;
   }
 
+  private createToggleButton(): HTMLButtonElement {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'kanjo-btn kanjo-abloop-btn kanjo-abloop-toggle';
+
+    // Loop icon
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'kanjo-abloop-toggle-icon';
+    iconSpan.innerHTML = UIBuilder.icons.loop;
+    btn.appendChild(iconSpan);
+
+    // Dropdown chevron
+    const chevronSpan = document.createElement('span');
+    chevronSpan.className = 'kanjo-abloop-toggle-chevron';
+    chevronSpan.innerHTML = UIBuilder.icons.chevronDown;
+    btn.appendChild(chevronSpan);
+
+    btn.title = 'Toggle A/B loop';
+    btn.setAttribute('aria-label', 'Toggle A/B loop');
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const target = e.target as HTMLElement;
+      // If clicking the chevron, toggle dropdown
+      if (target.closest('.kanjo-abloop-toggle-chevron')) {
+        this.toggleDropdownMenu();
+      } else {
+        // Main button action: toggle loop
+        this.toggleLoop();
+      }
+    });
+
+    return btn;
+  }
+
+  private createToggleDropdown(): HTMLElement {
+    const dropdown = UIBuilder.create({
+      className: 'kanjo-abloop-dropdown',
+    });
+
+    // Download clip option
+    this.downloadMenuItem = document.createElement('button');
+    this.downloadMenuItem.type = 'button';
+    this.downloadMenuItem.className = 'kanjo-abloop-dropdown-item';
+    this.downloadMenuItem.innerHTML = `
+      <span class="kanjo-abloop-dropdown-icon">${UIBuilder.icons.downloadLoop}</span>
+      <span class="kanjo-abloop-dropdown-label">Download clip</span>
+    `;
+    this.downloadMenuItem.title = 'Download loop clip';
+    this.downloadMenuItem.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.closeDropdown();
+      this.downloadLoop();
+    });
+    dropdown.appendChild(this.downloadMenuItem);
+
+    // Clear markers option
+    this.clearMenuItem = document.createElement('button');
+    this.clearMenuItem.type = 'button';
+    this.clearMenuItem.className = 'kanjo-abloop-dropdown-item';
+    this.clearMenuItem.innerHTML = `
+      <span class="kanjo-abloop-dropdown-icon">${UIBuilder.icons.clearLoop}</span>
+      <span class="kanjo-abloop-dropdown-label">Clear markers</span>
+    `;
+    this.clearMenuItem.title = 'Clear loop points';
+    this.clearMenuItem.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.closeDropdown();
+      this.clearPoints();
+    });
+    dropdown.appendChild(this.clearMenuItem);
+
+    return dropdown;
+  }
+
+  private createToggleContainer(): HTMLElement {
+    const container = UIBuilder.create({
+      className: 'kanjo-abloop-toggle-container',
+    });
+
+    container.appendChild(this.toggleDropdown);
+    container.appendChild(this.toggleBtn);
+
+    return container;
+  }
+
+  private toggleDropdownMenu(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+    this.toggleDropdown.classList.toggle('kanjo-open', this.dropdownOpen);
+    this.toggleBtn.classList.toggle('kanjo-dropdown-open', this.dropdownOpen);
+  }
+
+  private closeDropdown(): void {
+    this.dropdownOpen = false;
+    this.toggleDropdown.classList.remove('kanjo-open');
+    this.toggleBtn.classList.remove('kanjo-dropdown-open');
+  }
+
   private createElement(): HTMLElement {
     const container = UIBuilder.create({
       className: 'kanjo-abloop-control',
@@ -128,9 +211,7 @@ export class ABLoopControl {
 
     container.appendChild(this.startBtn);
     container.appendChild(this.endBtn);
-    container.appendChild(this.clearBtn);
-    container.appendChild(this.toggleBtn);
-    container.appendChild(this.downloadBtn);
+    container.appendChild(this.toggleContainer);
 
     return container;
   }
@@ -168,6 +249,18 @@ export class ABLoopControl {
 
     this.player.on('toggleloop', () => {
       this.toggleLoop();
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!this.toggleContainer.contains(e.target as Node)) {
+        this.closeDropdown();
+      }
+    });
+
+    // Close dropdown on fullscreen change
+    this.player.on('fullscreenchange', () => {
+      this.closeDropdown();
     });
   }
 
@@ -317,8 +410,8 @@ export class ABLoopControl {
       this.downloadOverlay.showProgress(progress, () => this.cancelDownload());
     }
 
-    // Also update button title as fallback
-    this.downloadBtn.title = `${progress.message} (${progress.progress}%)`;
+    // Also update menu item title as fallback
+    this.downloadMenuItem.title = `${progress.message} (${progress.progress}%)`;
 
     if (progress.phase === 'error') {
       console.error('[ABLoopControl] Download error:', progress.message);
@@ -335,15 +428,17 @@ export class ABLoopControl {
   }
 
   private updateDownloadButtonState(state: 'idle' | 'downloading'): void {
+    const iconEl = this.downloadMenuItem.querySelector('.kanjo-abloop-dropdown-icon');
+
     if (state === 'downloading') {
-      this.downloadBtn.innerHTML = UIBuilder.icons.spinner;
-      this.downloadBtn.classList.add('kanjo-downloading');
-      this.downloadBtn.disabled = true;
-      this.downloadBtn.title = 'Preparing...';
+      if (iconEl) iconEl.innerHTML = UIBuilder.icons.spinner;
+      this.downloadMenuItem.classList.add('kanjo-downloading');
+      this.downloadMenuItem.disabled = true;
+      this.downloadMenuItem.title = 'Preparing...';
     } else {
-      this.downloadBtn.innerHTML = UIBuilder.icons.downloadLoop;
-      this.downloadBtn.classList.remove('kanjo-downloading');
-      this.downloadBtn.disabled = false;
+      if (iconEl) iconEl.innerHTML = UIBuilder.icons.downloadLoop;
+      this.downloadMenuItem.classList.remove('kanjo-downloading');
+      this.downloadMenuItem.disabled = false;
       this.updateButtonStates(); // Restore proper title
 
       // Hide progress overlay
@@ -379,15 +474,17 @@ export class ABLoopControl {
       if (endTimeSpan) endTimeSpan.textContent = '';
     }
 
-    // Update clear button visibility
-    if (this.state.startTime !== null || this.state.endTime !== null) {
-      this.clearBtn.classList.remove('kanjo-hidden');
+    // Update toggle button and dropdown visibility
+    const canToggle = this.state.startTime !== null && this.state.endTime !== null;
+    const hasAnyMarker = this.state.startTime !== null || this.state.endTime !== null;
+
+    // Show/hide toggle container based on whether any marker is set
+    if (hasAnyMarker) {
+      this.toggleContainer.classList.remove('kanjo-hidden');
     } else {
-      this.clearBtn.classList.add('kanjo-hidden');
+      this.toggleContainer.classList.add('kanjo-hidden');
     }
 
-    // Update toggle button
-    const canToggle = this.state.startTime !== null && this.state.endTime !== null;
     this.toggleBtn.disabled = !canToggle;
 
     if (this.state.enabled) {
@@ -398,32 +495,27 @@ export class ABLoopControl {
       this.toggleBtn.title = canToggle ? 'Enable A/B loop' : 'Set A and B points first';
     }
 
-    // Update download button
-    const canDownload = this.state.startTime !== null && this.state.endTime !== null;
+    // Update download menu item
     if (!this.isDownloading) {
-      this.downloadBtn.disabled = !canDownload;
+      this.downloadMenuItem.disabled = !canToggle;
 
-      if (canDownload) {
+      if (canToggle) {
         const duration = this.state.endTime! - this.state.startTime!;
         if (duration > MAX_LOOP_DURATION) {
-          this.downloadBtn.classList.add('kanjo-disabled');
-          this.downloadBtn.title = `Clip too long (${Math.round(duration)}s). Max: ${MAX_LOOP_DURATION}s`;
+          this.downloadMenuItem.classList.add('kanjo-disabled');
+          this.downloadMenuItem.title = `Clip too long (${Math.round(duration)}s). Max: ${MAX_LOOP_DURATION}s`;
         } else {
-          this.downloadBtn.classList.remove('kanjo-disabled');
-          this.downloadBtn.title = `Download ${Math.round(duration)}s clip`;
+          this.downloadMenuItem.classList.remove('kanjo-disabled');
+          this.downloadMenuItem.title = `Download ${Math.round(duration)}s clip`;
         }
       } else {
-        this.downloadBtn.classList.add('kanjo-hidden');
-        this.downloadBtn.title = 'Set A and B points to download';
-      }
-
-      // Show/hide download button based on whether loop is set
-      if (canDownload) {
-        this.downloadBtn.classList.remove('kanjo-hidden');
-      } else {
-        this.downloadBtn.classList.add('kanjo-hidden');
+        this.downloadMenuItem.title = 'Set A and B points to download';
       }
     }
+
+    // Update clear menu item
+    this.clearMenuItem.disabled = !hasAnyMarker;
+    this.clearMenuItem.title = hasAnyMarker ? 'Clear loop points' : 'No markers to clear';
   }
 
   private notifyStateChange(): void {

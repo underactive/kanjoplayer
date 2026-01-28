@@ -134,6 +134,12 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
         durations: [5, 10, 15, 30, 60],
         defaultDuration: 10,
       },
+      airPlay: {
+        enabled: false,
+      },
+      cast: {
+        enabled: false,
+      },
       plugins: [],
       className: '',
       keyboardShortcuts: true,
@@ -163,6 +169,14 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       skipControls: {
         ...defaults.skipControls,
         ...options.skipControls,
+      },
+      airPlay: {
+        ...defaults.airPlay,
+        ...options.airPlay,
+      },
+      cast: {
+        ...defaults.cast,
+        ...options.cast,
       },
     } as Required<KanjoPlayerOptions>;
   }
@@ -228,6 +242,8 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       watermark: this.options.watermark,
       customButtons: this.options.customButtons,
       skipControls: this.options.skipControls,
+      airPlay: this.options.airPlay,
+      cast: this.options.cast,
     }).getElement();
 
     // Setup controls visibility

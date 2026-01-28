@@ -143,6 +143,8 @@ function KanjoPlayerDemo() {
       muted: false,
       thumbnails: { enabled: true },
       skipControls: { enabled: true },
+      airPlay: { enabled: true },
+      cast: { enabled: true },
       plugins: [new HlsPlugin()],
       customButtons: {
         enabled: true,

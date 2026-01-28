@@ -194,11 +194,14 @@
    ============================================================================ */
 
 .kanjo-time-display {
+  display: inline-flex;
+  align-items: center;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   color: var(--kanjo-text);
   white-space: nowrap;
   padding: 0 8px;
+  cursor: default;
 }
 
 .kanjo-time-current {
@@ -206,6 +209,28 @@
 }
 
 .kanjo-time-duration {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease-out,
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.kanjo-time-display:hover .kanjo-time-duration {
+  width: 70px;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.kanjo-time-separator {
+  color: var(--kanjo-text-muted);
+}
+
+.kanjo-time-duration-text {
   color: var(--kanjo-text-secondary);
 }
 
@@ -608,16 +633,17 @@
   display: none;
 }
 
-.kanjo-abloop-clear {
-  opacity: 0.5;
-}
-
-.kanjo-abloop-clear:hover {
-  opacity: 1;
+/* Toggle button container with dropdown */
+.kanjo-abloop-toggle-container {
+  position: relative;
 }
 
 .kanjo-abloop-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
   opacity: 0.5;
+  padding: 0 4px 0 8px;
 }
 
 .kanjo-abloop-toggle:not(:disabled) {
@@ -642,31 +668,109 @@
   cursor: not-allowed;
 }
 
-/* Download Button */
-.kanjo-abloop-download {
-  padding: 4px 8px;
+.kanjo-abloop-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.kanjo-abloop-download:not(:disabled) {
+.kanjo-abloop-toggle-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.kanjo-abloop-toggle-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  transition: transform var(--kanjo-transition-fast), opacity var(--kanjo-transition-fast);
+}
+
+.kanjo-abloop-toggle-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+
+.kanjo-abloop-toggle:hover .kanjo-abloop-toggle-chevron {
+  opacity: 1;
+}
+
+.kanjo-abloop-toggle.kanjo-dropdown-open .kanjo-abloop-toggle-chevron {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* Toggle dropdown menu */
+.kanjo-abloop-dropdown {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: var(--kanjo-menu-bg);
+  border-radius: var(--kanjo-menu-radius);
+  box-shadow: var(--kanjo-shadow);
+  padding: 6px 0;
+  min-width: 150px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast),
+    visibility var(--kanjo-transition-fast);
+  z-index: var(--kanjo-z-menu);
+}
+
+.kanjo-abloop-dropdown.kanjo-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.kanjo-abloop-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
   color: var(--kanjo-text);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--kanjo-transition-fast), color var(--kanjo-transition-fast);
 }
 
-.kanjo-abloop-download:not(:disabled):hover {
+.kanjo-abloop-dropdown-item:hover:not(:disabled) {
   background: var(--kanjo-bg-hover);
-  color: var(--kanjo-primary);
 }
 
-.kanjo-abloop-download.kanjo-downloading {
-  color: var(--kanjo-primary);
-}
-
-.kanjo-abloop-download.kanjo-downloading svg {
-  animation: kanjo-spin 1s linear infinite;
-}
-
-.kanjo-abloop-download.kanjo-disabled {
+.kanjo-abloop-dropdown-item:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.kanjo-abloop-dropdown-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.kanjo-abloop-dropdown-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.kanjo-abloop-dropdown-label {
+  flex: 1;
+}
+
+.kanjo-abloop-dropdown-item.kanjo-downloading .kanjo-abloop-dropdown-icon svg {
+  animation: kanjo-spin 1s linear infinite;
 }
 
 @keyframes kanjo-spin {
@@ -1673,4 +1777,32 @@
     width: 12px;
     height: 12px;
   }
+}
+
+/* ============================================================================
+   AirPlay & Cast Buttons
+   ============================================================================ */
+
+.kanjo-airplay-btn,
+.kanjo-cast-btn {
+  opacity: 0.8;
+  transition: opacity var(--kanjo-transition-fast),
+    background var(--kanjo-transition-fast),
+    color var(--kanjo-transition-fast);
+}
+
+.kanjo-airplay-btn:hover,
+.kanjo-cast-btn:hover {
+  opacity: 1;
+}
+
+.kanjo-airplay-btn.kanjo-active,
+.kanjo-cast-btn.kanjo-active {
+  opacity: 1;
+  color: var(--kanjo-primary);
+}
+
+.kanjo-airplay-btn.kanjo-active:hover,
+.kanjo-cast-btn.kanjo-active:hover {
+  color: var(--kanjo-primary-hover);
 }
