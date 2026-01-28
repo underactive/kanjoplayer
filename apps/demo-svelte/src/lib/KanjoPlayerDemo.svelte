@@ -143,6 +143,7 @@
       autoplay: false,
       muted: false,
       thumbnails: { enabled: true },
+      skipControls: { enabled: true },
       plugins: [new HlsPlugin()],
       customButtons: {
         enabled: true,

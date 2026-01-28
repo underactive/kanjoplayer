@@ -129,6 +129,11 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
         enabled: false,
         buttons: [],
       },
+      skipControls: {
+        enabled: false,
+        durations: [5, 10, 15, 30, 60],
+        defaultDuration: 10,
+      },
       plugins: [],
       className: '',
       keyboardShortcuts: true,
@@ -154,6 +159,10 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       customButtons: {
         ...defaults.customButtons,
         ...options.customButtons,
+      },
+      skipControls: {
+        ...defaults.skipControls,
+        ...options.skipControls,
       },
     } as Required<KanjoPlayerOptions>;
   }
@@ -218,6 +227,7 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       settings: this.options.settings,
       watermark: this.options.watermark,
       customButtons: this.options.customButtons,
+      skipControls: this.options.skipControls,
     }).getElement();
 
     // Setup controls visibility

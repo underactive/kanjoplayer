@@ -3,7 +3,7 @@
  */
 
 import type { KanjoPlayer } from '../core/KanjoPlayer';
-import type { SettingsMenuConfig, WatermarkConfig, CustomButtonsConfig } from '../core/types';
+import type { SettingsMenuConfig, WatermarkConfig, CustomButtonsConfig, SkipControlConfig } from '../core/types';
 import { UIBuilder } from './UIBuilder';
 import { PlayButton, CenterPlayButton } from './controls/PlayButton';
 import { TimeDisplay } from './controls/TimeDisplay';
@@ -15,11 +15,13 @@ import { ABLoopControl } from './controls/ABLoopControl';
 import { DownloadOverlay } from './DownloadOverlay';
 import { VideoAdjustmentsPanel } from './controls/VideoAdjustmentsPanel';
 import { CustomButtonArea } from './controls/CustomButtonArea';
+import { SkipControl } from './controls/SkipControl';
 
 export interface ControlsOverlayOptions {
   settings?: SettingsMenuConfig;
   watermark?: WatermarkConfig;
   customButtons?: CustomButtonsConfig;
+  skipControls?: SkipControlConfig;
 }
 
 export class ControlsOverlay {
@@ -39,6 +41,7 @@ export class ControlsOverlay {
   private abLoopControl: ABLoopControl;
   private downloadOverlay: DownloadOverlay;
   private videoAdjustmentsPanel: VideoAdjustmentsPanel;
+  private skipControl: SkipControl | null = null;
   // Custom button area (kept as reference for potential future use/cleanup)
   private _customButtonArea: CustomButtonArea | null = null;
 
@@ -58,6 +61,11 @@ export class ControlsOverlay {
     const settingsEnabled = this.options.settings?.enabled !== false;
     if (settingsEnabled) {
       this.settingsMenu = new SettingsMenu(player, this.options.settings);
+    }
+
+    // Skip controls (conditionally created based on enabled flag)
+    if (this.options.skipControls?.enabled) {
+      this.skipControl = new SkipControl(player, this.options.skipControls);
     }
 
     this.abLoopControl = new ABLoopControl(player, { watermark: this.options.watermark });
@@ -149,6 +157,9 @@ export class ControlsOverlay {
       className: 'kanjo-controls-left',
     });
     leftControls.appendChild(this.playButton.getElement());
+    if (this.skipControl) {
+      leftControls.appendChild(this.skipControl.getElement());
+    }
     leftControls.appendChild(this.volumeControl.getElement());
     leftControls.appendChild(this.timeDisplay.getElement());
 

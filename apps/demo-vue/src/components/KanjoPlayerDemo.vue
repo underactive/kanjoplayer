@@ -73,6 +73,7 @@ const playerCode = `player.value = new KanjoPlayer({
   autoplay: false,
   muted: false,
   thumbnails: { enabled: true },
+  skipControls: { enabled: true },
   plugins: [new HlsPlugin()],
   customButtons: {
     enabled: true,
@@ -233,6 +234,7 @@ function initPlayer() {
     autoplay: false,
     muted: false,
     thumbnails: { enabled: true },
+    skipControls: { enabled: true },
     plugins: [new HlsPlugin()],
     customButtons: {
       enabled: true,
