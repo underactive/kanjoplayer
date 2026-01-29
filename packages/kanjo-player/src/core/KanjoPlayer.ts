@@ -5,6 +5,9 @@
 import { EventEmitter } from './EventEmitter';
 import { MediaController } from './MediaController';
 import { StateManager } from './StateManager';
+import { ControlsOverlay } from '../ui/ControlsOverlay';
+import { KeyboardPlugin } from '../plugins/built-in/KeyboardPlugin';
+import { ThumbnailManager } from '../thumbnails/ThumbnailManager';
 import type {
   KanjoPlayerOptions,
   KanjoPlayerState,
@@ -31,8 +34,8 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
   private toolbarButtons: Map<string, ToolbarButtonConfig> = new Map();
   private menuItems: Map<string, MenuItemConfig> = new Map();
 
-  // Thumbnail manager (lazy loaded)
-  private thumbnailManager: unknown = null;
+  // Thumbnail manager (lazy initialized)
+  private thumbnailManager: ThumbnailManager | null = null;
 
   constructor(options: KanjoPlayerOptions) {
     super();
@@ -234,9 +237,7 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
     });
   }
 
-  private async initControls(): Promise<void> {
-    // Dynamically import ControlsOverlay to avoid circular dependencies
-    const { ControlsOverlay } = await import('../ui/ControlsOverlay');
+  private initControls(): void {
     this.controlsOverlay = new ControlsOverlay(this, this.container, {
       settings: this.options.settings,
       watermark: this.options.watermark,
@@ -342,7 +343,6 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
   private async loadPlugins(): Promise<void> {
     // Load built-in keyboard plugin if enabled
     if (this.options.keyboardShortcuts) {
-      const { KeyboardPlugin } = await import('../plugins/built-in/KeyboardPlugin');
       await this.use(new KeyboardPlugin());
     }
 
@@ -607,13 +607,12 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       return null;
     }
 
-    // Lazy load thumbnail manager
+    // Lazy initialize thumbnail manager
     if (!this.thumbnailManager) {
-      const { ThumbnailManager } = await import('../thumbnails/ThumbnailManager');
       this.thumbnailManager = new ThumbnailManager(this, this.options.thumbnails);
     }
 
-    return (this.thumbnailManager as { getThumbnail: (time: number) => Promise<ThumbnailData | null> }).getThumbnail(time);
+    return this.thumbnailManager.getThumbnail(time);
   }
 
   // ============================================================================
