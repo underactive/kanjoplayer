@@ -89,6 +89,8 @@ const eventCounts = computed(() => {
   display: flex;
   flex-direction: column;
   max-height: 600px;
+  min-width: 0; /* Allow flex item to shrink below content size */
+  overflow: hidden;
 }
 
 .log-header {
@@ -139,6 +141,8 @@ const eventCounts = computed(() => {
   margin-bottom: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid var(--bg-tertiary);
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .event-badge {
@@ -177,9 +181,10 @@ const eventCounts = computed(() => {
 
 .log-entries {
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
   font-family: 'SF Mono', Monaco, 'Courier New', monospace;
   font-size: 0.8rem;
+  min-width: 0;
 }
 
 .log-entry {
@@ -188,6 +193,7 @@ const eventCounts = computed(() => {
   padding: 6px 8px;
   border-radius: 4px;
   margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .log-entry:hover {
@@ -206,11 +212,6 @@ const eventCounts = computed(() => {
 
 .event-detail {
   color: var(--text-secondary);
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .log-entry.error .event-type {
