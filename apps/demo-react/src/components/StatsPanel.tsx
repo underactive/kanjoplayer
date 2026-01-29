@@ -84,6 +84,13 @@ function StatsPanel({ state }: StatsPanelProps) {
     { label: 'Can Play HLS', value: state.canPlayType_hls || 'no', status: getCanPlayStatus(state.canPlayType_hls) },
   ], [state.canPlayType_mp4, state.canPlayType_webm, state.canPlayType_hls])
 
+  const codecStats = useMemo<StatItem[]>(() => [
+    { label: 'H.264 (AVC)', value: state.codec_h264 ? 'Yes' : 'No', status: state.codec_h264 ? 'success' : 'error' },
+    { label: 'H.265 (HEVC)', value: state.codec_h265 ? 'Yes' : 'No', status: state.codec_h265 ? 'success' : 'warning' },
+    { label: 'VP9', value: state.codec_vp9 ? 'Yes' : 'No', status: state.codec_vp9 ? 'success' : 'warning' },
+    { label: 'AV1', value: state.codec_av1 ? 'Yes' : 'No', status: state.codec_av1 ? 'success' : 'warning' },
+  ], [state.codec_h264, state.codec_h265, state.codec_vp9, state.codec_av1])
+
   const errorStats = useMemo<StatItem[]>(() => [
     { label: 'Error', value: state.error || 'none', status: state.error ? 'error' : 'success' },
   ], [state.error])
@@ -144,6 +151,11 @@ function StatsPanel({ state }: StatsPanelProps) {
       <div className="stats-section">
         <h3>Capabilities</h3>
         {renderTable(capabilityStats)}
+      </div>
+
+      <div className="stats-section">
+        <h3>Codec Support</h3>
+        {renderTable(codecStats)}
       </div>
 
       <div className="stats-section">

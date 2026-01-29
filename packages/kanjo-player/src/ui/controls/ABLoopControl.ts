@@ -5,7 +5,8 @@
 import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import type { WatermarkConfig } from '../../core/types';
 import { UIBuilder } from '../UIBuilder';
-import { LoopDownloader } from '../../download/LoopDownloader';
+import { ClipDownloader, type PrepareDownloadOptions } from '../../download/ClipDownloader';
+import type { DashPlugin } from '../../plugins/built-in/DashPlugin';
 import type { DownloadOverlay } from '../DownloadOverlay';
 
 export interface ABLoopState {
@@ -42,7 +43,7 @@ export class ABLoopControl {
   private dropdownOpen = false;
 
   // Download functionality
-  private loopDownloader: LoopDownloader | null = null;
+  private clipDownloader: ClipDownloader | null = null;
   private downloadOverlay: DownloadOverlay | null = null;
   private isDownloading = false;
 
@@ -353,7 +354,7 @@ export class ABLoopControl {
     }
 
     // Check if downloading is supported
-    if (!LoopDownloader.isSupported()) {
+    if (!ClipDownloader.isSupported()) {
       if (this.downloadOverlay) {
         this.downloadOverlay.showError('Download not supported in this browser');
       } else {
@@ -363,8 +364,8 @@ export class ABLoopControl {
     }
 
     // Initialize downloader lazily
-    if (!this.loopDownloader) {
-      this.loopDownloader = new LoopDownloader(this.player, {
+    if (!this.clipDownloader) {
+      this.clipDownloader = new ClipDownloader(this.player, {
         maxDuration: MAX_LOOP_DURATION,
         watermark: this.options.watermark,
       });
@@ -374,10 +375,25 @@ export class ABLoopControl {
     this.updateDownloadButtonState('downloading');
 
     try {
-      const { blob, filename } = await this.loopDownloader.prepareDownload(
+      // Get current quality from DashPlugin if available (for DASH sources)
+      const downloadOptions: PrepareDownloadOptions = {};
+      const state = this.player.getState();
+      if (state.sourceType === 'dash') {
+        const dashPlugin = this.player.getPlugin<DashPlugin>('dash');
+        if (dashPlugin) {
+          const currentQuality = dashPlugin.getCurrentQuality();
+          if (currentQuality >= 0) {
+            downloadOptions.dashQualityIndex = currentQuality;
+            console.log(`[ABLoopControl] Using DASH quality index: ${currentQuality}`);
+          }
+        }
+      }
+
+      const { blob, filename } = await this.clipDownloader.prepareDownload(
         this.state.startTime,
         this.state.endTime,
-        (progress) => this.onDownloadProgress(progress)
+        (progress) => this.onDownloadProgress(progress),
+        downloadOptions
       );
 
       // Show confirmation dialog
@@ -419,8 +435,8 @@ export class ABLoopControl {
   }
 
   private cancelDownload(): void {
-    if (this.loopDownloader && this.isDownloading) {
-      this.loopDownloader.cancel();
+    if (this.clipDownloader && this.isDownloading) {
+      this.clipDownloader.cancel();
       this.isDownloading = false;
       this.updateDownloadButtonState('idle');
       console.log('[ABLoopControl] Download cancelled by user');
@@ -572,9 +588,9 @@ export class ABLoopControl {
    * Clean up resources
    */
   destroy(): void {
-    if (this.loopDownloader) {
-      this.loopDownloader.destroy();
-      this.loopDownloader = null;
+    if (this.clipDownloader) {
+      this.clipDownloader.destroy();
+      this.clipDownloader = null;
     }
   }
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { KanjoPlayer, HlsPlugin } from 'kanjo-player';
+import { KanjoPlayer, HlsPlugin, DashPlugin, CodecCapabilities } from 'kanjo-player';
 import 'kanjo-player/style.css';
 import StatsPanel from './StatsPanel.vue';
 import EventLog from './EventLog.vue';
@@ -40,7 +40,28 @@ const VIDEO_SOURCES: VideoSource[] = [
     url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8',
     type: 'hls',
   },
-  // MP4 Sources
+  // DASH Sources
+  {
+    name: 'Big Buck Bunny (DASH)',
+    url: 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Sintel (DASH)',
+    url: 'https://bitmovin-a.akamaihd.net/content/sintel/sintel.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Tears of Steel (DASH)',
+    url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Elephants Dream (DASH)',
+    url: 'https://rdmedia.bbc.co.uk/elephants_dream/1/client_manifest-all.mpd',
+    type: 'dash',
+  },
+  // MP4 Sources (H.264)
   {
     name: 'Big Buck Bunny (MP4)',
     url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
@@ -55,6 +76,34 @@ const VIDEO_SOURCES: VideoSource[] = [
     name: 'Tears of Steel (MP4)',
     url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
     type: 'mp4',
+  },
+  // WebM Sources (VP9)
+  {
+    name: 'Big Buck Bunny (WebM/VP9)',
+    url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.720p.vp9.webm',
+    type: 'webm',
+  },
+  {
+    name: 'Sintel Trailer (WebM/VP9)',
+    url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/52/Sintel_%28Original_Version%29.webm/Sintel_%28Original_Version%29.webm.720p.vp9.webm',
+    type: 'webm',
+  },
+  // DASH VP9 Sources
+  {
+    name: 'Tears of Steel (DASH/VP9)',
+    url: 'https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd',
+    type: 'dash',
+  },
+  // DASH AV1 Sources
+  {
+    name: 'Big Buck Bunny (DASH/AV1)',
+    url: 'https://storage.googleapis.com/shaka-demo-assets/bbb-dark-truths-hls/dash.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Sintel (DASH/AV1)',
+    url: 'https://storage.googleapis.com/shaka-demo-assets/sintel/dash.mpd',
+    type: 'dash',
   },
 ];
 
@@ -145,6 +194,10 @@ const videoState = ref<VideoState>({
   canPlayType_mp4: '',
   canPlayType_webm: '',
   canPlayType_hls: '',
+  codec_h264: false,
+  codec_h265: false,
+  codec_vp9: false,
+  codec_av1: false,
 });
 
 const events = ref<VideoEvent[]>([]);
@@ -195,6 +248,10 @@ function updateVideoState() {
     canPlayType_mp4: video.canPlayType('video/mp4'),
     canPlayType_webm: video.canPlayType('video/webm'),
     canPlayType_hls: video.canPlayType('application/vnd.apple.mpegurl'),
+    codec_h264: CodecCapabilities.isSupported('h264', 'mp4'),
+    codec_h265: CodecCapabilities.isSupported('h265', 'mp4'),
+    codec_vp9: CodecCapabilities.isSupported('vp9', 'webm'),
+    codec_av1: CodecCapabilities.isSupported('av1', 'mp4'),
   };
 }
 
@@ -239,7 +296,7 @@ function initPlayer() {
     skipControls: { enabled: true },
     airPlay: { enabled: true },
     cast: { enabled: true },
-    plugins: [new HlsPlugin()],
+    plugins: [new HlsPlugin(), new DashPlugin()],
     customButtons: {
       enabled: true,
       buttons: [
@@ -286,6 +343,7 @@ function initPlayer() {
     'waiting', 'playing', 'progress', 'error',
     'enterpictureinpicture', 'leavepictureinpicture',
     'hlsmanifestparsed', 'hlslevelswitch', 'hlserror',
+    'dashmanifestparsed', 'dashqualitychanged', 'dasherror',
   ] as const;
 
   eventTypes.forEach((eventType) => {
@@ -441,6 +499,11 @@ onUnmounted(() => {
 .source-type.webm {
   background: #ede9fe;
   color: #6d28d9;
+}
+
+.source-type.dash {
+  background: #fef3c7;
+  color: #d97706;
 }
 
 /* Collapsible Code Block */

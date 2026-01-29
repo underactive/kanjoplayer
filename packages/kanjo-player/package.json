@@ -25,11 +25,14 @@
     "video",
     "player",
     "hls",
+    "dash",
     "webassembly",
     "wasm",
     "ffmpeg",
     "thumbnails",
-    "web-component"
+    "web-component",
+    "vp9",
+    "av1"
   ],
   "author": "",
   "license": "MIT",
@@ -43,7 +46,8 @@
   "peerDependencies": {
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
-    "@jsquash/jpeg": "^1.4.0"
+    "@jsquash/jpeg": "^1.4.0",
+    "dashjs": "^4.7.0"
   },
   "peerDependenciesMeta": {
     "@ffmpeg/ffmpeg": {
@@ -53,6 +57,9 @@
       "optional": true
     },
     "@jsquash/jpeg": {
+      "optional": true
+    },
+    "dashjs": {
       "optional": true
     }
   },

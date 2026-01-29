@@ -12,6 +12,7 @@ export { KanjoPlayer } from './core/KanjoPlayer';
 export { EventEmitter } from './core/EventEmitter';
 export { StateManager, createInitialState } from './core/StateManager';
 export { MediaController } from './core/MediaController';
+export { CodecCapabilities } from './core/CodecCapabilities';
 
 // Type exports
 export type {
@@ -26,6 +27,12 @@ export type {
   ThumbnailData,
   TimeRangeInfo,
   HlsLevel,
+  DashQuality,
+  VideoCodec,
+  VideoContainer,
+  CodecSupport,
+  CodecCapabilitiesResult,
+  CodecsConfig,
 } from './core/types';
 
 // Plugin types
@@ -37,6 +44,7 @@ export { UIBuilder } from './ui/UIBuilder';
 
 // Built-in plugins
 export { HlsPlugin } from './plugins/built-in/HlsPlugin';
+export { DashPlugin } from './plugins/built-in/DashPlugin';
 export { KeyboardPlugin } from './plugins/built-in/KeyboardPlugin';
 
 // Thumbnail exports (for advanced usage)

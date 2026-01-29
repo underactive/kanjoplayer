@@ -65,6 +65,13 @@ const capabilityStats = computed(() => [
   { label: 'Can Play HLS', value: props.state.canPlayType_hls || 'no', status: getCanPlayStatus(props.state.canPlayType_hls) },
 ])
 
+const codecStats = computed(() => [
+  { label: 'H.264 (AVC)', value: props.state.codec_h264 ? 'Yes' : 'No', status: props.state.codec_h264 ? 'success' : 'error' },
+  { label: 'H.265 (HEVC)', value: props.state.codec_h265 ? 'Yes' : 'No', status: props.state.codec_h265 ? 'success' : 'warning' },
+  { label: 'VP9', value: props.state.codec_vp9 ? 'Yes' : 'No', status: props.state.codec_vp9 ? 'success' : 'warning' },
+  { label: 'AV1', value: props.state.codec_av1 ? 'Yes' : 'No', status: props.state.codec_av1 ? 'success' : 'warning' },
+])
+
 const errorStats = computed(() => [
   { label: 'Error', value: props.state.error || 'none', status: props.state.error ? 'error' : 'success' },
 ])
@@ -155,6 +162,16 @@ function getCanPlayStatus(value: string): string {
       <h3>Capabilities</h3>
       <table>
         <tr v-for="stat in capabilityStats" :key="stat.label">
+          <td class="stat-label">{{ stat.label }}</td>
+          <td class="stat-value" :class="stat.status">{{ stat.value }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="stats-section">
+      <h3>Codec Support</h3>
+      <table>
+        <tr v-for="stat in codecStats" :key="stat.label">
           <td class="stat-label">{{ stat.label }}</td>
           <td class="stat-value" :class="stat.status">{{ stat.value }}</td>
         </tr>

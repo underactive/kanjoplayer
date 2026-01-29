@@ -85,6 +85,13 @@
     { label: 'Can Play HLS', value: state.canPlayType_hls || 'no', status: getCanPlayStatus(state.canPlayType_hls) },
   ])
 
+  const codecStats = $derived<StatItem[]>([
+    { label: 'H.264 (AVC)', value: state.codec_h264 ? 'Yes' : 'No', status: state.codec_h264 ? 'success' : 'error' },
+    { label: 'H.265 (HEVC)', value: state.codec_h265 ? 'Yes' : 'No', status: state.codec_h265 ? 'success' : 'warning' },
+    { label: 'VP9', value: state.codec_vp9 ? 'Yes' : 'No', status: state.codec_vp9 ? 'success' : 'warning' },
+    { label: 'AV1', value: state.codec_av1 ? 'Yes' : 'No', status: state.codec_av1 ? 'success' : 'warning' },
+  ])
+
   const errorStats = $derived<StatItem[]>([
     { label: 'Error', value: state.error || 'none', status: state.error ? 'error' : 'success' },
   ])
@@ -142,6 +149,11 @@
   <div class="stats-section">
     <h3>Capabilities</h3>
     {@render statsTable(capabilityStats)}
+  </div>
+
+  <div class="stats-section">
+    <h3>Codec Support</h3>
+    {@render statsTable(codecStats)}
   </div>
 
   <div class="stats-section">

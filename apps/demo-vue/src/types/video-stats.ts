@@ -1,7 +1,7 @@
 export interface VideoSource {
   name: string
   url: string
-  type: 'mp4' | 'hls' | 'webm'
+  type: 'mp4' | 'hls' | 'webm' | 'dash'
 }
 
 export interface VideoState {
@@ -55,6 +55,12 @@ export interface VideoState {
   canPlayType_mp4: string
   canPlayType_webm: string
   canPlayType_hls: string
+
+  // Codec capabilities
+  codec_h264: boolean
+  codec_h265: boolean
+  codec_vp9: boolean
+  codec_av1: boolean
 }
 
 export interface VideoEvent {
