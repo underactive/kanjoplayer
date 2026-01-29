@@ -12,6 +12,10 @@ export default defineConfig(({ mode }) => ({
       'Cross-Origin-Embedder-Policy': 'credentialless',
     },
   },
+  build: {
+    // hls.js is ~680 kB minified, which is expected for a full HLS implementation
+    chunkSizeWarningLimit: 700,
+  },
   optimizeDeps: {
     exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
   },

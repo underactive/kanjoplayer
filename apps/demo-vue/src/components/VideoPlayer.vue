@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
-import Hls from 'hls.js'
+import type Hls from 'hls.js'
 import StatsPanel from './StatsPanel.vue'
 import EventLog from './EventLog.vue'
 import {
@@ -175,7 +175,7 @@ function destroyHls() {
   }
 }
 
-function loadSource(source: VideoSource) {
+async function loadSource(source: VideoSource) {
   const video = videoRef.value
   if (!video) return
 
@@ -183,6 +183,7 @@ function loadSource(source: VideoSource) {
   logEvent('source-change', `Loading: ${source.name}`)
 
   if (source.type === 'hls') {
+    const { default: Hls } = await import('hls.js')
     if (Hls.isSupported()) {
       const hls = new Hls({
         debug: false,
