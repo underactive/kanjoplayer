@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
-  import { KanjoPlayer, HlsPlugin } from 'kanjo-player'
+  import { KanjoPlayer, HlsPlugin, DashPlugin, CodecCapabilities } from 'kanjo-player'
   import 'kanjo-player/style.css'
   import StatsPanel from './StatsPanel.svelte'
   import EventLog from './EventLog.svelte'
@@ -50,6 +50,10 @@
     canPlayType_mp4: '',
     canPlayType_webm: '',
     canPlayType_hls: '',
+    codec_h264: false,
+    codec_h265: false,
+    codec_vp9: false,
+    codec_av1: false,
   }
 
   let videoState = $state<VideoState>({ ...initialVideoState })
@@ -115,6 +119,10 @@
       canPlayType_mp4: video.canPlayType('video/mp4'),
       canPlayType_webm: video.canPlayType('video/webm'),
       canPlayType_hls: video.canPlayType('application/vnd.apple.mpegurl'),
+      codec_h264: CodecCapabilities.isSupported('h264', 'mp4'),
+      codec_h265: CodecCapabilities.isSupported('h265', 'mp4'),
+      codec_vp9: CodecCapabilities.isSupported('vp9', 'webm'),
+      codec_av1: CodecCapabilities.isSupported('av1', 'mp4'),
     }
   }
 
@@ -146,7 +154,7 @@
       skipControls: { enabled: true },
       airPlay: { enabled: true },
       cast: { enabled: true },
-      plugins: [new HlsPlugin()],
+      plugins: [new HlsPlugin(), new DashPlugin()],
       customButtons: {
         enabled: true,
         buttons: [
@@ -193,6 +201,7 @@
       'waiting', 'playing', 'progress', 'error',
       'enterpictureinpicture', 'leavepictureinpicture',
       'hlsmanifestparsed', 'hlslevelswitch', 'hlserror',
+      'dashmanifestparsed', 'dashqualitychanged', 'dasherror',
     ] as const
 
     const currentPlayer = player

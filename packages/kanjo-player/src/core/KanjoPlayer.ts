@@ -17,7 +17,11 @@ import type {
   ToolbarButtonConfig,
   MenuItemConfig,
   ThumbnailData,
+  VideoCodec,
+  VideoContainer,
+  CodecCapabilitiesResult,
 } from './types';
+import { CodecCapabilities } from './CodecCapabilities';
 
 export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements KanjoPlayerAPI {
   private container: HTMLElement;
@@ -143,6 +147,9 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       cast: {
         enabled: false,
       },
+      codecs: {
+        preferredCodec: 'auto',
+      },
       plugins: [],
       className: '',
       keyboardShortcuts: true,
@@ -180,6 +187,10 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       cast: {
         ...defaults.cast,
         ...options.cast,
+      },
+      codecs: {
+        ...defaults.codecs,
+        ...options.codecs,
       },
     } as Required<KanjoPlayerOptions>;
   }
@@ -476,13 +487,16 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
   // Source (KanjoPlayerAPI)
   // ============================================================================
 
-  setSrc(src: string, type?: 'mp4' | 'webm' | 'hls'): void {
+  setSrc(src: string, type?: 'mp4' | 'webm' | 'hls' | 'dash'): void {
     const sourceType = type || this.detectSourceType(src);
     this.stateManager.setState({ src, sourceType });
 
     if (sourceType === 'hls') {
       // HLS will be handled by HlsPlugin
       this.emit('sourcechange', { src, type: 'hls' });
+    } else if (sourceType === 'dash') {
+      // DASH will be handled by DashPlugin
+      this.emit('sourcechange', { src, type: 'dash' });
     } else {
       this.video.src = src;
       this.emit('sourcechange', { src, type: sourceType });
@@ -493,10 +507,13 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
     return this.stateManager.get('src');
   }
 
-  private detectSourceType(src: string): 'mp4' | 'webm' | 'hls' {
+  private detectSourceType(src: string): 'mp4' | 'webm' | 'hls' | 'dash' {
     const url = src.toLowerCase();
     if (url.includes('.m3u8') || url.includes('m3u8')) {
       return 'hls';
+    }
+    if (url.includes('.mpd') || url.includes('mpd')) {
+      return 'dash';
     }
     if (url.includes('.webm')) {
       return 'webm';
@@ -613,6 +630,18 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
     }
 
     return this.thumbnailManager.getThumbnail(time);
+  }
+
+  // ============================================================================
+  // Codec Capabilities (KanjoPlayerAPI)
+  // ============================================================================
+
+  async getCodecCapabilities(): Promise<CodecCapabilitiesResult> {
+    return CodecCapabilities.getAllCapabilities();
+  }
+
+  isCodecSupported(codec: VideoCodec, container: VideoContainer = 'mp4'): boolean {
+    return CodecCapabilities.isSupported(codec, container);
   }
 
   // ============================================================================

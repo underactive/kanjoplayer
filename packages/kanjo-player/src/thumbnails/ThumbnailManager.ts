@@ -17,11 +17,13 @@ export class ThumbnailManager {
   private cache: ThumbnailCache;
   private canvasExtractor: CanvasExtractor | null = null;
   private hlsExtractor: unknown = null; // Lazy loaded
+  private dashExtractor: unknown = null; // Lazy loaded
   private spriteLoader: SpriteLoader | null = null;
   private isInitialized = false;
   private pendingInit: Promise<void> | null = null;
   private useSprites = false;
   private useHls = false;
+  private useDash = false;
 
   constructor(player: KanjoPlayer, config: ThumbnailConfig) {
     this.player = player;
@@ -61,8 +63,9 @@ export class ThumbnailManager {
     this.cache.clear();
     this.useSprites = false;
     this.useHls = false;
+    this.useDash = false;
 
-    // For HLS with sprite URL, use sprite loader (preferred)
+    // For HLS/DASH with sprite URL, use sprite loader (preferred)
     if (this.config.vttUrl || this.config.spriteUrl) {
       try {
         this.spriteLoader = new SpriteLoader({
@@ -100,6 +103,27 @@ export class ThumbnailManager {
       }
     }
 
+    // For DASH streams without sprites, use DASH segment extraction
+    if (state.sourceType === 'dash') {
+      try {
+        const { DashExtractor } = await import('./DashExtractor');
+
+        if (DashExtractor.isSupported()) {
+          this.dashExtractor = new DashExtractor({
+            width: this.config.width,
+            height: this.config.height,
+          });
+
+          (this.dashExtractor as { setVideoUrl: (url: string) => void }).setVideoUrl(state.src);
+          this.useDash = true;
+          this.isInitialized = true;
+          return;
+        }
+      } catch (error) {
+        console.warn('[ThumbnailManager] DASH extraction not available:', error);
+      }
+    }
+
     // Use Canvas extraction for MP4/WebM
     if (CanvasExtractor.isSupported()) {
       try {
@@ -126,6 +150,7 @@ export class ThumbnailManager {
     this.isInitialized = false;
     this.useSprites = false;
     this.useHls = false;
+    this.useDash = false;
     this.cache.clear();
 
     // Cleanup extractors
@@ -137,6 +162,11 @@ export class ThumbnailManager {
     if (this.hlsExtractor) {
       (this.hlsExtractor as { destroy: () => void }).destroy();
       this.hlsExtractor = null;
+    }
+
+    if (this.dashExtractor) {
+      (this.dashExtractor as { destroy: () => void }).destroy();
+      this.dashExtractor = null;
     }
 
     if (this.spriteLoader) {
@@ -172,6 +202,8 @@ export class ThumbnailManager {
         thumbnail = this.spriteLoader.getThumbnail(time);
       } else if (this.useHls && this.hlsExtractor) {
         thumbnail = await (this.hlsExtractor as { extract: (time: number) => Promise<ThumbnailData> }).extract(time);
+      } else if (this.useDash && this.dashExtractor) {
+        thumbnail = await (this.dashExtractor as { extract: (time: number) => Promise<ThumbnailData> }).extract(time);
       } else if (this.canvasExtractor) {
         thumbnail = await this.canvasExtractor.extract(time);
       }
@@ -249,6 +281,11 @@ export class ThumbnailManager {
     if (this.hlsExtractor) {
       (this.hlsExtractor as { destroy: () => void }).destroy();
       this.hlsExtractor = null;
+    }
+
+    if (this.dashExtractor) {
+      (this.dashExtractor as { destroy: () => void }).destroy();
+      this.dashExtractor = null;
     }
 
     if (this.spriteLoader) {

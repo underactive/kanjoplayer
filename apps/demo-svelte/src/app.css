@@ -140,6 +140,11 @@ main {
   color: #6d28d9;
 }
 
+.source-type.dash {
+  background: #fef3c7;
+  color: #d97706;
+}
+
 .player-wrapper {
   position: relative;
   background: #000;
@@ -369,6 +374,11 @@ main {
   color: #047857;
 }
 
+.event-badge.dash {
+  background: #fef3c7;
+  color: #d97706;
+}
+
 .event-badge.info {
   background: #dbeafe;
   color: #1d4ed8;
@@ -426,6 +436,10 @@ main {
 
 .log-entry.hls .event-type {
   color: #047857;
+}
+
+.log-entry.dash .event-type {
+  color: #d97706;
 }
 
 .log-entry.info .event-type {

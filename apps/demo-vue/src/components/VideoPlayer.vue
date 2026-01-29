@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import type Hls from 'hls.js'
+import { CodecCapabilities } from 'kanjo-player'
 import StatsPanel from './StatsPanel.vue'
 import EventLog from './EventLog.vue'
 import {
@@ -92,6 +93,10 @@ const videoState = ref<VideoState>({
   canPlayType_mp4: '',
   canPlayType_webm: '',
   canPlayType_hls: '',
+  codec_h264: false,
+  codec_h265: false,
+  codec_vp9: false,
+  codec_av1: false,
 })
 
 const events = ref<VideoEvent[]>([])
@@ -142,6 +147,10 @@ function updateVideoState() {
     canPlayType_mp4: video.canPlayType('video/mp4'),
     canPlayType_webm: video.canPlayType('video/webm'),
     canPlayType_hls: video.canPlayType('application/vnd.apple.mpegurl'),
+    codec_h264: CodecCapabilities.isSupported('h264', 'mp4'),
+    codec_h265: CodecCapabilities.isSupported('h265', 'mp4'),
+    codec_vp9: CodecCapabilities.isSupported('vp9', 'webm'),
+    codec_av1: CodecCapabilities.isSupported('av1', 'mp4'),
   }
 }
 

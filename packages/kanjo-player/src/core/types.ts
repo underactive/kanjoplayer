@@ -110,13 +110,18 @@ export interface CastConfig {
   receiverApplicationId?: string;
 }
 
+export interface CodecsConfig {
+  /** Preferred video codec for adaptive streaming (default: 'auto') */
+  preferredCodec?: 'auto' | 'h264' | 'h265' | 'vp9' | 'av1';
+}
+
 export interface KanjoPlayerOptions {
   /** Container element or selector */
   container: HTMLElement | string;
   /** Video source URL */
   src?: string;
   /** Video source type (auto-detected if not specified) */
-  sourceType?: 'mp4' | 'webm' | 'hls';
+  sourceType?: 'mp4' | 'webm' | 'hls' | 'dash';
   /** Autoplay video (muted required for most browsers) */
   autoplay?: boolean;
   /** Start muted */
@@ -147,6 +152,8 @@ export interface KanjoPlayerOptions {
   airPlay?: AirPlayConfig;
   /** Google Cast configuration */
   cast?: CastConfig;
+  /** Codec preferences configuration */
+  codecs?: CodecsConfig;
   /** Plugins to load */
   plugins?: KanjoPlugin[];
   /** Custom CSS class for container */
@@ -191,7 +198,7 @@ export interface KanjoPlayerState {
   /** Current source URL */
   src: string;
   /** Current source type */
-  sourceType: 'mp4' | 'webm' | 'hls' | null;
+  sourceType: 'mp4' | 'webm' | 'hls' | 'dash' | null;
   /** Buffered time ranges */
   buffered: TimeRangeInfo[];
   /** Seekable time ranges */
@@ -265,6 +272,11 @@ export interface KanjoPlayerEvents {
   hlslevelswitch: { level: number; auto: boolean };
   hlserror: { type: string; details: string; fatal: boolean };
 
+  // DASH-specific events (from DashPlugin)
+  dashmanifestparsed: { qualities: DashQuality[] };
+  dashqualitychanged: { quality: DashQuality; auto: boolean };
+  dasherror: { code: number; message: string; fatal: boolean };
+
   // A/B Loop events
   setloopstart: void;
   setloopend: void;
@@ -284,6 +296,35 @@ export interface HlsLevel {
   width: number;
   height: number;
   name: string;
+}
+
+export interface DashQuality {
+  bitrate: number;
+  width: number;
+  height: number;
+  qualityIndex: number;
+  mediaType: 'video' | 'audio';
+  codec?: string;
+}
+
+// ============================================================================
+// Codec Capabilities
+// ============================================================================
+
+export type VideoCodec = 'h264' | 'h265' | 'vp9' | 'av1';
+export type VideoContainer = 'mp4' | 'webm';
+
+export interface CodecSupport {
+  codec: VideoCodec;
+  container: VideoContainer;
+  supported: boolean;
+  smooth?: boolean;
+  powerEfficient?: boolean;
+}
+
+export interface CodecCapabilitiesResult {
+  codecs: CodecSupport[];
+  preferredCodec: VideoCodec | null;
 }
 
 // ============================================================================
@@ -378,7 +419,7 @@ export interface KanjoPlayerAPI {
   togglePiP(): Promise<void>;
 
   // Source
-  setSrc(src: string, type?: 'mp4' | 'webm' | 'hls'): void;
+  setSrc(src: string, type?: 'mp4' | 'webm' | 'hls' | 'dash'): void;
   getSrc(): string;
 
   // State
@@ -417,6 +458,10 @@ export interface KanjoPlayerAPI {
 
   // Thumbnails
   getThumbnail(time: number): Promise<ThumbnailData | null>;
+
+  // Codec capabilities
+  getCodecCapabilities(): Promise<CodecCapabilitiesResult>;
+  isCodecSupported(codec: VideoCodec, container?: VideoContainer): boolean;
 
   // Lifecycle
   destroy(): void;

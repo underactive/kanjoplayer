@@ -24,11 +24,12 @@ export default defineConfig({
     },
     rollupOptions: {
       // Externalize peer dependencies
-      external: ['hls.js', '@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
+      external: ['hls.js', 'dashjs', '@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
       output: {
         // Global variables for UMD build
         globals: {
           'hls.js': 'Hls',
+          'dashjs': 'dashjs',
           '@ffmpeg/ffmpeg': 'FFmpeg',
           '@ffmpeg/util': 'FFmpegUtil',
           '@jsquash/jpeg': 'jSquashJpeg',

@@ -13,6 +13,7 @@
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
+    "dashjs": "^4.7.0",
     "kanjo-player": "*"
   },
   "devDependencies": {
@@ -21,7 +22,7 @@
     "svelte-check": "^4.1.1",
     "typescript": "~5.6.2",
     "vite": "^6.0.5",
-    "vite-plugin-wasm": "^3.5.0",
-    "vite-plugin-top-level-await": "^1.6.0"
+    "vite-plugin-top-level-await": "^1.6.0",
+    "vite-plugin-wasm": "^3.5.0"
   }
 }

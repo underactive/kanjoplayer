@@ -1,7 +1,7 @@
 export interface VideoSource {
   name: string
   url: string
-  type: 'mp4' | 'hls' | 'webm'
+  type: 'mp4' | 'hls' | 'webm' | 'dash'
 }
 
 export interface VideoState {
@@ -34,6 +34,10 @@ export interface VideoState {
   canPlayType_mp4: string
   canPlayType_webm: string
   canPlayType_hls: string
+  codec_h264: boolean
+  codec_h265: boolean
+  codec_vp9: boolean
+  codec_av1: boolean
 }
 
 export interface VideoEvent {
@@ -91,7 +95,28 @@ export const VIDEO_SOURCES: VideoSource[] = [
     url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8',
     type: 'hls',
   },
-  // MP4 Sources
+  // DASH Sources
+  {
+    name: 'Big Buck Bunny (DASH)',
+    url: 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Sintel (DASH)',
+    url: 'https://bitmovin-a.akamaihd.net/content/sintel/sintel.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Tears of Steel (DASH)',
+    url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Elephants Dream (DASH)',
+    url: 'https://rdmedia.bbc.co.uk/elephants_dream/1/client_manifest-all.mpd',
+    type: 'dash',
+  },
+  // MP4 Sources (H.264)
   {
     name: 'Big Buck Bunny (MP4)',
     url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
@@ -106,5 +131,33 @@ export const VIDEO_SOURCES: VideoSource[] = [
     name: 'Tears of Steel (MP4)',
     url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
     type: 'mp4',
+  },
+  // WebM Sources (VP9)
+  {
+    name: 'Big Buck Bunny (WebM/VP9)',
+    url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.720p.vp9.webm',
+    type: 'webm',
+  },
+  {
+    name: 'Sintel Trailer (WebM/VP9)',
+    url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/52/Sintel_%28Original_Version%29.webm/Sintel_%28Original_Version%29.webm.720p.vp9.webm',
+    type: 'webm',
+  },
+  // DASH VP9 Sources
+  {
+    name: 'Tears of Steel (DASH/VP9)',
+    url: 'https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd',
+    type: 'dash',
+  },
+  // DASH AV1 Sources
+  {
+    name: 'Big Buck Bunny (DASH/AV1)',
+    url: 'https://storage.googleapis.com/shaka-demo-assets/bbb-dark-truths-hls/dash.mpd',
+    type: 'dash',
+  },
+  {
+    name: 'Sintel (DASH/AV1)',
+    url: 'https://storage.googleapis.com/shaka-demo-assets/sintel/dash.mpd',
+    type: 'dash',
   },
 ]
