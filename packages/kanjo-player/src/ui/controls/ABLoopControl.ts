@@ -468,22 +468,27 @@ export class ABLoopControl {
     const startTimeSpan = this.startBtn.querySelector('.kanjo-abloop-time');
     const endTimeSpan = this.endBtn.querySelector('.kanjo-abloop-time');
 
-    // Update start button - format: "A [ 4:20" or "A [" when no time
+    // Check if video duration requires showing hours
+    const showHours = UIBuilder.needsHours(this.player.getDuration());
+
+    // Update start button - format: "A [ 00:04:20.123" or "A [" when no time
     if (this.state.startTime !== null) {
       this.startBtn.classList.add('kanjo-active');
-      this.startBtn.title = `Loop start: ${UIBuilder.formatTime(this.state.startTime)} (click to update)`;
-      if (startTimeSpan) startTimeSpan.textContent = ' ' + UIBuilder.formatTime(this.state.startTime);
+      this.startBtn.title = `Loop start: ${UIBuilder.formatTimePrecise(this.state.startTime, showHours)} (click to update)`;
+      if (startTimeSpan)
+        startTimeSpan.textContent = ' ' + UIBuilder.formatTimePrecise(this.state.startTime, showHours);
     } else {
       this.startBtn.classList.remove('kanjo-active');
       this.startBtn.title = 'Set loop start point [';
       if (startTimeSpan) startTimeSpan.textContent = '';
     }
 
-    // Update end button - format: "4:33 ] B" or "] B" when no time
+    // Update end button - format: "00:04:33.456 ] B" or "] B" when no time
     if (this.state.endTime !== null) {
       this.endBtn.classList.add('kanjo-active');
-      this.endBtn.title = `Loop end: ${UIBuilder.formatTime(this.state.endTime)} (click to update)`;
-      if (endTimeSpan) endTimeSpan.textContent = UIBuilder.formatTime(this.state.endTime) + ' ';
+      this.endBtn.title = `Loop end: ${UIBuilder.formatTimePrecise(this.state.endTime, showHours)} (click to update)`;
+      if (endTimeSpan)
+        endTimeSpan.textContent = UIBuilder.formatTimePrecise(this.state.endTime, showHours) + ' ';
     } else {
       this.endBtn.classList.remove('kanjo-active');
       this.endBtn.title = 'Set loop end point ]';

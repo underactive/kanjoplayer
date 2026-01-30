@@ -12,6 +12,7 @@ export class TimeDisplay {
   private durationEl: HTMLSpanElement;
   private durationWrapper: HTMLSpanElement;
   private player: KanjoPlayer;
+  private showHours = false;
 
   constructor(player: KanjoPlayer) {
     this.player = player;
@@ -51,12 +52,18 @@ export class TimeDisplay {
 
   private bindEvents(): void {
     this.player.on('timeupdate', ({ currentTime, duration }) => {
-      this.currentTimeEl.textContent = UIBuilder.formatTime(currentTime);
-      this.durationEl.textContent = UIBuilder.formatTime(duration);
+      this.currentTimeEl.textContent = UIBuilder.formatTime(currentTime, this.showHours);
+      this.durationEl.textContent = UIBuilder.formatTime(duration, this.showHours);
     });
 
     this.player.on('loadedmetadata', ({ duration }) => {
-      this.durationEl.textContent = UIBuilder.formatTime(duration);
+      this.showHours = UIBuilder.needsHours(duration);
+      this.durationEl.textContent = UIBuilder.formatTime(duration, this.showHours);
+      // Update current time format as well
+      this.currentTimeEl.textContent = UIBuilder.formatTime(
+        this.player.getCurrentTime(),
+        this.showHours
+      );
     });
   }
 

@@ -3,7 +3,15 @@
  */
 
 import type { KanjoPlayer } from '../core/KanjoPlayer';
-import type { SettingsMenuConfig, WatermarkConfig, CustomButtonsConfig, SkipControlConfig, AirPlayConfig, CastConfig } from '../core/types';
+import type {
+  SettingsMenuConfig,
+  WatermarkConfig,
+  CustomButtonsConfig,
+  SkipControlConfig,
+  AirPlayConfig,
+  CastConfig,
+  ResponsiveControlsConfig,
+} from '../core/types';
 import { UIBuilder } from './UIBuilder';
 import { PlayButton, CenterPlayButton } from './controls/PlayButton';
 import { TimeDisplay } from './controls/TimeDisplay';
@@ -18,6 +26,7 @@ import { CustomButtonArea } from './controls/CustomButtonArea';
 import { SkipControl } from './controls/SkipControl';
 import { AirPlayButton } from './controls/AirPlayButton';
 import { CastButton } from './controls/CastButton';
+import { ResponsiveControlsManager } from './ResponsiveControlsManager';
 
 export interface ControlsOverlayOptions {
   settings?: SettingsMenuConfig;
@@ -26,6 +35,7 @@ export interface ControlsOverlayOptions {
   skipControls?: SkipControlConfig;
   airPlay?: AirPlayConfig;
   cast?: CastConfig;
+  responsiveControls?: ResponsiveControlsConfig;
 }
 
 export class ControlsOverlay {
@@ -50,6 +60,8 @@ export class ControlsOverlay {
   private castButton: CastButton | null = null;
   // Custom button area (kept as reference for potential future use/cleanup)
   private _customButtonArea: CustomButtonArea | null = null;
+  // Responsive controls manager
+  private responsiveManager: ResponsiveControlsManager | null = null;
 
   constructor(player: KanjoPlayer, container: HTMLElement, options?: ControlsOverlayOptions) {
     this.player = player;
@@ -117,6 +129,14 @@ export class ControlsOverlay {
     // Append to container
     container.appendChild(this.element);
 
+    // Initialize responsive controls manager
+    this.responsiveManager = new ResponsiveControlsManager(
+      container,
+      this.bottomBar,
+      this.options.responsiveControls
+    );
+    this.registerControlsForResponsive();
+
     // Bind visibility events
     this.bindVisibilityEvents();
   }
@@ -179,11 +199,16 @@ export class ControlsOverlay {
     leftControls.appendChild(this.volumeControl.getElement());
     leftControls.appendChild(this.timeDisplay.getElement());
 
+    // Center controls (A/B loop)
+    const centerControls = UIBuilder.create({
+      className: 'kanjo-controls-center',
+    });
+    centerControls.appendChild(this.abLoopControl.getElement());
+
     // Right controls
     const rightControls = UIBuilder.create({
       className: 'kanjo-controls-right',
     });
-    rightControls.appendChild(this.abLoopControl.getElement());
     if (this.airPlayButton) {
       rightControls.appendChild(this.airPlayButton.getElement());
     }
@@ -196,6 +221,7 @@ export class ControlsOverlay {
     rightControls.appendChild(this.fullscreenButton.getElement());
 
     controlsRow.appendChild(leftControls);
+    controlsRow.appendChild(centerControls);
     controlsRow.appendChild(rightControls);
     bottomBar.appendChild(controlsRow);
 
@@ -230,7 +256,62 @@ export class ControlsOverlay {
     return this.element;
   }
 
+  private registerControlsForResponsive(): void {
+    if (!this.responsiveManager) return;
+
+    // Tier 1 - Always visible
+    this.responsiveManager.registerControl('playButton', this.playButton.getElement());
+    this.responsiveManager.registerControl('volumeControl', this.volumeControl.getElement());
+    this.responsiveManager.registerControl('fullscreenButton', this.fullscreenButton.getElement());
+
+    // Tier 2 - Hidden below 360px
+    this.responsiveManager.registerControl('timeDisplay', this.timeDisplay.getElement());
+    if (this.settingsMenu) {
+      this.responsiveManager.registerControl('settingsMenu', this.settingsMenu.getElement());
+    }
+
+    // Tier 3 - Hidden below 480px
+    if (this.skipControl) {
+      const skipElement = this.skipControl.getElement();
+      // Register skip back and forward containers separately
+      const skipBackContainer = skipElement.querySelector('.kanjo-skip-back-container');
+      const skipForwardContainer = skipElement.querySelector('.kanjo-skip-forward-container');
+      if (skipBackContainer instanceof HTMLElement) {
+        this.responsiveManager.registerControl('skipBack', skipBackContainer);
+      }
+      if (skipForwardContainer instanceof HTMLElement) {
+        this.responsiveManager.registerControl('skipForward', skipForwardContainer);
+      }
+    }
+
+    // Register A/B loop control sub-elements
+    const abLoopElement = this.abLoopControl.getElement();
+    const loopStart = abLoopElement.querySelector('.kanjo-abloop-start');
+    const loopEnd = abLoopElement.querySelector('.kanjo-abloop-end');
+    const loopToggle = abLoopElement.querySelector('.kanjo-abloop-toggle-container');
+    if (loopStart instanceof HTMLElement) {
+      this.responsiveManager.registerControl('loopStart', loopStart);
+    }
+    if (loopEnd instanceof HTMLElement) {
+      this.responsiveManager.registerControl('loopEnd', loopEnd);
+    }
+    if (loopToggle instanceof HTMLElement) {
+      this.responsiveManager.registerControl('loopToggle', loopToggle);
+    }
+
+    // Register AirPlay and Cast buttons
+    if (this.airPlayButton) {
+      this.responsiveManager.registerControl('airPlayButton', this.airPlayButton.getElement());
+    }
+    if (this.castButton) {
+      this.responsiveManager.registerControl('castButton', this.castButton.getElement());
+    }
+  }
+
   destroy(): void {
+    if (this.responsiveManager) {
+      this.responsiveManager.destroy();
+    }
     if (this._customButtonArea) {
       this._customButtonArea.destroy();
     }

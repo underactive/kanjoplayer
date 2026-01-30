@@ -105,6 +105,44 @@ export interface CastConfig {
   receiverApplicationId?: string;
 }
 
+// ============================================================================
+// Responsive Controls Configuration
+// ============================================================================
+
+/** Priority levels for controls - lower number = higher priority */
+export type ControlPriority = 1 | 2 | 3;
+
+/** Control identifiers for responsive priority configuration */
+export type ControlId =
+  | 'playButton'
+  | 'volumeControl'
+  | 'fullscreenButton'
+  | 'timeDisplay'
+  | 'settingsMenu'
+  | 'skipBack'
+  | 'skipForward'
+  | 'loopStart'
+  | 'loopEnd'
+  | 'loopToggle'
+  | 'airPlayButton'
+  | 'castButton';
+
+export interface ResponsiveBreakpoints {
+  /** Width below which tier 3 controls are hidden (default: 480) */
+  tier3?: number;
+  /** Width below which tier 2 controls are hidden (default: 360) */
+  tier2?: number;
+}
+
+export interface ResponsiveControlsConfig {
+  /** Enable responsive controls (default: true) */
+  enabled?: boolean;
+  /** Breakpoint widths for each tier */
+  breakpoints?: ResponsiveBreakpoints;
+  /** Override default priorities for specific controls */
+  priorities?: Partial<Record<ControlId, ControlPriority>>;
+}
+
 export interface CodecsConfig {
   /** Preferred video codec for adaptive streaming (default: 'auto') */
   preferredCodec?: 'auto' | 'h264' | 'h265' | 'vp9' | 'av1';
@@ -147,6 +185,8 @@ export interface KanjoPlayerOptions {
   airPlay?: AirPlayConfig;
   /** Google Cast configuration */
   cast?: CastConfig;
+  /** Responsive controls configuration */
+  responsiveControls?: ResponsiveControlsConfig;
   /** Codec preferences configuration */
   codecs?: CodecsConfig;
   /** Plugins to load */

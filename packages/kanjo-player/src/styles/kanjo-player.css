@@ -88,6 +88,7 @@
 }
 
 .kanjo-controls-row {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -95,10 +96,17 @@
 }
 
 .kanjo-controls-left,
+.kanjo-controls-center,
 .kanjo-controls-right {
   display: flex;
   align-items: center;
   gap: var(--kanjo-controls-gap);
+}
+
+.kanjo-controls-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* ============================================================================
@@ -1838,4 +1846,44 @@
 .kanjo-airplay-btn.kanjo-active:hover,
 .kanjo-cast-btn.kanjo-active:hover {
   color: var(--kanjo-primary-hover);
+}
+
+/* ============================================================================
+   Responsive Controls
+   ============================================================================ */
+
+/* Hidden state for responsive controls */
+.kanjo-responsive-hidden {
+  display: none !important;
+}
+
+/* Compact mode (< 480px) - reduce gaps and hide volume slider */
+.kanjo-responsive-compact .kanjo-controls-left,
+.kanjo-responsive-compact .kanjo-controls-center,
+.kanjo-responsive-compact .kanjo-controls-right {
+  gap: 4px;
+}
+
+.kanjo-responsive-compact .kanjo-volume-slider-container {
+  display: none;
+}
+
+.kanjo-responsive-compact .kanjo-abloop-control {
+  gap: 0;
+}
+
+/* Minimal mode (< 360px) - smaller buttons */
+.kanjo-responsive-minimal .kanjo-btn {
+  --kanjo-btn-size: 32px;
+  --kanjo-icon-size: 18px;
+}
+
+.kanjo-responsive-minimal .kanjo-center-play-btn {
+  width: 48px;
+  height: 48px;
+}
+
+.kanjo-responsive-minimal .kanjo-center-play-btn svg {
+  width: 24px;
+  height: 24px;
 }

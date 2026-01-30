@@ -147,6 +147,13 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       cast: {
         enabled: false,
       },
+      responsiveControls: {
+        enabled: true,
+        breakpoints: {
+          tier3: 640,
+          tier2: 360,
+        },
+      },
       codecs: {
         preferredCodec: 'auto',
       },
@@ -187,6 +194,14 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       cast: {
         ...defaults.cast,
         ...options.cast,
+      },
+      responsiveControls: {
+        ...defaults.responsiveControls,
+        ...options.responsiveControls,
+        breakpoints: {
+          ...defaults.responsiveControls.breakpoints,
+          ...options.responsiveControls?.breakpoints,
+        },
       },
       codecs: {
         ...defaults.codecs,
@@ -274,6 +289,7 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       skipControls: this.options.skipControls,
       airPlay: this.options.airPlay,
       cast: this.options.cast,
+      responsiveControls: this.options.responsiveControls,
     }).getElement();
 
     // Setup controls visibility
