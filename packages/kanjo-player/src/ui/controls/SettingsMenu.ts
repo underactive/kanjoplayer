@@ -208,7 +208,7 @@ export class SettingsMenu {
       const option = UIBuilder.create({
         tag: 'button',
         className: 'kanjo-settings-option',
-        attrs: { type: 'button', 'data-rate': String(rate) },
+        attrs: { 'type': 'button', 'data-rate': String(rate) },
         events: {
           click: (e) => {
             e.stopPropagation();

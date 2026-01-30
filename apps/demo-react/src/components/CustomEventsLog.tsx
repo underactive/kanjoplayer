@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import type { CustomEventEntry } from '../types'
+import { useState, useEffect, useCallback } from 'react';
+import type { CustomEventEntry } from '../types';
 
 function formatTimestamp(ts: number): string {
   return new Date(ts).toLocaleTimeString('en-US', {
@@ -7,57 +7,57 @@ function formatTimestamp(ts: number): string {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-  })
+  });
 }
 
 function formatValue(value: unknown): string {
   if (value === undefined || value === null) {
-    return '(none)'
+    return '(none)';
   }
   if (typeof value === 'string') {
     if (value.length > 40) {
-      return value.substring(0, 37) + '...'
+      return value.substring(0, 37) + '...';
     }
-    return value
+    return value;
   }
   if (typeof value === 'number') {
-    return value.toFixed(2)
+    return value.toFixed(2);
   }
-  return JSON.stringify(value)
+  return JSON.stringify(value);
 }
 
-const maxEvents = 50
+const maxEvents = 50;
 
 function CustomEventsLog() {
-  const [events, setEvents] = useState<CustomEventEntry[]>([])
+  const [events, setEvents] = useState<CustomEventEntry[]>([]);
 
   const handleCustomEvent = useCallback((e: Event) => {
-    const detail = (e as CustomEvent).detail
-    setEvents(prev => {
+    const detail = (e as CustomEvent).detail;
+    setEvents((prev) => {
       const newEvent: CustomEventEntry = {
         timestamp: Date.now(),
         buttonId: detail.buttonId,
         eventKey: detail.eventKey,
         value: detail.value,
-      }
-      const updated = [newEvent, ...prev]
+      };
+      const updated = [newEvent, ...prev];
       if (updated.length > maxEvents) {
-        updated.pop()
+        updated.pop();
       }
-      return updated
-    })
-  }, [])
+      return updated;
+    });
+  }, []);
 
   useEffect(() => {
-    document.addEventListener('kanjo-custom-event', handleCustomEvent)
+    document.addEventListener('kanjo-custom-event', handleCustomEvent);
     return () => {
-      document.removeEventListener('kanjo-custom-event', handleCustomEvent)
-    }
-  }, [handleCustomEvent])
+      document.removeEventListener('kanjo-custom-event', handleCustomEvent);
+    };
+  }, [handleCustomEvent]);
 
   const clearEvents = useCallback(() => {
-    setEvents([])
-  }, [])
+    setEvents([]);
+  }, []);
 
   return (
     <div className="custom-events-log">
@@ -65,7 +65,9 @@ function CustomEventsLog() {
         <h3>Custom Events Log</h3>
         <div className="log-actions">
           <span className="event-count">{events.length} events</span>
-          <button onClick={clearEvents} className="clear-btn">Clear</button>
+          <button onClick={clearEvents} className="clear-btn">
+            Clear
+          </button>
         </div>
       </div>
       <div className="log-entries">
@@ -86,7 +88,7 @@ function CustomEventsLog() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default CustomEventsLog
+export default CustomEventsLog;

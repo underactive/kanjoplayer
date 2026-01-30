@@ -62,7 +62,7 @@ export class CenterPlayButton {
           className: 'kanjo-center-play-btn',
           html: UIBuilder.icons.play,
           attrs: {
-            type: 'button',
+            'type': 'button',
             'aria-label': 'Play',
           },
           events: {

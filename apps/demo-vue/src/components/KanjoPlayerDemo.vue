@@ -337,13 +337,31 @@ function initPlayer() {
 
   // Bind events
   const eventTypes = [
-    'play', 'pause', 'ended', 'seeking', 'seeked',
-    'volumechange', 'ratechange', 'fullscreenchange',
-    'loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough',
-    'waiting', 'playing', 'progress', 'error',
-    'enterpictureinpicture', 'leavepictureinpicture',
-    'hlsmanifestparsed', 'hlslevelswitch', 'hlserror',
-    'dashmanifestparsed', 'dashqualitychanged', 'dasherror',
+    'play',
+    'pause',
+    'ended',
+    'seeking',
+    'seeked',
+    'volumechange',
+    'ratechange',
+    'fullscreenchange',
+    'loadstart',
+    'loadedmetadata',
+    'loadeddata',
+    'canplay',
+    'canplaythrough',
+    'waiting',
+    'playing',
+    'progress',
+    'error',
+    'enterpictureinpicture',
+    'leavepictureinpicture',
+    'hlsmanifestparsed',
+    'hlslevelswitch',
+    'hlserror',
+    'dashmanifestparsed',
+    'dashqualitychanged',
+    'dasherror',
   ] as const;
 
   eventTypes.forEach((eventType) => {
@@ -393,7 +411,9 @@ onUnmounted(() => {
           {{ source.name }}
         </option>
       </select>
-      <span class="source-type" :class="selectedSource.type">{{ selectedSource.type.toUpperCase() }}</span>
+      <span class="source-type" :class="selectedSource.type">{{
+        selectedSource.type.toUpperCase()
+      }}</span>
     </div>
 
     <!-- Collapsible Code Block -->

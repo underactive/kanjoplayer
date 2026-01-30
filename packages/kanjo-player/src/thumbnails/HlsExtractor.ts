@@ -50,9 +50,11 @@ export class HlsExtractor {
    * Check if HLS extraction is supported
    */
   static isSupported(): boolean {
-    return typeof document !== 'undefined' &&
-           typeof HTMLCanvasElement !== 'undefined' &&
-           typeof HTMLVideoElement !== 'undefined';
+    return (
+      typeof document !== 'undefined' &&
+      typeof HTMLCanvasElement !== 'undefined' &&
+      typeof HTMLVideoElement !== 'undefined'
+    );
   }
 
   /**
@@ -174,10 +176,14 @@ export class HlsExtractor {
 
         // Get duration and start pre-buffering
         if (this.video) {
-          this.video.addEventListener('loadedmetadata', () => {
-            this.duration = this.video?.duration || 0;
-            this.startPrebuffering();
-          }, { once: true });
+          this.video.addEventListener(
+            'loadedmetadata',
+            () => {
+              this.duration = this.video?.duration || 0;
+              this.startPrebuffering();
+            },
+            { once: true }
+          );
         }
       };
 
@@ -243,9 +249,13 @@ export class HlsExtractor {
       try {
         // Use requestIdleCallback if available for non-blocking prebuffer
         if ('requestIdleCallback' in window) {
-          await new Promise<void>(resolve => {
-            (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void })
-              .requestIdleCallback(async () => {
+          await new Promise<void>((resolve) => {
+            (
+              window as Window & {
+                requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void;
+              }
+            ).requestIdleCallback(
+              async () => {
                 if (!this.thumbnailCache.has(time) && this.video) {
                   try {
                     const thumb = await this.extractFrameInternal(time);
@@ -255,11 +265,13 @@ export class HlsExtractor {
                   }
                 }
                 resolve();
-              }, { timeout: 5000 }); // Don't wait forever
+              },
+              { timeout: 5000 }
+            ); // Don't wait forever
           });
         } else {
           // Fallback: small delay between prebuffers
-          await new Promise(r => setTimeout(r, 200));
+          await new Promise((r) => setTimeout(r, 200));
           if (!this.thumbnailCache.has(time) && this.video) {
             const thumb = await this.extractFrameInternal(time);
             this.thumbnailCache.set(time, thumb);
@@ -453,7 +465,10 @@ export class HlsExtractor {
     const videoAspect = video.videoWidth / video.videoHeight;
     const canvasAspect = canvas.width / canvas.height;
 
-    let sx = 0, sy = 0, sw = video.videoWidth, sh = video.videoHeight;
+    let sx = 0,
+      sy = 0,
+      sw = video.videoWidth,
+      sh = video.videoHeight;
 
     if (videoAspect > canvasAspect) {
       sw = video.videoHeight * canvasAspect;
@@ -491,7 +506,7 @@ export class HlsExtractor {
    * Destroy and release all resources
    */
   destroy(): void {
-    this.pendingExtractions.forEach(p => {
+    this.pendingExtractions.forEach((p) => {
       p.reject(new Error('Extractor destroyed'));
     });
     this.pendingExtractions = [];

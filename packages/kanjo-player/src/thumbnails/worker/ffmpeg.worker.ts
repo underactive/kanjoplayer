@@ -6,12 +6,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../vite-env.d.ts" />
 
-import type {
-  WorkerRequest,
-  WorkerResponse,
-  ExtractMessage,
-  InitMessage,
-} from './messages';
+import type { WorkerRequest, WorkerResponse, ExtractMessage, InitMessage } from './messages';
 
 // FFmpeg types
 interface FFmpegInstance {
@@ -51,7 +46,7 @@ async function initFFmpeg(message: InitMessage): Promise<void> {
 
   try {
     // Dynamic import of @ffmpeg/ffmpeg
-    const ffmpegModule = await import('@ffmpeg/ffmpeg') as FFmpegModule;
+    const ffmpegModule = (await import('@ffmpeg/ffmpeg')) as FFmpegModule;
 
     ffmpeg = new ffmpegModule.FFmpeg();
 
@@ -94,7 +89,7 @@ async function extractThumbnail(message: ExtractMessage): Promise<void> {
 
   try {
     // Import fetchFile utility
-    const utilModule = await import('@ffmpeg/util') as FetchFileModule;
+    const utilModule = (await import('@ffmpeg/util')) as FetchFileModule;
 
     // Fetch video data
     const videoData = await utilModule.fetchFile(videoUrl);
@@ -106,12 +101,18 @@ async function extractThumbnail(message: ExtractMessage): Promise<void> {
 
     // Extract frame using -ss before -i for fast seeking
     await ffmpeg.exec([
-      '-ss', time.toString(),
-      '-i', inputFileName,
-      '-vframes', '1',
-      '-vf', `scale=${width}:${height}:force_original_aspect_ratio=decrease`,
-      '-f', 'image2',
-      '-q:v', '2',
+      '-ss',
+      time.toString(),
+      '-i',
+      inputFileName,
+      '-vframes',
+      '1',
+      '-vf',
+      `scale=${width}:${height}:force_original_aspect_ratio=decrease`,
+      '-f',
+      'image2',
+      '-q:v',
+      '2',
       outputFileName,
     ]);
 

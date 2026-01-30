@@ -1,56 +1,56 @@
 export interface VideoSource {
-  name: string
-  url: string
-  type: 'mp4' | 'hls' | 'webm' | 'dash'
+  name: string;
+  url: string;
+  type: 'mp4' | 'hls' | 'webm' | 'dash';
 }
 
 export interface VideoState {
-  currentTime: number
-  duration: number
-  paused: boolean
-  ended: boolean
-  seeking: boolean
-  buffered: string
-  seekable: string
-  volume: number
-  muted: boolean
-  videoWidth: number
-  videoHeight: number
-  networkState: number
-  networkStateText: string
-  readyState: number
-  readyStateText: string
-  playbackRate: number
-  defaultPlaybackRate: number
-  currentSrc: string
-  src: string
-  played: string
-  error: string | null
-  autoplay: boolean
-  controls: boolean
-  loop: boolean
-  preload: string
-  crossOrigin: string | null
-  canPlayType_mp4: string
-  canPlayType_webm: string
-  canPlayType_hls: string
-  codec_h264: boolean
-  codec_h265: boolean
-  codec_vp9: boolean
-  codec_av1: boolean
+  currentTime: number;
+  duration: number;
+  paused: boolean;
+  ended: boolean;
+  seeking: boolean;
+  buffered: string;
+  seekable: string;
+  volume: number;
+  muted: boolean;
+  videoWidth: number;
+  videoHeight: number;
+  networkState: number;
+  networkStateText: string;
+  readyState: number;
+  readyStateText: string;
+  playbackRate: number;
+  defaultPlaybackRate: number;
+  currentSrc: string;
+  src: string;
+  played: string;
+  error: string | null;
+  autoplay: boolean;
+  controls: boolean;
+  loop: boolean;
+  preload: string;
+  crossOrigin: string | null;
+  canPlayType_mp4: string;
+  canPlayType_webm: string;
+  canPlayType_hls: string;
+  codec_h264: boolean;
+  codec_h265: boolean;
+  codec_vp9: boolean;
+  codec_av1: boolean;
 }
 
 export interface VideoEvent {
-  timestamp: number
-  type: string
-  detail?: string
+  timestamp: number;
+  type: string;
+  detail?: string;
 }
 
 export interface CustomEventEntry {
-  timestamp: number
-  buttonId: string
-  eventKey: string
-  value: unknown
+  timestamp: number;
+  buttonId: string;
+  eventKey: string;
+  value: unknown;
 }
 
 export const NETWORK_STATE_MAP: Record<number, string> = {
@@ -58,7 +58,7 @@ export const NETWORK_STATE_MAP: Record<number, string> = {
   1: 'NETWORK_IDLE',
   2: 'NETWORK_LOADING',
   3: 'NETWORK_NO_SOURCE',
-}
+};
 
 export const READY_STATE_MAP: Record<number, string> = {
   0: 'HAVE_NOTHING',
@@ -66,7 +66,7 @@ export const READY_STATE_MAP: Record<number, string> = {
   2: 'HAVE_CURRENT_DATA',
   3: 'HAVE_FUTURE_DATA',
   4: 'HAVE_ENOUGH_DATA',
-}
+};
 
 export const VIDEO_SOURCES: VideoSource[] = [
   // HLS Sources
@@ -160,4 +160,4 @@ export const VIDEO_SOURCES: VideoSource[] = [
     url: 'https://storage.googleapis.com/shaka-demo-assets/sintel/dash.mpd',
     type: 'dash',
   },
-]
+];

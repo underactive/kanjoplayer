@@ -1,55 +1,95 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { VideoState } from '../types/video-stats'
+import { computed } from 'vue';
+import type { VideoState } from '../types/video-stats';
 
 const props = defineProps<{
-  state: VideoState
-}>()
+  state: VideoState;
+}>();
 
 function formatTime(seconds: number): string {
-  if (!isFinite(seconds) || isNaN(seconds)) return '--:--'
-  const mins = Math.floor(seconds / 60)
-  const secs = Math.floor(seconds % 60)
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  if (!isFinite(seconds) || isNaN(seconds)) return '--:--';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
 function formatPercentage(value: number): string {
-  return `${Math.round(value * 100)}%`
+  return `${Math.round(value * 100)}%`;
 }
 
 const playbackStats = computed(() => [
-  { label: 'Current Time', value: formatTime(props.state.currentTime), raw: props.state.currentTime.toFixed(3) },
-  { label: 'Duration', value: formatTime(props.state.duration), raw: props.state.duration.toFixed(3) },
-  { label: 'Paused', value: props.state.paused ? 'Yes' : 'No', status: props.state.paused ? 'warning' : 'success' },
-  { label: 'Ended', value: props.state.ended ? 'Yes' : 'No', status: props.state.ended ? 'warning' : 'neutral' },
-  { label: 'Seeking', value: props.state.seeking ? 'Yes' : 'No', status: props.state.seeking ? 'warning' : 'neutral' },
+  {
+    label: 'Current Time',
+    value: formatTime(props.state.currentTime),
+    raw: props.state.currentTime.toFixed(3),
+  },
+  {
+    label: 'Duration',
+    value: formatTime(props.state.duration),
+    raw: props.state.duration.toFixed(3),
+  },
+  {
+    label: 'Paused',
+    value: props.state.paused ? 'Yes' : 'No',
+    status: props.state.paused ? 'warning' : 'success',
+  },
+  {
+    label: 'Ended',
+    value: props.state.ended ? 'Yes' : 'No',
+    status: props.state.ended ? 'warning' : 'neutral',
+  },
+  {
+    label: 'Seeking',
+    value: props.state.seeking ? 'Yes' : 'No',
+    status: props.state.seeking ? 'warning' : 'neutral',
+  },
   { label: 'Playback Rate', value: `${props.state.playbackRate}x` },
-])
+]);
 
 const bufferStats = computed(() => [
   { label: 'Buffered', value: props.state.buffered },
   { label: 'Seekable', value: props.state.seekable },
   { label: 'Played', value: props.state.played },
-])
+]);
 
 const volumeStats = computed(() => [
   { label: 'Volume', value: formatPercentage(props.state.volume) },
-  { label: 'Muted', value: props.state.muted ? 'Yes' : 'No', status: props.state.muted ? 'warning' : 'neutral' },
-])
+  {
+    label: 'Muted',
+    value: props.state.muted ? 'Yes' : 'No',
+    status: props.state.muted ? 'warning' : 'neutral',
+  },
+]);
 
 const dimensionStats = computed(() => [
   { label: 'Video Width', value: `${props.state.videoWidth}px` },
   { label: 'Video Height', value: `${props.state.videoHeight}px` },
-  { label: 'Aspect Ratio', value: props.state.videoWidth && props.state.videoHeight
-    ? (props.state.videoWidth / props.state.videoHeight).toFixed(3)
-    : 'N/A' },
-])
+  {
+    label: 'Aspect Ratio',
+    value:
+      props.state.videoWidth && props.state.videoHeight
+        ? (props.state.videoWidth / props.state.videoHeight).toFixed(3)
+        : 'N/A',
+  },
+]);
 
 const networkStats = computed(() => [
-  { label: 'Network State', value: props.state.networkStateText, raw: props.state.networkState.toString() },
-  { label: 'Ready State', value: props.state.readyStateText, raw: props.state.readyState.toString() },
-  { label: 'Current Src', value: props.state.currentSrc ? truncateUrl(props.state.currentSrc) : 'none', title: props.state.currentSrc },
-])
+  {
+    label: 'Network State',
+    value: props.state.networkStateText,
+    raw: props.state.networkState.toString(),
+  },
+  {
+    label: 'Ready State',
+    value: props.state.readyStateText,
+    raw: props.state.readyState.toString(),
+  },
+  {
+    label: 'Current Src',
+    value: props.state.currentSrc ? truncateUrl(props.state.currentSrc) : 'none',
+    title: props.state.currentSrc,
+  },
+]);
 
 const configStats = computed(() => [
   { label: 'Autoplay', value: props.state.autoplay ? 'Yes' : 'No' },
@@ -57,34 +97,66 @@ const configStats = computed(() => [
   { label: 'Loop', value: props.state.loop ? 'Yes' : 'No' },
   { label: 'Preload', value: props.state.preload },
   { label: 'Cross Origin', value: props.state.crossOrigin || 'null' },
-])
+]);
 
 const capabilityStats = computed(() => [
-  { label: 'Can Play MP4', value: props.state.canPlayType_mp4 || 'no', status: getCanPlayStatus(props.state.canPlayType_mp4) },
-  { label: 'Can Play WebM', value: props.state.canPlayType_webm || 'no', status: getCanPlayStatus(props.state.canPlayType_webm) },
-  { label: 'Can Play HLS', value: props.state.canPlayType_hls || 'no', status: getCanPlayStatus(props.state.canPlayType_hls) },
-])
+  {
+    label: 'Can Play MP4',
+    value: props.state.canPlayType_mp4 || 'no',
+    status: getCanPlayStatus(props.state.canPlayType_mp4),
+  },
+  {
+    label: 'Can Play WebM',
+    value: props.state.canPlayType_webm || 'no',
+    status: getCanPlayStatus(props.state.canPlayType_webm),
+  },
+  {
+    label: 'Can Play HLS',
+    value: props.state.canPlayType_hls || 'no',
+    status: getCanPlayStatus(props.state.canPlayType_hls),
+  },
+]);
 
 const codecStats = computed(() => [
-  { label: 'H.264 (AVC)', value: props.state.codec_h264 ? 'Yes' : 'No', status: props.state.codec_h264 ? 'success' : 'error' },
-  { label: 'H.265 (HEVC)', value: props.state.codec_h265 ? 'Yes' : 'No', status: props.state.codec_h265 ? 'success' : 'warning' },
-  { label: 'VP9', value: props.state.codec_vp9 ? 'Yes' : 'No', status: props.state.codec_vp9 ? 'success' : 'warning' },
-  { label: 'AV1', value: props.state.codec_av1 ? 'Yes' : 'No', status: props.state.codec_av1 ? 'success' : 'warning' },
-])
+  {
+    label: 'H.264 (AVC)',
+    value: props.state.codec_h264 ? 'Yes' : 'No',
+    status: props.state.codec_h264 ? 'success' : 'error',
+  },
+  {
+    label: 'H.265 (HEVC)',
+    value: props.state.codec_h265 ? 'Yes' : 'No',
+    status: props.state.codec_h265 ? 'success' : 'warning',
+  },
+  {
+    label: 'VP9',
+    value: props.state.codec_vp9 ? 'Yes' : 'No',
+    status: props.state.codec_vp9 ? 'success' : 'warning',
+  },
+  {
+    label: 'AV1',
+    value: props.state.codec_av1 ? 'Yes' : 'No',
+    status: props.state.codec_av1 ? 'success' : 'warning',
+  },
+]);
 
 const errorStats = computed(() => [
-  { label: 'Error', value: props.state.error || 'none', status: props.state.error ? 'error' : 'success' },
-])
+  {
+    label: 'Error',
+    value: props.state.error || 'none',
+    status: props.state.error ? 'error' : 'success',
+  },
+]);
 
 function truncateUrl(url: string, maxLength = 50): string {
-  if (url.length <= maxLength) return url
-  return url.substring(0, maxLength - 3) + '...'
+  if (url.length <= maxLength) return url;
+  return url.substring(0, maxLength - 3) + '...';
 }
 
 function getCanPlayStatus(value: string): string {
-  if (value === 'probably') return 'success'
-  if (value === 'maybe') return 'warning'
-  return 'error'
+  if (value === 'probably') return 'success';
+  if (value === 'maybe') return 'warning';
+  return 'error';
 }
 </script>
 

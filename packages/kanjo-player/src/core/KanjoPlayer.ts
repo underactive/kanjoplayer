@@ -244,18 +244,12 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
 
     // Apply custom thickness
     if (config.thickness !== undefined) {
-      this.container.style.setProperty(
-        '--kanjo-progress-minimal-height',
-        `${config.thickness}px`
-      );
+      this.container.style.setProperty('--kanjo-progress-minimal-height', `${config.thickness}px`);
     }
 
     // Apply custom opacity
     if (config.opacity !== undefined) {
-      this.container.style.setProperty(
-        '--kanjo-progress-minimal-opacity',
-        String(config.opacity)
-      );
+      this.container.style.setProperty('--kanjo-progress-minimal-opacity', String(config.opacity));
     }
   }
 

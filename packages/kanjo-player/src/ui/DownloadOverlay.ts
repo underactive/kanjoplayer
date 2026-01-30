@@ -155,9 +155,7 @@ export class DownloadOverlay {
 
     // Update dialog message with file size
     const sizeKB = Math.round(blob.size / 1024);
-    const sizeText = sizeKB > 1024
-      ? `${(sizeKB / 1024).toFixed(1)} MB`
-      : `${sizeKB} KB`;
+    const sizeText = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${sizeKB} KB`;
 
     const message = this.dialogOverlay.querySelector('.kanjo-download-dialog-message')!;
     message.textContent = `Your clip (${sizeText}) is ready. Do you want to download it?`;

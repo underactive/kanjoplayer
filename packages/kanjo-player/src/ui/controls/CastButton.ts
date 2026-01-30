@@ -45,10 +45,7 @@ interface CastSession {
     successCallback: () => void,
     errorCallback: (error: unknown) => void
   ) => void;
-  stop: (
-    successCallback: () => void,
-    errorCallback: (error: unknown) => void
-  ) => void;
+  stop: (successCallback: () => void, errorCallback: (error: unknown) => void) => void;
 }
 
 interface MediaInfo {
@@ -116,8 +113,7 @@ export class CastButton {
     // Load the Cast SDK if not already present
     if (!document.querySelector('script[src*="cast_sender"]')) {
       const script = document.createElement('script');
-      script.src =
-        'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
+      script.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
       script.async = true;
       document.head.appendChild(script);
     }
@@ -131,8 +127,7 @@ export class CastButton {
 
     // Use default media receiver if no custom ID provided
     const appId =
-      this.config.receiverApplicationId ||
-      chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID;
+      this.config.receiverApplicationId || chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID;
 
     const sessionRequest = new chrome.cast.SessionRequest(appId);
     const apiConfig = new chrome.cast.ApiConfig(
@@ -232,9 +227,7 @@ export class CastButton {
   }
 
   private updateActiveState(): void {
-    const icon = this.isConnected
-      ? UIBuilder.icons.castConnected
-      : UIBuilder.icons.cast;
+    const icon = this.isConnected ? UIBuilder.icons.castConnected : UIBuilder.icons.cast;
     const tooltip = this.isConnected ? 'Cast (Connected)' : 'Cast';
 
     this.element.innerHTML = icon;

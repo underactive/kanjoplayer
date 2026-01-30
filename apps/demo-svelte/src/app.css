@@ -5,7 +5,7 @@
   --text-primary: #1c1e21;
   --text-secondary: #606770;
   --text-muted: #8a8d91;
-  --accent: #2E82FF;
+  --accent: #2e82ff;
   --accent-hover: #5a9eff;
   --accent-secondary: #e7f0ff;
   --border: #ced0d4;
@@ -21,7 +21,7 @@
   --text-primary: #e4e6eb;
   --text-secondary: #b0b3b8;
   --text-muted: #6a6c6e;
-  --accent: #2E82FF;
+  --accent: #2e82ff;
   --accent-hover: #5a9eff;
   --accent-secondary: #263c5a;
   --border: #3e4042;
@@ -41,13 +41,18 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
-  transition: background-color 1.5s ease, color 1.5s ease;
+  transition:
+    background-color 1.5s ease,
+    color 1.5s ease;
 }
 
 *,
 *::before,
 *::after {
-  transition: background-color 1.5s ease, border-color 1.5s ease, color 1.5s ease;
+  transition:
+    background-color 1.5s ease,
+    border-color 1.5s ease,
+    color 1.5s ease;
 }
 
 .app {

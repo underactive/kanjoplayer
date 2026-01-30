@@ -121,10 +121,7 @@ export class ThumbnailCache {
   /**
    * Preload thumbnails for a range of times
    */
-  async preload(
-    times: number[],
-    loader: (time: number) => Promise<ThumbnailData>
-  ): Promise<void> {
+  async preload(times: number[], loader: (time: number) => Promise<ThumbnailData>): Promise<void> {
     const uncached = times.filter((time) => !this.has(time));
 
     await Promise.allSettled(

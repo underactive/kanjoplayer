@@ -63,9 +63,11 @@ export class DashExtractor {
    * Check if DASH extraction is supported
    */
   static isSupported(): boolean {
-    return typeof document !== 'undefined' &&
-           typeof HTMLCanvasElement !== 'undefined' &&
-           typeof HTMLVideoElement !== 'undefined';
+    return (
+      typeof document !== 'undefined' &&
+      typeof HTMLCanvasElement !== 'undefined' &&
+      typeof HTMLVideoElement !== 'undefined'
+    );
   }
 
   /**
@@ -117,7 +119,10 @@ export class DashExtractor {
 
       // Handle different export structures from various bundlers:
       // 1. Standard ES module: { default: { MediaPlayer: fn } }
-      if (moduleAny.default && typeof (moduleAny.default as DashJsStatic).MediaPlayer === 'function') {
+      if (
+        moduleAny.default &&
+        typeof (moduleAny.default as DashJsStatic).MediaPlayer === 'function'
+      ) {
         dashjs = moduleAny.default as DashJsStatic;
       }
       // 2. Named export: { MediaPlayer: fn }
@@ -125,14 +130,16 @@ export class DashExtractor {
         dashjs = moduleAny as unknown as DashJsStatic;
       }
       // 3. UMD bundle returns factory result directly: { default: { create: fn } }
-      else if (moduleAny.default && typeof (moduleAny.default as { create?: () => unknown }).create === 'function') {
+      else if (
+        moduleAny.default &&
+        typeof (moduleAny.default as { create?: () => unknown }).create === 'function'
+      ) {
         // Wrap the factory result to match expected interface
         dashjs = {
           MediaPlayer: () => moduleAny.default as unknown as { create(): DashInstance },
           Debug: { LOG_LEVEL_NONE: 0 },
         } as DashJsStatic;
-      }
-      else {
+      } else {
         throw new Error('dashjs module structure not recognized');
       }
     } catch (e) {
@@ -228,10 +235,14 @@ export class DashExtractor {
 
         // Get duration and start pre-buffering
         if (this.video) {
-          this.video.addEventListener('loadedmetadata', () => {
-            this.duration = this.video?.duration || 0;
-            this.startPrebuffering();
-          }, { once: true });
+          this.video.addEventListener(
+            'loadedmetadata',
+            () => {
+              this.duration = this.video?.duration || 0;
+              this.startPrebuffering();
+            },
+            { once: true }
+          );
         }
       };
 
@@ -287,9 +298,13 @@ export class DashExtractor {
 
       try {
         if ('requestIdleCallback' in window) {
-          await new Promise<void>(resolve => {
-            (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void })
-              .requestIdleCallback(async () => {
+          await new Promise<void>((resolve) => {
+            (
+              window as Window & {
+                requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void;
+              }
+            ).requestIdleCallback(
+              async () => {
                 if (!this.thumbnailCache.has(time) && this.video) {
                   try {
                     const thumb = await this.extractFrameInternal(time);
@@ -299,10 +314,12 @@ export class DashExtractor {
                   }
                 }
                 resolve();
-              }, { timeout: 5000 });
+              },
+              { timeout: 5000 }
+            );
           });
         } else {
-          await new Promise(r => setTimeout(r, 200));
+          await new Promise((r) => setTimeout(r, 200));
           if (!this.thumbnailCache.has(time) && this.video) {
             const thumb = await this.extractFrameInternal(time);
             this.thumbnailCache.set(time, thumb);
@@ -488,7 +505,10 @@ export class DashExtractor {
     const videoAspect = video.videoWidth / video.videoHeight;
     const canvasAspect = canvas.width / canvas.height;
 
-    let sx = 0, sy = 0, sw = video.videoWidth, sh = video.videoHeight;
+    let sx = 0,
+      sy = 0,
+      sw = video.videoWidth,
+      sh = video.videoHeight;
 
     if (videoAspect > canvasAspect) {
       sw = video.videoHeight * canvasAspect;
@@ -525,7 +545,7 @@ export class DashExtractor {
    * Destroy and release all resources
    */
   destroy(): void {
-    this.pendingExtractions.forEach(p => {
+    this.pendingExtractions.forEach((p) => {
       p.reject(new Error('Extractor destroyed'));
     });
     this.pendingExtractions = [];

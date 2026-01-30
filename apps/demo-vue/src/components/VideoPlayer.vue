@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
-import type Hls from 'hls.js'
-import { CodecCapabilities } from 'kanjo-player'
-import StatsPanel from './StatsPanel.vue'
-import EventLog from './EventLog.vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import type Hls from 'hls.js';
+import { CodecCapabilities } from 'kanjo-player';
+import StatsPanel from './StatsPanel.vue';
+import EventLog from './EventLog.vue';
 import {
   type VideoSource,
   type VideoState,
@@ -11,7 +11,7 @@ import {
   VIDEO_EVENTS,
   NETWORK_STATE_MAP,
   READY_STATE_MAP,
-} from '../types/video-stats'
+} from '../types/video-stats';
 
 const VIDEO_SOURCES: VideoSource[] = [
   // MP4 Sources
@@ -57,11 +57,11 @@ const VIDEO_SOURCES: VideoSource[] = [
     url: 'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f1/Sintel_movie_4K.webm/Sintel_movie_4K.webm.720p.webm',
     type: 'webm',
   },
-]
+];
 
-const videoRef = ref<HTMLVideoElement | null>(null)
-const selectedSourceIndex = ref(0)
-const hlsInstance = ref<Hls | null>(null)
+const videoRef = ref<HTMLVideoElement | null>(null);
+const selectedSourceIndex = ref(0);
+const hlsInstance = ref<Hls | null>(null);
 
 const videoState = ref<VideoState>({
   currentTime: 0,
@@ -97,25 +97,25 @@ const videoState = ref<VideoState>({
   codec_h265: false,
   codec_vp9: false,
   codec_av1: false,
-})
+});
 
-const events = ref<VideoEvent[]>([])
-const maxEvents = 100
+const events = ref<VideoEvent[]>([]);
+const maxEvents = 100;
 
-const selectedSource = computed(() => VIDEO_SOURCES[selectedSourceIndex.value])
+const selectedSource = computed(() => VIDEO_SOURCES[selectedSourceIndex.value]);
 
 function formatTimeRanges(ranges: TimeRanges): string {
-  if (!ranges || ranges.length === 0) return 'none'
-  const parts: string[] = []
+  if (!ranges || ranges.length === 0) return 'none';
+  const parts: string[] = [];
   for (let i = 0; i < ranges.length; i++) {
-    parts.push(`[${ranges.start(i).toFixed(2)}-${ranges.end(i).toFixed(2)}]`)
+    parts.push(`[${ranges.start(i).toFixed(2)}-${ranges.end(i).toFixed(2)}]`);
   }
-  return parts.join(', ')
+  return parts.join(', ');
 }
 
 function updateVideoState() {
-  const video = videoRef.value
-  if (!video) return
+  const video = videoRef.value;
+  if (!video) return;
 
   videoState.value = {
     currentTime: video.currentTime,
@@ -151,7 +151,7 @@ function updateVideoState() {
     codec_h265: CodecCapabilities.isSupported('h265', 'mp4'),
     codec_vp9: CodecCapabilities.isSupported('vp9', 'webm'),
     codec_av1: CodecCapabilities.isSupported('av1', 'mp4'),
-  }
+  };
 }
 
 function logEvent(type: string, detail?: string) {
@@ -159,111 +159,111 @@ function logEvent(type: string, detail?: string) {
     timestamp: Date.now(),
     type,
     detail,
-  })
+  });
   if (events.value.length > maxEvents) {
-    events.value.pop()
+    events.value.pop();
   }
 }
 
 function setupEventListeners() {
-  const video = videoRef.value
-  if (!video) return
+  const video = videoRef.value;
+  if (!video) return;
 
   VIDEO_EVENTS.forEach((eventType) => {
     video.addEventListener(eventType, () => {
-      updateVideoState()
-      logEvent(eventType)
-    })
-  })
+      updateVideoState();
+      logEvent(eventType);
+    });
+  });
 }
 
 function destroyHls() {
   if (hlsInstance.value) {
-    hlsInstance.value.destroy()
-    hlsInstance.value = null
+    hlsInstance.value.destroy();
+    hlsInstance.value = null;
   }
 }
 
 async function loadSource(source: VideoSource) {
-  const video = videoRef.value
-  if (!video) return
+  const video = videoRef.value;
+  if (!video) return;
 
-  destroyHls()
-  logEvent('source-change', `Loading: ${source.name}`)
+  destroyHls();
+  logEvent('source-change', `Loading: ${source.name}`);
 
   if (source.type === 'hls') {
-    const { default: Hls } = await import('hls.js')
+    const { default: Hls } = await import('hls.js');
     if (Hls.isSupported()) {
       const hls = new Hls({
         debug: false,
         enableWorker: true,
-      })
-      hlsInstance.value = hls
+      });
+      hlsInstance.value = hls;
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        logEvent('hls-manifest-parsed', `Levels: ${hls.levels.length}`)
-        updateVideoState()
-      })
+        logEvent('hls-manifest-parsed', `Levels: ${hls.levels.length}`);
+        updateVideoState();
+      });
 
       hls.on(Hls.Events.LEVEL_SWITCHED, (_, data) => {
-        const level = hls.levels[data.level]
-        logEvent('hls-level-switched', `${level.width}x${level.height} @ ${level.bitrate}bps`)
-      })
+        const level = hls.levels[data.level];
+        logEvent('hls-level-switched', `${level.width}x${level.height} @ ${level.bitrate}bps`);
+      });
 
       hls.on(Hls.Events.ERROR, (_, data) => {
-        logEvent('hls-error', `${data.type}: ${data.details}`)
+        logEvent('hls-error', `${data.type}: ${data.details}`);
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
-              hls.startLoad()
-              break
+              hls.startLoad();
+              break;
             case Hls.ErrorTypes.MEDIA_ERROR:
-              hls.recoverMediaError()
-              break
+              hls.recoverMediaError();
+              break;
             default:
-              destroyHls()
-              break
+              destroyHls();
+              break;
           }
         }
-      })
+      });
 
-      hls.loadSource(source.url)
-      hls.attachMedia(video)
+      hls.loadSource(source.url);
+      hls.attachMedia(video);
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // Safari native HLS support
-      video.src = source.url
+      video.src = source.url;
     }
   } else {
-    video.src = source.url
+    video.src = source.url;
   }
 
-  updateVideoState()
+  updateVideoState();
 }
 
 function clearEvents() {
-  events.value = []
+  events.value = [];
 }
 
 watch(selectedSourceIndex, () => {
-  loadSource(selectedSource.value)
-})
+  loadSource(selectedSource.value);
+});
 
-let stateUpdateInterval: ReturnType<typeof setInterval> | null = null
+let stateUpdateInterval: ReturnType<typeof setInterval> | null = null;
 
 onMounted(() => {
-  setupEventListeners()
-  loadSource(selectedSource.value)
+  setupEventListeners();
+  loadSource(selectedSource.value);
 
   // Update state periodically for smooth stats display
-  stateUpdateInterval = setInterval(updateVideoState, 250)
-})
+  stateUpdateInterval = setInterval(updateVideoState, 250);
+});
 
 onUnmounted(() => {
-  destroyHls()
+  destroyHls();
   if (stateUpdateInterval) {
-    clearInterval(stateUpdateInterval)
+    clearInterval(stateUpdateInterval);
   }
-})
+});
 </script>
 
 <template>
@@ -275,17 +275,13 @@ onUnmounted(() => {
           {{ source.name }}
         </option>
       </select>
-      <span class="source-type" :class="selectedSource.type">{{ selectedSource.type.toUpperCase() }}</span>
+      <span class="source-type" :class="selectedSource.type">{{
+        selectedSource.type.toUpperCase()
+      }}</span>
     </div>
 
     <div class="player-wrapper">
-      <video
-        ref="videoRef"
-        controls
-        playsinline
-        preload="auto"
-        crossorigin="anonymous"
-      >
+      <video ref="videoRef" controls playsinline preload="auto" crossorigin="anonymous">
         Your browser does not support the video tag.
       </video>
     </div>

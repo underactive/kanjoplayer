@@ -55,10 +55,14 @@ export class ABLoopControl {
     this.options = options || {};
 
     // Create buttons with text labels (A [ time) and (time ] B)
-    this.startBtn = this.createLoopPointButton('start', 'Set loop start point [', () => this.setStartPoint());
+    this.startBtn = this.createLoopPointButton('start', 'Set loop start point [', () =>
+      this.setStartPoint()
+    );
     this.startBtn.classList.add('kanjo-abloop-start');
 
-    this.endBtn = this.createLoopPointButton('end', 'Set loop end point ]', () => this.setEndPoint());
+    this.endBtn = this.createLoopPointButton('end', 'Set loop end point ]', () =>
+      this.setEndPoint()
+    );
     this.endBtn.classList.add('kanjo-abloop-end');
 
     // Create toggle button with dropdown
@@ -71,7 +75,11 @@ export class ABLoopControl {
     this.updateButtonStates();
   }
 
-  private createLoopPointButton(type: 'start' | 'end', tooltip: string, onClick: () => void): HTMLButtonElement {
+  private createLoopPointButton(
+    type: 'start' | 'end',
+    tooltip: string,
+    onClick: () => void
+  ): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'kanjo-btn kanjo-abloop-btn kanjo-abloop-point-btn';
@@ -220,9 +228,7 @@ export class ABLoopControl {
   private bindEvents(): void {
     // Handle timeupdate for looping
     this.player.on('timeupdate', ({ currentTime }) => {
-      if (this.state.enabled &&
-          this.state.startTime !== null &&
-          this.state.endTime !== null) {
+      if (this.state.enabled && this.state.startTime !== null && this.state.endTime !== null) {
         // Loop back to start when reaching end
         if (currentTime >= this.state.endTime) {
           this.player.seek(this.state.startTime);
@@ -274,7 +280,7 @@ export class ABLoopControl {
     }
 
     // If end point exists and duration would exceed max, clear it
-    if (this.state.endTime !== null && (this.state.endTime - currentTime) > MAX_LOOP_DURATION) {
+    if (this.state.endTime !== null && this.state.endTime - currentTime > MAX_LOOP_DURATION) {
       this.state.endTime = null;
     }
 
@@ -290,7 +296,7 @@ export class ABLoopControl {
     if (this.state.startTime === null || currentTime > this.state.startTime) {
       // Enforce max duration - clamp end time if needed
       let endTime = currentTime;
-      if (this.state.startTime !== null && (endTime - this.state.startTime) > MAX_LOOP_DURATION) {
+      if (this.state.startTime !== null && endTime - this.state.startTime > MAX_LOOP_DURATION) {
         endTime = this.state.startTime + MAX_LOOP_DURATION;
       }
       this.state.endTime = endTime;
@@ -346,9 +352,13 @@ export class ABLoopControl {
     // Check duration limit
     if (duration > MAX_LOOP_DURATION) {
       if (this.downloadOverlay) {
-        this.downloadOverlay.showError(`Clip too long (${Math.round(duration)}s). Max: ${MAX_LOOP_DURATION}s`);
+        this.downloadOverlay.showError(
+          `Clip too long (${Math.round(duration)}s). Max: ${MAX_LOOP_DURATION}s`
+        );
       } else {
-        alert(`Clip duration (${Math.round(duration)}s) exceeds maximum of ${MAX_LOOP_DURATION} seconds.\n\nPlease set a shorter loop region.`);
+        alert(
+          `Clip duration (${Math.round(duration)}s) exceeds maximum of ${MAX_LOOP_DURATION} seconds.\n\nPlease set a shorter loop region.`
+        );
       }
       return;
     }
@@ -358,7 +368,9 @@ export class ABLoopControl {
       if (this.downloadOverlay) {
         this.downloadOverlay.showError('Download not supported in this browser');
       } else {
-        alert('Loop download is not supported in this browser.\n\nPlease use a modern browser with WebAssembly support.');
+        alert(
+          'Loop download is not supported in this browser.\n\nPlease use a modern browser with WebAssembly support.'
+        );
       }
       return;
     }
@@ -409,7 +421,9 @@ export class ABLoopControl {
       if (!isCancelled) {
         console.error('[ABLoopControl] Download failed:', error);
         if (this.downloadOverlay) {
-          this.downloadOverlay.showError(error instanceof Error ? error.message : 'Download failed');
+          this.downloadOverlay.showError(
+            error instanceof Error ? error.message : 'Download failed'
+          );
         } else {
           alert(`Download failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
@@ -476,7 +490,8 @@ export class ABLoopControl {
       this.startBtn.classList.add('kanjo-active');
       this.startBtn.title = `Loop start: ${UIBuilder.formatTimePrecise(this.state.startTime, showHours)} (click to update)`;
       if (startTimeSpan)
-        startTimeSpan.textContent = ' ' + UIBuilder.formatTimePrecise(this.state.startTime, showHours);
+        startTimeSpan.textContent =
+          ' ' + UIBuilder.formatTimePrecise(this.state.startTime, showHours);
     } else {
       this.startBtn.classList.remove('kanjo-active');
       this.startBtn.title = 'Set loop start point [';
@@ -560,7 +575,7 @@ export class ABLoopControl {
   updateStartTime(time: number): void {
     if (this.state.endTime === null || time < this.state.endTime) {
       // Enforce max duration - don't allow if would exceed limit
-      if (this.state.endTime !== null && (this.state.endTime - time) > MAX_LOOP_DURATION) {
+      if (this.state.endTime !== null && this.state.endTime - time > MAX_LOOP_DURATION) {
         time = this.state.endTime - MAX_LOOP_DURATION;
       }
       this.state.startTime = Math.max(0, time);
@@ -572,7 +587,7 @@ export class ABLoopControl {
   updateEndTime(time: number): void {
     if (this.state.startTime === null || time > this.state.startTime) {
       // Enforce max duration - clamp if would exceed limit
-      if (this.state.startTime !== null && (time - this.state.startTime) > MAX_LOOP_DURATION) {
+      if (this.state.startTime !== null && time - this.state.startTime > MAX_LOOP_DURATION) {
         time = this.state.startTime + MAX_LOOP_DURATION;
       }
       this.state.endTime = time;

@@ -7,10 +7,10 @@ import { UIBuilder } from '../UIBuilder';
 
 export interface VideoAdjustments {
   brightness: number; // 0-200, 100 = normal
-  contrast: number;   // 0-200, 100 = normal
+  contrast: number; // 0-200, 100 = normal
   saturation: number; // 0-200, 100 = normal
-  gamma: number;      // 0-200, 100 = normal (approximated)
-  hue: number;        // -180 to 180, 0 = normal
+  gamma: number; // 0-200, 100 = normal (approximated)
+  hue: number; // -180 to 180, 0 = normal
 }
 
 const DEFAULT_ADJUSTMENTS: VideoAdjustments = {

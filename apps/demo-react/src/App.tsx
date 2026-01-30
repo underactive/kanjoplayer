@@ -1,22 +1,22 @@
-import { useEffect, useCallback } from 'react'
-import KanjoPlayerDemo from './components/KanjoPlayerDemo'
+import { useEffect, useCallback } from 'react';
+import KanjoPlayerDemo from './components/KanjoPlayerDemo';
 
 function App() {
   const handleCustomEvent = useCallback((e: Event) => {
-    const detail = (e as CustomEvent).detail
+    const detail = (e as CustomEvent).detail;
     if (detail.eventKey === 'set_dark_mode') {
-      document.documentElement.classList.add('dark-mode')
+      document.documentElement.classList.add('dark-mode');
     } else if (detail.eventKey === 'set_light_mode') {
-      document.documentElement.classList.remove('dark-mode')
+      document.documentElement.classList.remove('dark-mode');
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    document.addEventListener('kanjo-custom-event', handleCustomEvent)
+    document.addEventListener('kanjo-custom-event', handleCustomEvent);
     return () => {
-      document.removeEventListener('kanjo-custom-event', handleCustomEvent)
-    }
-  }, [handleCustomEvent])
+      document.removeEventListener('kanjo-custom-event', handleCustomEvent);
+    };
+  }, [handleCustomEvent]);
 
   return (
     <div className="app">
@@ -28,7 +28,7 @@ function App() {
         <KanjoPlayerDemo />
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
