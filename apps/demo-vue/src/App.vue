@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import VideoPlayer from './components/VideoPlayer.vue';
+import { onMounted, onUnmounted } from 'vue';
 import KanjoPlayerDemo from './components/KanjoPlayerDemo.vue';
-
-const activeTab = ref<'kanjo' | 'original'>('kanjo');
-const isDarkMode = ref(false);
 
 function handleCustomEvent(e: Event) {
   const detail = (e as CustomEvent).detail;
   if (detail.eventKey === 'set_dark_mode') {
-    isDarkMode.value = true;
     document.documentElement.classList.add('dark-mode');
   } else if (detail.eventKey === 'set_light_mode') {
-    isDarkMode.value = false;
     document.documentElement.classList.remove('dark-mode');
   }
 }
@@ -30,21 +24,15 @@ onUnmounted(() => {
   <div class="app">
     <header>
       <h1>KanjoPlayer Demo</h1>
-      <p class="subtitle">Vue.js Implementation</p>
-
-      <!-- Tab Switcher -->
-      <div class="tabs">
-        <button :class="{ active: activeTab === 'kanjo' }" @click="activeTab = 'kanjo'">
-          KanjoPlayer
-        </button>
-        <button :class="{ active: activeTab === 'original' }" @click="activeTab = 'original'">
-          HTML5 &lt;video&gt;
-        </button>
-      </div>
+      <nav class="demo-links">
+        <a href="/">Plain HTML</a>
+        <a href="/vue/" class="active">Vue</a>
+        <a href="/react/">React</a>
+        <a href="/svelte/">Svelte</a>
+      </nav>
     </header>
     <main>
-      <KanjoPlayerDemo v-if="activeTab === 'kanjo'" />
-      <VideoPlayer v-else />
+      <KanjoPlayerDemo />
     </main>
   </div>
 </template>
@@ -126,38 +114,33 @@ header h1 {
   margin-bottom: 5px;
 }
 
-.subtitle {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-}
-
-.tabs {
+.demo-links {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
 }
 
-.tabs button {
-  padding: 10px 24px;
-  border: 1px solid var(--border);
-  background: var(--bg-secondary);
+.demo-links a {
   color: var(--text-secondary);
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
   transition: all 0.2s;
 }
 
-.tabs button:hover {
+.demo-links a:hover {
+  color: var(--accent);
   border-color: var(--accent);
-  color: var(--text-primary);
 }
 
-.tabs button.active {
-  background: var(--accent);
+.demo-links a.active {
+  color: var(--accent);
   border-color: var(--accent);
-  color: white;
+  background: var(--accent-secondary);
 }
 
 main {
