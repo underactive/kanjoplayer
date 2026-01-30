@@ -111,58 +111,6 @@ const containerRef = ref<HTMLDivElement | null>(null);
 const player = ref<KanjoPlayer | null>(null);
 const selectedSourceIndex = ref(0);
 const selectedSource = ref(VIDEO_SOURCES[0]);
-const isCodeExpanded = ref(false);
-
-const playerCode = `player.value = new KanjoPlayer({
-  container: containerRef.value,
-  src: selectedSource.value.url,
-  sourceType: selectedSource.value.type,
-  controls: true,
-  theme: 'dark',
-  autoplay: false,
-  muted: false,
-  thumbnails: { enabled: true },
-  skipControls: { enabled: true },
-  airPlay: { enabled: true },
-  cast: { enabled: true },
-  plugins: [new HlsPlugin()],
-  customButtons: {
-    enabled: true,
-    buttons: [
-      {
-        id: 'light-mode',
-        iconClass: 'hero-sun-solid',
-        displayMode: 'icon',
-        eventKey: 'set_light_mode',
-        tooltip: 'Turn on the lights',
-      },
-      {
-        id: 'dark-mode',
-        iconClass: 'hero-moon-solid',
-        displayMode: 'icon',
-        eventKey: 'set_dark_mode',
-        tooltip: 'Turn off the lights',
-      },
-      {
-        id: 'bookmark',
-        iconClass: 'hero-bookmark-solid',
-        displayMode: 'icon',
-        eventKey: 'bookmark_movie',
-        eventValue: 'src',
-        tooltip: 'Bookmark this video',
-      },
-      {
-        id: 'share-time',
-        iconClass: 'hero-share-solid',
-        text: 'Share',
-        displayMode: 'icon-text',
-        eventKey: 'share_at_time',
-        eventValue: 'currentTime',
-        tooltip: 'Share at current time',
-      },
-    ],
-  },
-});`;
 
 const videoState = ref<VideoState>({
   currentTime: 0,
@@ -416,19 +364,6 @@ onUnmounted(() => {
       }}</span>
     </div>
 
-    <!-- Collapsible Code Block -->
-    <div class="code-block-panel">
-      <button class="code-block-toggle" @click="isCodeExpanded = !isCodeExpanded">
-        <span class="toggle-icon" :class="{ expanded: isCodeExpanded }">&#9658;</span>
-        <span>Code Example</span>
-      </button>
-      <div class="code-block-content" :class="{ expanded: isCodeExpanded }">
-        <div class="terminal">
-          <pre><code>{{ playerCode }}</code></pre>
-        </div>
-      </div>
-    </div>
-
     <div ref="containerRef" class="player-wrapper"></div>
 
     <!-- Keyboard Shortcuts -->
@@ -525,83 +460,6 @@ onUnmounted(() => {
 .source-type.dash {
   background: #fef3c7;
   color: #d97706;
-}
-
-/* Collapsible Code Block */
-.code-block-panel {
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.code-block-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 12px 15px;
-  background: transparent;
-  border: none;
-  color: var(--accent);
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.2s;
-}
-
-.code-block-toggle:hover {
-  background: var(--bg-tertiary);
-}
-
-.toggle-icon {
-  display: inline-block;
-  font-size: 0.7rem;
-  transition: transform 0.2s ease;
-}
-
-.toggle-icon.expanded {
-  transform: rotate(90deg);
-}
-
-.code-block-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-.code-block-content.expanded {
-  max-height: 600px;
-}
-
-.code-block-content pre {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-}
-
-.code-block-content code {
-  display: block;
-  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  white-space: pre;
-}
-
-/* Terminal styling */
-.terminal {
-  background: #0d0d0d;
-  border-radius: 6px;
-  margin: 12px;
-  padding: 15px;
-  height: calc(20 * 1.4 * 0.8rem + 30px);
-  overflow-y: auto;
-  overflow-x: auto;
-}
-
-.terminal code {
-  color: #e0e0e0;
 }
 
 .player-wrapper {

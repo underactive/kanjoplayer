@@ -63,7 +63,7 @@ export class ProgressBar {
       className: `kanjo-loop-marker kanjo-loop-marker-${type}`,
       attrs: {
         'data-type': type,
-        'title': type === 'start' ? 'Loop start (drag to move)' : 'Loop end (drag to move)',
+        'title': type === 'start' ? 'Clip start (drag to move)' : 'Clip end (drag to move)',
       },
     });
 
@@ -446,14 +446,8 @@ export class ProgressBar {
       time = this.getTimeFromPercent(percent);
     }
 
-    // Update hover time display
-    this.hoverTime.textContent = UIBuilder.formatTime(time);
-    this.hoverTime.style.left = `${x}px`;
-    this.hoverTime.classList.add('kanjo-visible');
-
-    // Update thumbnail preview (use actual time, not zoomed)
-    const actualTime = this.isZoomed ? time : time;
-    this.thumbnailPreview.show(actualTime, x, rect.width);
+    // Update thumbnail preview (includes time label, so no need for separate hoverTime)
+    this.thumbnailPreview.show(time, x, rect.width);
   }
 
   private onMouseLeave(): void {

@@ -55,12 +55,12 @@ export class ABLoopControl {
     this.options = options || {};
 
     // Create buttons with text labels (A [ time) and (time ] B)
-    this.startBtn = this.createLoopPointButton('start', 'Set loop start point [', () =>
+    this.startBtn = this.createLoopPointButton('start', 'Set clip start point', () =>
       this.setStartPoint()
     );
     this.startBtn.classList.add('kanjo-abloop-start');
 
-    this.endBtn = this.createLoopPointButton('end', 'Set loop end point ]', () =>
+    this.endBtn = this.createLoopPointButton('end', 'Set clip end point', () =>
       this.setEndPoint()
     );
     this.endBtn.classList.add('kanjo-abloop-end');
@@ -494,7 +494,7 @@ export class ABLoopControl {
           ' ' + UIBuilder.formatTimePrecise(this.state.startTime, showHours);
     } else {
       this.startBtn.classList.remove('kanjo-active');
-      this.startBtn.title = 'Set loop start point [';
+      this.startBtn.title = 'Set clip start point';
       if (startTimeSpan) startTimeSpan.textContent = '';
     }
 
@@ -506,7 +506,7 @@ export class ABLoopControl {
         endTimeSpan.textContent = UIBuilder.formatTimePrecise(this.state.endTime, showHours) + ' ';
     } else {
       this.endBtn.classList.remove('kanjo-active');
-      this.endBtn.title = 'Set loop end point ]';
+      this.endBtn.title = 'Set clip end point';
       if (endTimeSpan) endTimeSpan.textContent = '';
     }
 

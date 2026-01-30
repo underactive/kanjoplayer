@@ -11,14 +11,13 @@ A framework-agnostic video player library built with TypeScript. Supports HTML5 
 
 ## Features
 
-- **Multiple delivery formats**: ES module, UMD bundle, Web Component (`<kanjo-player>`), or Vue 3 component
 - **Adaptive streaming**: HLS (via hls.js) and DASH (via dash.js) support
 - **Modern codecs**: VP9 and AV1 support with codec detection API
-- **Thumbnail previews**: Multi-strategy extraction with automatic fallbacks
+- **Thumbnail previews**: FFMPEG.wasm extraction with automatic fallbacks
 - **A/B loop controls**: Set loop points for precise playback regions with clip download
 - **Skip controls**: Configurable skip forward/back buttons with duration selection
 - **Video adjustments**: Brightness, contrast, saturation controls
-- **Custom buttons**: Add your own buttons to the control bar
+- **Custom buttons**: Add your own buttons to the control bar that emit events to your app
 - **AirPlay & Chromecast**: Stream to external devices (when available)
 - **Keyboard shortcuts**: Full keyboard navigation support
 - **Theming**: CSS variables for easy customization
