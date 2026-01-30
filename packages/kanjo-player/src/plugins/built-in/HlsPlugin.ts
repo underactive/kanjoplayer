@@ -194,7 +194,9 @@ export class HlsPlugin implements KanjoPlugin {
 
     // Manifest parsed - HLS is now ready for playback
     this.hls.on(Events.MANIFEST_PARSED, (...args: unknown[]) => {
-      const data = args[1] as { levels: Array<{ bitrate: number; width: number; height: number; name: string }> };
+      const data = args[1] as {
+        levels: Array<{ bitrate: number; width: number; height: number; name: string }>;
+      };
       this.currentLevels = data.levels.map((level) => ({
         bitrate: level.bitrate,
         width: level.width,

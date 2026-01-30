@@ -199,87 +199,138 @@ export class MediaController extends EventEmitter<MediaControllerEvents> {
 
   private bindVideoEvents(): void {
     const events: [keyof HTMLVideoElementEventMap, () => void][] = [
-      ['play', () => {
-        this.stateManager.setState({ paused: false, ended: false });
-        this.emit('play', undefined);
-      }],
-      ['pause', () => {
-        this.stateManager.setState({ paused: true });
-        this.emit('pause', undefined);
-      }],
-      ['ended', () => {
-        this.stateManager.setState({ ended: true, paused: true });
-        this.emit('ended', undefined);
-      }],
-      ['timeupdate', () => {
-        const currentTime = this.video.currentTime;
-        const duration = this.video.duration || 0;
-        this.stateManager.setState({ currentTime, duration });
-        this.emit('timeupdate', { currentTime, duration });
-      }],
-      ['seeking', () => {
-        this.stateManager.setState({ isSeeking: true });
-        this.emit('seeking', { time: this.video.currentTime });
-      }],
-      ['seeked', () => {
-        this.stateManager.setState({ isSeeking: false });
-        this.emit('seeked', { time: this.video.currentTime });
-      }],
-      ['ratechange', () => {
-        const rate = this.video.playbackRate;
-        this.stateManager.setState({ playbackRate: rate });
-        this.emit('ratechange', { rate });
-      }],
-      ['loadstart', () => {
-        this.stateManager.setState({ isLoading: true, isReady: false });
-        this.emit('loadstart', undefined);
-      }],
-      ['loadedmetadata', () => {
-        const { duration, videoWidth, videoHeight } = this.video;
-        this.stateManager.setState({
-          duration: duration || 0,
-          videoWidth,
-          videoHeight,
-        });
-        this.emit('loadedmetadata', { duration: duration || 0, videoWidth, videoHeight });
-      }],
-      ['loadeddata', () => {
-        this.emit('loadeddata', undefined);
-      }],
-      ['canplay', () => {
-        this.stateManager.setState({ isLoading: false, isReady: true });
-        this.emit('canplay', undefined);
-      }],
-      ['canplaythrough', () => {
-        this.stateManager.setState({ isLoading: false });
-        this.emit('canplaythrough', undefined);
-      }],
-      ['waiting', () => {
-        this.stateManager.setState({ isWaiting: true });
-        this.emit('waiting', undefined);
-      }],
-      ['playing', () => {
-        this.stateManager.setState({ isWaiting: false, paused: false });
-        this.emit('playing', undefined);
-      }],
-      ['progress', () => {
-        const buffered = StateManager.timeRangesToArray(this.video.buffered);
-        const seekable = StateManager.timeRangesToArray(this.video.seekable);
-        this.stateManager.setState({ buffered, seekable });
-        this.emit('progress', { buffered });
-      }],
-      ['volumechange', () => {
-        const { volume, muted } = this.video;
-        this.stateManager.setState({ volume, muted });
-        this.emit('volumechange', { volume, muted });
-      }],
-      ['error', () => {
-        const error = this.video.error;
-        if (error) {
-          this.stateManager.setState({ error, isLoading: false });
-          this.emit('error', { code: error.code, message: error.message });
-        }
-      }],
+      [
+        'play',
+        () => {
+          this.stateManager.setState({ paused: false, ended: false });
+          this.emit('play', undefined);
+        },
+      ],
+      [
+        'pause',
+        () => {
+          this.stateManager.setState({ paused: true });
+          this.emit('pause', undefined);
+        },
+      ],
+      [
+        'ended',
+        () => {
+          this.stateManager.setState({ ended: true, paused: true });
+          this.emit('ended', undefined);
+        },
+      ],
+      [
+        'timeupdate',
+        () => {
+          const currentTime = this.video.currentTime;
+          const duration = this.video.duration || 0;
+          this.stateManager.setState({ currentTime, duration });
+          this.emit('timeupdate', { currentTime, duration });
+        },
+      ],
+      [
+        'seeking',
+        () => {
+          this.stateManager.setState({ isSeeking: true });
+          this.emit('seeking', { time: this.video.currentTime });
+        },
+      ],
+      [
+        'seeked',
+        () => {
+          this.stateManager.setState({ isSeeking: false });
+          this.emit('seeked', { time: this.video.currentTime });
+        },
+      ],
+      [
+        'ratechange',
+        () => {
+          const rate = this.video.playbackRate;
+          this.stateManager.setState({ playbackRate: rate });
+          this.emit('ratechange', { rate });
+        },
+      ],
+      [
+        'loadstart',
+        () => {
+          this.stateManager.setState({ isLoading: true, isReady: false });
+          this.emit('loadstart', undefined);
+        },
+      ],
+      [
+        'loadedmetadata',
+        () => {
+          const { duration, videoWidth, videoHeight } = this.video;
+          this.stateManager.setState({
+            duration: duration || 0,
+            videoWidth,
+            videoHeight,
+          });
+          this.emit('loadedmetadata', { duration: duration || 0, videoWidth, videoHeight });
+        },
+      ],
+      [
+        'loadeddata',
+        () => {
+          this.emit('loadeddata', undefined);
+        },
+      ],
+      [
+        'canplay',
+        () => {
+          this.stateManager.setState({ isLoading: false, isReady: true });
+          this.emit('canplay', undefined);
+        },
+      ],
+      [
+        'canplaythrough',
+        () => {
+          this.stateManager.setState({ isLoading: false });
+          this.emit('canplaythrough', undefined);
+        },
+      ],
+      [
+        'waiting',
+        () => {
+          this.stateManager.setState({ isWaiting: true });
+          this.emit('waiting', undefined);
+        },
+      ],
+      [
+        'playing',
+        () => {
+          this.stateManager.setState({ isWaiting: false, paused: false });
+          this.emit('playing', undefined);
+        },
+      ],
+      [
+        'progress',
+        () => {
+          const buffered = StateManager.timeRangesToArray(this.video.buffered);
+          const seekable = StateManager.timeRangesToArray(this.video.seekable);
+          this.stateManager.setState({ buffered, seekable });
+          this.emit('progress', { buffered });
+        },
+      ],
+      [
+        'volumechange',
+        () => {
+          const { volume, muted } = this.video;
+          this.stateManager.setState({ volume, muted });
+          this.emit('volumechange', { volume, muted });
+        },
+      ],
+      [
+        'error',
+        () => {
+          const error = this.video.error;
+          if (error) {
+            this.stateManager.setState({ error, isLoading: false });
+            this.emit('error', { code: error.code, message: error.message });
+          }
+        },
+      ],
     ];
 
     events.forEach(([event, handler]) => {
@@ -292,17 +343,13 @@ export class MediaController extends EventEmitter<MediaControllerEvents> {
       this.stateManager.setState({ isPiP: true });
       this.emit('enterpictureinpicture', undefined);
     });
-    this.eventCleanup.push(() =>
-      this.video.removeEventListener('enterpictureinpicture', () => {})
-    );
+    this.eventCleanup.push(() => this.video.removeEventListener('enterpictureinpicture', () => {}));
 
     this.video.addEventListener('leavepictureinpicture', () => {
       this.stateManager.setState({ isPiP: false });
       this.emit('leavepictureinpicture', undefined);
     });
-    this.eventCleanup.push(() =>
-      this.video.removeEventListener('leavepictureinpicture', () => {})
-    );
+    this.eventCleanup.push(() => this.video.removeEventListener('leavepictureinpicture', () => {}));
   }
 
   // ============================================================================

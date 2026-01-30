@@ -40,7 +40,36 @@ npm run build:netlify
 
 # Type checking across all workspaces
 npm run typecheck
+
+# Linting and formatting
+npm run lint             # Check for lint errors
+npm run lint:fix         # Auto-fix lint errors
+npm run format           # Format code with Prettier
 ```
+
+## Code Style
+
+This project uses ESLint 9 (flat config) and Prettier for code quality and formatting. **All code must pass linting and follow formatting rules.**
+
+### When writing or modifying code:
+- Use single quotes for strings
+- Use semicolons at end of statements
+- Use 2-space indentation
+- Max line width is 100 characters
+- Use trailing commas in ES5-compatible contexts
+- Always use arrow function parentheses: `(x) => x` not `x => x`
+
+### ESLint rules to follow:
+- No unused variables (prefix with `_` only if truly required by a callback signature)
+- No explicit `any` types - use `unknown` and type guards instead
+- Vue components: use `<script>`, `<template>`, `<style>` order
+- Prefer `const` over `let` when variables aren't reassigned
+
+### Before completing work:
+1. Run `npm run lint` to check for errors
+2. Run `npm run lint:fix` to auto-fix what's possible
+3. Run `npm run format` to ensure consistent formatting
+4. Run `npm run typecheck` to verify TypeScript types
 
 ## Architecture
 

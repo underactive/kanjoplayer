@@ -102,7 +102,10 @@ export class DashPlugin implements KanjoPlugin {
       // Handle different export structures from various bundlers:
 
       // 1. Standard ES module: { default: { MediaPlayer: fn, ... } }
-      if (moduleAny.default && typeof (moduleAny.default as DashJsStatic).MediaPlayer === 'function') {
+      if (
+        moduleAny.default &&
+        typeof (moduleAny.default as DashJsStatic).MediaPlayer === 'function'
+      ) {
         return moduleAny.default as DashJsStatic;
       }
 
@@ -117,7 +120,10 @@ export class DashPlugin implements KanjoPlugin {
         const defaultExport = moduleAny.default as Record<string, unknown>;
 
         // Check for nested structure: { default: { default: { MediaPlayer: fn } } }
-        if (defaultExport.default && typeof (defaultExport.default as DashJsStatic).MediaPlayer === 'function') {
+        if (
+          defaultExport.default &&
+          typeof (defaultExport.default as DashJsStatic).MediaPlayer === 'function'
+        ) {
           return defaultExport.default as DashJsStatic;
         }
 
@@ -282,7 +288,10 @@ export class DashPlugin implements KanjoPlugin {
     }
 
     this.recoveryAttempts++;
-    console.warn(`DASH: Error occurred, attempting recovery (${this.recoveryAttempts}/${this.maxRecoveryAttempts}):`, error.message);
+    console.warn(
+      `DASH: Error occurred, attempting recovery (${this.recoveryAttempts}/${this.maxRecoveryAttempts}):`,
+      error.message
+    );
 
     // Try to reload the source
     const src = this.player.getSrc();
@@ -325,7 +334,8 @@ export class DashPlugin implements KanjoPlugin {
           id: `dash-quality-${quality.qualityIndex}`,
           label: `${quality.height}p (${Math.round(quality.bitrate / 1000)}kbps)`,
           onClick: () => this.setQuality(quality.qualityIndex),
-          isActive: () => !this.isAutoQuality && this.dash?.getQualityFor('video') === quality.qualityIndex,
+          isActive: () =>
+            !this.isAutoQuality && this.dash?.getQualityFor('video') === quality.qualityIndex,
         })),
     ];
 

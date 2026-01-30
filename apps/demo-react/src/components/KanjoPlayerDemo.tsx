@@ -228,7 +228,7 @@ function KanjoPlayerDemo() {
         clearInterval(statsIntervalRef.current)
       }
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   // Handle source change
   const handleSourceChange = useCallback((index: number) => {

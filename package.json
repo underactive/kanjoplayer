@@ -1,6 +1,7 @@
 {
   "name": "kanjoplayer-monorepo",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -12,9 +13,17 @@
     "dev:svelte": "npm run dev -w kanjo-player-demo-svelte",
     "build": "npm run build -w kanjo-player",
     "build:netlify": "bash scripts/build-netlify.sh",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"packages/**/*.{ts,vue,js,json,css,scss}\" \"apps/**/*.{ts,tsx,vue,svelte,js,json,css,scss}\""
   },
   "devDependencies": {
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.6.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-vue": "^10.7.0",
+    "prettier": "^3.8.1",
     "typescript": "~5.6.2"
   }
 }

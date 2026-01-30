@@ -44,13 +44,18 @@ interface FFmpegInstance {
   readFile(path: string): Promise<Uint8Array>;
   deleteFile(path: string): Promise<void>;
   exec(args: string[]): Promise<number>;
-  on(event: 'log' | 'progress', callback: (data: { message?: string; progress?: number }) => void): void;
+  on(
+    event: 'log' | 'progress',
+    callback: (data: { message?: string; progress?: number }) => void
+  ): void;
   terminate(): void;
 }
 
 export class ClipDownloader {
   private player: KanjoPlayer;
-  private options: Required<Omit<ClipDownloaderOptions, 'watermark'>> & { watermark?: WatermarkConfig };
+  private options: Required<Omit<ClipDownloaderOptions, 'watermark'>> & {
+    watermark?: WatermarkConfig;
+  };
   private ffmpeg: FFmpegInstance | null = null;
   private isInitialized = false;
   private isInitializing = false;
@@ -74,10 +79,7 @@ export class ClipDownloader {
    * Check if downloading is supported
    */
   static isSupported(): boolean {
-    return (
-      typeof WebAssembly !== 'undefined' &&
-      typeof Blob !== 'undefined'
-    );
+    return typeof WebAssembly !== 'undefined' && typeof Blob !== 'undefined';
   }
 
   /**
@@ -108,7 +110,7 @@ export class ClipDownloader {
     if (duration > this.options.maxDuration) {
       return {
         valid: false,
-        message: `Clip duration (${Math.round(duration)}s) exceeds maximum of ${this.options.maxDuration}s`
+        message: `Clip duration (${Math.round(duration)}s) exceeds maximum of ${this.options.maxDuration}s`,
       };
     }
 
@@ -144,7 +146,13 @@ export class ClipDownloader {
     this.currentProgressCallback = onProgress || null;
     this.isHlsExtraction = sourceType === 'hls';
 
-    console.log('[ClipDownloader] Starting download...', { src, sourceType, startTime, endTime, clipDuration: endTime - startTime });
+    console.log('[ClipDownloader] Starting download...', {
+      src,
+      sourceType,
+      startTime,
+      endTime,
+      clipDuration: endTime - startTime,
+    });
 
     onProgress?.({
       phase: 'initializing',
@@ -169,7 +177,14 @@ export class ClipDownloader {
     });
 
     try {
-      const blob = await this.extractSegment(src, sourceType, startTime, endTime, onProgress, options);
+      const blob = await this.extractSegment(
+        src,
+        sourceType,
+        startTime,
+        endTime,
+        onProgress,
+        options
+      );
 
       if (this.isCancelled) {
         throw new Error('Download cancelled');
@@ -239,7 +254,7 @@ export class ClipDownloader {
       console.log('[ClipDownloader] Importing @ffmpeg/ffmpeg...');
       const ffmpegModule = await import('@ffmpeg/ffmpeg');
       console.log('[ClipDownloader] Importing @ffmpeg/util...');
-      const utilModule = await import('@ffmpeg/util') as unknown as {
+      const utilModule = (await import('@ffmpeg/util')) as unknown as {
         fetchFile: (file?: string | File | Blob) => Promise<Uint8Array>;
         toBlobURL: (url: string, mimeType: string, progress?: boolean) => Promise<string>;
       };
@@ -325,7 +340,13 @@ export class ClipDownloader {
 
     // For DASH, download segments and process with FFmpeg
     if (sourceType === 'dash') {
-      return this.extractDashSegment(src, startTime, endTime, onProgress, options?.dashQualityIndex);
+      return this.extractDashSegment(
+        src,
+        startTime,
+        endTime,
+        onProgress,
+        options?.dashQualityIndex
+      );
     }
 
     // For MP4/WebM, use FFmpeg directly
@@ -357,7 +378,7 @@ export class ClipDownloader {
         message: 'Fetching video data...',
       });
 
-      const utilModule = await import('@ffmpeg/util') as unknown as {
+      const utilModule = (await import('@ffmpeg/util')) as unknown as {
         fetchFile: (file?: string | File | Blob) => Promise<Uint8Array>;
       };
       const fetchFile = utilModule.fetchFile;
@@ -377,7 +398,13 @@ export class ClipDownloader {
       });
 
       // Build FFmpeg arguments
-      const args = this.buildFFmpegArgs(inputFileName, outputFileName, startTime, duration, hasWatermark);
+      const args = this.buildFFmpegArgs(
+        inputFileName,
+        outputFileName,
+        startTime,
+        duration,
+        hasWatermark
+      );
 
       onProgress?.({
         phase: 'encoding',
@@ -412,7 +439,7 @@ export class ClipDownloader {
       }
 
       return new Blob([outputData], {
-        type: this.options.outputFormat === 'webm' ? 'video/webm' : 'video/mp4'
+        type: this.options.outputFormat === 'webm' ? 'video/webm' : 'video/mp4',
       });
     } catch (error) {
       console.error('[ClipDownloader] FFmpeg extraction failed:', error);
@@ -434,7 +461,12 @@ export class ClipDownloader {
     }
 
     const duration = endTime - startTime;
-    console.log('[ClipDownloader] Extracting HLS segment...', { hlsUrl, startTime, endTime, duration });
+    console.log('[ClipDownloader] Extracting HLS segment...', {
+      hlsUrl,
+      startTime,
+      endTime,
+      duration,
+    });
 
     onProgress?.({
       phase: 'downloading',
@@ -474,7 +506,7 @@ export class ClipDownloader {
 
         onProgress?.({
           phase: 'downloading',
-          progress: 20 + Math.round((i + 1) / segments.length * 30),
+          progress: 20 + Math.round(((i + 1) / segments.length) * 30),
           message: `Downloaded ${i + 1}/${segments.length} segments...`,
         });
       }
@@ -511,7 +543,13 @@ export class ClipDownloader {
       }
 
       const outputFileName = `output.${this.options.outputFormat}`;
-      const args = this.buildFFmpegArgs('input.ts', outputFileName, relativeStart, duration, hasWatermark);
+      const args = this.buildFFmpegArgs(
+        'input.ts',
+        outputFileName,
+        relativeStart,
+        duration,
+        hasWatermark
+      );
 
       console.log('[ClipDownloader] FFmpeg args:', args);
       await this.ffmpeg.exec(args);
@@ -521,18 +559,26 @@ export class ClipDownloader {
       console.log('[ClipDownloader] Output size:', outputData.length, 'bytes');
 
       // Cleanup
-      try { await this.ffmpeg.deleteFile('input.ts'); } catch {}
-      try { await this.ffmpeg.deleteFile(outputFileName); } catch {}
+      try {
+        await this.ffmpeg.deleteFile('input.ts');
+      } catch {}
+      try {
+        await this.ffmpeg.deleteFile(outputFileName);
+      } catch {}
       if (hasWatermark) {
-        try { await this.ffmpeg.deleteFile('watermark.png'); } catch {}
+        try {
+          await this.ffmpeg.deleteFile('watermark.png');
+        } catch {}
       }
 
       return new Blob([outputData], {
-        type: this.options.outputFormat === 'webm' ? 'video/webm' : 'video/mp4'
+        type: this.options.outputFormat === 'webm' ? 'video/webm' : 'video/mp4',
       });
     } catch (error) {
       console.error('[ClipDownloader] HLS extraction failed:', error);
-      throw new Error(`Failed to extract HLS segment: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to extract HLS segment: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -551,7 +597,12 @@ export class ClipDownloader {
     }
 
     const duration = endTime - startTime;
-    console.log('[ClipDownloader] Extracting DASH segment...', { dashUrl, startTime, endTime, duration });
+    console.log('[ClipDownloader] Extracting DASH segment...', {
+      dashUrl,
+      startTime,
+      endTime,
+      duration,
+    });
 
     onProgress?.({
       phase: 'downloading',
@@ -561,7 +612,13 @@ export class ClipDownloader {
 
     try {
       // Fetch and parse the DASH manifest
-      const segments = await this.getDashSegments(dashUrl, startTime, endTime, onProgress, qualityIndex);
+      const segments = await this.getDashSegments(
+        dashUrl,
+        startTime,
+        endTime,
+        onProgress,
+        qualityIndex
+      );
 
       if (segments.length === 0) {
         throw new Error('No segments found for the specified time range');
@@ -602,7 +659,7 @@ export class ClipDownloader {
 
         onProgress?.({
           phase: 'downloading',
-          progress: 20 + Math.round((i + 1) / segments.length * 30),
+          progress: 20 + Math.round(((i + 1) / segments.length) * 30),
           message: `Downloaded ${i + 1}/${segments.length} segments...`,
         });
       }
@@ -639,7 +696,13 @@ export class ClipDownloader {
       }
 
       const outputFileName = `output.${this.options.outputFormat}`;
-      const args = this.buildFFmpegArgs('input.mp4', outputFileName, relativeStart, duration, hasWatermark);
+      const args = this.buildFFmpegArgs(
+        'input.mp4',
+        outputFileName,
+        relativeStart,
+        duration,
+        hasWatermark
+      );
 
       console.log('[ClipDownloader] FFmpeg args:', args);
       await this.ffmpeg.exec(args);
@@ -649,18 +712,32 @@ export class ClipDownloader {
       console.log('[ClipDownloader] Output size:', outputData.length, 'bytes');
 
       // Cleanup
-      try { await this.ffmpeg.deleteFile('input.mp4'); } catch { /* ignore */ }
-      try { await this.ffmpeg.deleteFile(outputFileName); } catch { /* ignore */ }
+      try {
+        await this.ffmpeg.deleteFile('input.mp4');
+      } catch {
+        /* ignore */
+      }
+      try {
+        await this.ffmpeg.deleteFile(outputFileName);
+      } catch {
+        /* ignore */
+      }
       if (hasWatermark) {
-        try { await this.ffmpeg.deleteFile('watermark.png'); } catch { /* ignore */ }
+        try {
+          await this.ffmpeg.deleteFile('watermark.png');
+        } catch {
+          /* ignore */
+        }
       }
 
       return new Blob([outputData], {
-        type: this.options.outputFormat === 'webm' ? 'video/webm' : 'video/mp4'
+        type: this.options.outputFormat === 'webm' ? 'video/webm' : 'video/mp4',
       });
     } catch (error) {
       console.error('[ClipDownloader] DASH extraction failed:', error);
-      throw new Error(`Failed to extract DASH segment: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to extract DASH segment: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -734,11 +811,15 @@ export class ClipDownloader {
 
       if (qualityIndex >= 0 && qualityIndex < repArray.length) {
         selectedRep = repArray[qualityIndex];
-        console.log(`[ClipDownloader] Using quality index ${qualityIndex} (${selectedRep.getAttribute('height')}p)`);
+        console.log(
+          `[ClipDownloader] Using quality index ${qualityIndex} (${selectedRep.getAttribute('height')}p)`
+        );
       } else {
         // Fallback to highest quality if index is out of range
         selectedRep = repArray[repArray.length - 1];
-        console.log(`[ClipDownloader] Quality index ${qualityIndex} out of range, using highest quality`);
+        console.log(
+          `[ClipDownloader] Quality index ${qualityIndex} out of range, using highest quality`
+        );
       }
     } else {
       // Default to highest bandwidth (best quality) when no quality specified
@@ -750,16 +831,20 @@ export class ClipDownloader {
           selectedRep = rep;
         }
       }
-      console.log(`[ClipDownloader] No quality specified, using highest quality (${selectedRep.getAttribute('height')}p)`);
+      console.log(
+        `[ClipDownloader] No quality specified, using highest quality (${selectedRep.getAttribute('height')}p)`
+      );
     }
 
     // Get segments from template or list
-    const segmentTemplate = selectedRep.querySelector('SegmentTemplate') ||
-                           videoAdaptationSet.querySelector('SegmentTemplate');
-    const segmentList = selectedRep.querySelector('SegmentList') ||
-                        videoAdaptationSet.querySelector('SegmentList');
+    const segmentTemplate =
+      selectedRep.querySelector('SegmentTemplate') ||
+      videoAdaptationSet.querySelector('SegmentTemplate');
+    const segmentList =
+      selectedRep.querySelector('SegmentList') || videoAdaptationSet.querySelector('SegmentList');
 
-    const segments: Array<{ url: string; startTime: number; duration: number; initUrl?: string }> = [];
+    const segments: Array<{ url: string; startTime: number; duration: number; initUrl?: string }> =
+      [];
 
     if (segmentTemplate) {
       // Handle SegmentTemplate with timeline or number-based addressing
@@ -778,8 +863,8 @@ export class ClipDownloader {
       segments.push(...listSegments);
     } else {
       // Try BaseURL (single segment)
-      const baseUrlElement = selectedRep.querySelector('BaseURL') ||
-                            videoAdaptationSet.querySelector('BaseURL');
+      const baseUrlElement =
+        selectedRep.querySelector('BaseURL') || videoAdaptationSet.querySelector('BaseURL');
       if (baseUrlElement) {
         const segmentUrl = baseUrlElement.textContent?.trim() || '';
         const fullUrl = segmentUrl.startsWith('http') ? segmentUrl : baseUrl + segmentUrl;
@@ -805,7 +890,8 @@ export class ClipDownloader {
     startTime: number,
     endTime: number
   ): Array<{ url: string; startTime: number; duration: number; initUrl?: string }> {
-    const segments: Array<{ url: string; startTime: number; duration: number; initUrl?: string }> = [];
+    const segments: Array<{ url: string; startTime: number; duration: number; initUrl?: string }> =
+      [];
 
     const media = template.getAttribute('media') || '';
     const initialization = template.getAttribute('initialization') || '';
@@ -915,7 +1001,8 @@ export class ClipDownloader {
     startTime: number,
     endTime: number
   ): Array<{ url: string; startTime: number; duration: number; initUrl?: string }> {
-    const segments: Array<{ url: string; startTime: number; duration: number; initUrl?: string }> = [];
+    const segments: Array<{ url: string; startTime: number; duration: number; initUrl?: string }> =
+      [];
 
     const timescale = parseInt(segmentList.getAttribute('timescale') || '1', 10);
     const duration = parseInt(segmentList.getAttribute('duration') || '0', 10);
@@ -962,10 +1049,7 @@ export class ClipDownloader {
   /**
    * Substitute template variables in DASH segment URL
    */
-  private substituteTemplate(
-    template: string,
-    vars: Record<string, string>
-  ): string {
+  private substituteTemplate(template: string, vars: Record<string, string>): string {
     let result = template;
 
     for (const [key, value] of Object.entries(vars)) {
@@ -1083,7 +1167,9 @@ export class ClipDownloader {
       // MP4 supports h264, h265, vp9 (via codec box), av1
       // For simplicity, we support h264, vp9, av1 in MP4
       if (codec === 'vp9' || codec === 'av1') {
-        console.warn(`[ClipDownloader] ${codec} in MP4 container may have limited playback support`);
+        console.warn(
+          `[ClipDownloader] ${codec} in MP4 container may have limited playback support`
+        );
       }
       return codec === 'h264' ? 'h264' : codec;
     } else {
@@ -1247,7 +1333,11 @@ export class ClipDownloader {
    * Create watermark image using Canvas API
    * Returns the image data as Uint8Array (PNG format)
    */
-  private async createWatermarkImage(): Promise<{ data: Uint8Array; width: number; height: number }> {
+  private async createWatermarkImage(): Promise<{
+    data: Uint8Array;
+    width: number;
+    height: number;
+  }> {
     const wm = this.options.watermark!;
     const text = wm.text || 'Downloaded from KanjoPlayer PoC';
     const fontSize = wm.fontSize ?? 18;
