@@ -45,7 +45,12 @@ export class ThumbnailPreview {
     return container;
   }
 
-  async show(time: number, xPosition: number, containerWidth: number, precise = false): Promise<void> {
+  async show(
+    time: number,
+    xPosition: number,
+    containerWidth: number,
+    precise = false
+  ): Promise<void> {
     // Always update time label immediately (this is cheap)
     // Use precise formatting (with decimals) when fine-tuning markers
     this.timeLabel.textContent = precise
