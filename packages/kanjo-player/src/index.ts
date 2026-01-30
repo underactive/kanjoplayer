@@ -33,6 +33,10 @@ export type {
   CodecSupport,
   CodecCapabilitiesResult,
   CodecsConfig,
+  ControlPriority,
+  ControlId,
+  ResponsiveBreakpoints,
+  ResponsiveControlsConfig,
 } from './core/types';
 
 // Plugin types

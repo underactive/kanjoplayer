@@ -154,21 +154,52 @@ export class UIBuilder {
   }
 
   /**
-   * Format time in MM:SS or HH:MM:SS format
+   * Format time in MM:SS or H:MM:SS format
+   * @param seconds - Time in seconds
+   * @param forceHours - If true, always show hours (use when duration >= 1 hour)
    */
-  static formatTime(seconds: number): string {
+  static formatTime(seconds: number, forceHours = false): string {
     if (!isFinite(seconds) || isNaN(seconds)) {
-      return '0:00';
+      return forceHours ? '0:00:00' : '0:00';
     }
 
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
 
-    if (h > 0) {
+    if (h > 0 || forceHours) {
       return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
     return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  /**
+   * Format time in precise MM:SS.mmm or HH:MM:SS.mmm format with milliseconds
+   * Used for loop points and other precision time displays in video editing style
+   * @param seconds - Time in seconds
+   * @param forceHours - If true, always show hours (use when duration >= 1 hour)
+   */
+  static formatTimePrecise(seconds: number, forceHours = false): string {
+    if (!isFinite(seconds) || isNaN(seconds)) {
+      return forceHours ? '00:00:00.000' : '00:00.000';
+    }
+
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+    const ms = Math.floor((seconds % 1) * 1000);
+
+    if (h > 0 || forceHours) {
+      return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
+    }
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
+  }
+
+  /**
+   * Check if duration requires showing hours (>= 1 hour)
+   */
+  static needsHours(duration: number): boolean {
+    return isFinite(duration) && duration >= 3600;
   }
 
   /**
