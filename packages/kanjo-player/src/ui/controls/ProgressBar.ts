@@ -255,9 +255,10 @@ export class ProgressBar {
       }
 
       // Show thumbnail preview at marker time during drag (includes time label)
+      // Use precise time formatting when dragging markers for fine-tuning
       const rect = this.progressContainer.getBoundingClientRect();
       const x = e.clientX - rect.left;
-      this.thumbnailPreview.show(time, x, rect.width);
+      this.thumbnailPreview.show(time, x, rect.width, true);
 
       // Update zoomed view if in zoom mode
       if (this.isZoomed) {

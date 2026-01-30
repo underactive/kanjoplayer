@@ -45,9 +45,12 @@ export class ThumbnailPreview {
     return container;
   }
 
-  async show(time: number, xPosition: number, containerWidth: number): Promise<void> {
+  async show(time: number, xPosition: number, containerWidth: number, precise = false): Promise<void> {
     // Always update time label immediately (this is cheap)
-    this.timeLabel.textContent = UIBuilder.formatTime(time);
+    // Use precise formatting (with decimals) when fine-tuning markers
+    this.timeLabel.textContent = precise
+      ? UIBuilder.formatTimePrecise(time)
+      : UIBuilder.formatTime(time);
 
     // Position the preview
     const previewWidth = 160;
