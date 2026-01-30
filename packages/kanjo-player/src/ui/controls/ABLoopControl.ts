@@ -60,9 +60,7 @@ export class ABLoopControl {
     );
     this.startBtn.classList.add('kanjo-abloop-start');
 
-    this.endBtn = this.createLoopPointButton('end', 'Set clip end point', () =>
-      this.setEndPoint()
-    );
+    this.endBtn = this.createLoopPointButton('end', 'Set clip end point', () => this.setEndPoint());
     this.endBtn.classList.add('kanjo-abloop-end');
 
     // Create toggle button with dropdown
