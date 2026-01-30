@@ -1,6 +1,9 @@
 # KanjoPlayer
 
+[![npm version](https://img.shields.io/npm/v/kanjo-player)](https://www.npmjs.com/package/kanjo-player)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/618a3080-656b-47a8-acad-b262796b827f/deploy-status)](https://app.netlify.com/projects/kanjo-player/deploys)
+[![License: MIT](https://img.shields.io/npm/l/kanjo-player)](https://opensource.org/licenses/MIT)
 
 A framework-agnostic video player library built with TypeScript. Supports HTML5 video, HLS/DASH streaming, VP9/AV1 codecs, WebAssembly-powered thumbnail generation, A/B loop controls, and video adjustments.
 
@@ -44,59 +47,6 @@ const player = new KanjoPlayer({
 ---
 
 ## Framework Integration
-
-### React
-
-```tsx
-import { useState, useEffect, useRef } from 'react';
-import { KanjoPlayer, HlsPlugin, DashPlugin } from 'kanjo-player';
-import 'kanjo-player/style.css';
-
-function VideoPlayer() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<KanjoPlayer | null>(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    playerRef.current = new KanjoPlayer({
-      container: containerRef.current,
-      src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-      sourceType: 'hls',
-      controls: true,
-      theme: 'dark',
-      thumbnails: { enabled: true },
-      skipControls: { enabled: true },
-      airPlay: { enabled: true },
-      cast: { enabled: true },
-      plugins: [new HlsPlugin(), new DashPlugin()],
-    });
-
-    // Listen for events
-    playerRef.current.on('play', () => console.log('Playing'));
-    playerRef.current.on('pause', () => console.log('Paused'));
-
-    return () => {
-      playerRef.current?.destroy();
-    };
-  }, []);
-
-  const handleSourceChange = (url: string, type: 'mp4' | 'webm' | 'hls' | 'dash') => {
-    playerRef.current?.setSrc(url, type);
-  };
-
-  return (
-    <div>
-      <div ref={containerRef} style={{ width: '100%', aspectRatio: '16 / 9' }} />
-      <button onClick={() => handleSourceChange('https://example.com/video.m3u8', 'hls')}>
-        Load HLS
-      </button>
-    </div>
-  );
-}
-
-export default VideoPlayer;
-```
 
 ### Vue 3
 
@@ -160,6 +110,59 @@ onUnmounted(() => {
   aspect-ratio: 16 / 9;
 }
 </style>
+```
+
+### React
+
+```tsx
+import { useState, useEffect, useRef } from 'react';
+import { KanjoPlayer, HlsPlugin, DashPlugin } from 'kanjo-player';
+import 'kanjo-player/style.css';
+
+function VideoPlayer() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<KanjoPlayer | null>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    playerRef.current = new KanjoPlayer({
+      container: containerRef.current,
+      src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      sourceType: 'hls',
+      controls: true,
+      theme: 'dark',
+      thumbnails: { enabled: true },
+      skipControls: { enabled: true },
+      airPlay: { enabled: true },
+      cast: { enabled: true },
+      plugins: [new HlsPlugin(), new DashPlugin()],
+    });
+
+    // Listen for events
+    playerRef.current.on('play', () => console.log('Playing'));
+    playerRef.current.on('pause', () => console.log('Paused'));
+
+    return () => {
+      playerRef.current?.destroy();
+    };
+  }, []);
+
+  const handleSourceChange = (url: string, type: 'mp4' | 'webm' | 'hls' | 'dash') => {
+    playerRef.current?.setSrc(url, type);
+  };
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: '100%', aspectRatio: '16 / 9' }} />
+      <button onClick={() => handleSourceChange('https://example.com/video.m3u8', 'hls')}>
+        Load HLS
+      </button>
+    </div>
+  );
+}
+
+export default VideoPlayer;
 ```
 
 ### Svelte 5
@@ -560,6 +563,16 @@ customButtons: {
       tooltip?: string;        // Tooltip text
     }
   ]
+}
+```
+
+#### Minimal Progress Bar
+
+```typescript
+minimalProgress: {
+  enabled?: boolean;   // Show minimal progress bar when controls hidden (default: true)
+  thickness?: number;  // Bar thickness in pixels (default: 3)
+  opacity?: number;    // Bar opacity 0-1 (default: 1)
 }
 ```
 

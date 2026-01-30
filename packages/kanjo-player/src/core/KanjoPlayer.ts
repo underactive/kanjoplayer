@@ -57,6 +57,9 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       this.container.classList.add(this.options.className);
     }
 
+    // Apply minimal progress bar configuration
+    this.applyMinimalProgressConfig();
+
     // Create video element
     this.video = this.createVideoElement();
     this.container.appendChild(this.video);
@@ -157,6 +160,11 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       codecs: {
         preferredCodec: 'auto',
       },
+      minimalProgress: {
+        enabled: true,
+        thickness: 3,
+        opacity: 1,
+      },
       plugins: [],
       className: '',
       keyboardShortcuts: true,
@@ -207,6 +215,10 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
         ...defaults.codecs,
         ...options.codecs,
       },
+      minimalProgress: {
+        ...defaults.minimalProgress,
+        ...options.minimalProgress,
+      },
     } as Required<KanjoPlayerOptions>;
   }
 
@@ -219,6 +231,32 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       return el;
     }
     return container;
+  }
+
+  private applyMinimalProgressConfig(): void {
+    const config = this.options.minimalProgress;
+    if (!config) return;
+
+    // Disable minimal progress bar if not enabled
+    if (config.enabled === false) {
+      this.container.classList.add('kanjo-minimal-progress-disabled');
+    }
+
+    // Apply custom thickness
+    if (config.thickness !== undefined) {
+      this.container.style.setProperty(
+        '--kanjo-progress-minimal-height',
+        `${config.thickness}px`
+      );
+    }
+
+    // Apply custom opacity
+    if (config.opacity !== undefined) {
+      this.container.style.setProperty(
+        '--kanjo-progress-minimal-opacity',
+        String(config.opacity)
+      );
+    }
   }
 
   private createVideoElement(): HTMLVideoElement {

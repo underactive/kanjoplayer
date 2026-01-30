@@ -160,6 +160,9 @@ export class ControlsOverlay {
     const gradient = UIBuilder.create({ className: 'kanjo-controls-gradient' });
     overlay.appendChild(gradient);
 
+    // Progress bar (sibling to bottom bar, animates independently for minimal mode)
+    overlay.appendChild(this.progressBar.getElement());
+
     // Bottom bar
     overlay.appendChild(this.bottomBar);
 
@@ -171,7 +174,7 @@ export class ControlsOverlay {
       className: 'kanjo-controls-bottom',
     });
 
-    // Custom button area (above progress bar)
+    // Custom button area (above controls row)
     if (this.options.customButtons?.enabled && this.options.customButtons.buttons.length > 0) {
       this._customButtonArea = new CustomButtonArea(
         this.player,
@@ -179,9 +182,6 @@ export class ControlsOverlay {
         this.options.customButtons
       );
     }
-
-    // Progress bar row
-    bottomBar.appendChild(this.progressBar.getElement());
 
     // Controls row
     const controlsRow = UIBuilder.create({

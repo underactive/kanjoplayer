@@ -105,6 +105,15 @@ export interface CastConfig {
   receiverApplicationId?: string;
 }
 
+export interface MinimalProgressConfig {
+  /** Enable minimal progress bar when controls are hidden (default: true) */
+  enabled?: boolean;
+  /** Thickness of the minimal progress bar in pixels (default: 3) */
+  thickness?: number;
+  /** Opacity of the progress bar 0-1 (default: 1, fully opaque) */
+  opacity?: number;
+}
+
 // ============================================================================
 // Responsive Controls Configuration
 // ============================================================================
@@ -189,6 +198,8 @@ export interface KanjoPlayerOptions {
   responsiveControls?: ResponsiveControlsConfig;
   /** Codec preferences configuration */
   codecs?: CodecsConfig;
+  /** Minimal progress bar configuration (shown when controls are hidden) */
+  minimalProgress?: MinimalProgressConfig;
   /** Plugins to load */
   plugins?: KanjoPlugin[];
   /** Custom CSS class for container */
@@ -577,5 +588,10 @@ export const DEFAULT_OPTIONS: Partial<KanjoPlayerOptions> = {
   },
   cast: {
     enabled: false,
+  },
+  minimalProgress: {
+    enabled: true,
+    thickness: 3,
+    opacity: 1,
   },
 };

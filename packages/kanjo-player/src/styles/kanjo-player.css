@@ -64,6 +64,12 @@
   pointer-events: none;
 }
 
+/* Progress bar stays visible when controls hidden (minimal mode) */
+.kanjo-controls-overlay > .kanjo-progress-wrapper {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* Gradient overlay */
 .kanjo-controls-gradient {
   position: absolute;
@@ -107,6 +113,8 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  /* z-index needed because transform creates a stacking context */
+  z-index: calc(var(--kanjo-z-controls) + 1);
 }
 
 /* ============================================================================
@@ -252,9 +260,32 @@
    ============================================================================ */
 
 .kanjo-progress-wrapper {
-  position: relative;
-  width: 100%;
-  padding: 8px 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Position above controls row (40px) + margin (8px) + padding (12px) */
+  bottom: calc(var(--kanjo-btn-size) + var(--kanjo-controls-padding) + 8px);
+  padding: 8px var(--kanjo-controls-padding);
+  z-index: var(--kanjo-z-controls);
+  transition:
+    bottom var(--kanjo-transition-normal),
+    padding var(--kanjo-transition-normal);
+}
+
+/* Minimal mode when controls hidden */
+.kanjo-controls-hidden .kanjo-progress-wrapper {
+  bottom: 0 !important;
+  padding: 0 !important;
+  opacity: var(--kanjo-progress-minimal-opacity, 1);
+  visibility: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Disable minimal progress bar */
+.kanjo-minimal-progress-disabled .kanjo-controls-hidden .kanjo-progress-wrapper {
+  display: none !important;
 }
 
 .kanjo-progress-container {
@@ -281,7 +312,21 @@
   background: var(--kanjo-progress-bg);
   border-radius: 2px;
   overflow: visible;
-  transition: height var(--kanjo-transition-fast);
+  transition:
+    height var(--kanjo-transition-normal),
+    border-radius var(--kanjo-transition-normal);
+}
+
+/* Minimal mode: shorter track */
+.kanjo-controls-hidden .kanjo-progress-track {
+  height: var(--kanjo-progress-minimal-height);
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Disable hover growth in minimal mode */
+.kanjo-controls-hidden .kanjo-progress-container:hover .kanjo-progress-track {
+  height: var(--kanjo-progress-minimal-height);
 }
 
 .kanjo-progress-container:hover .kanjo-progress-track {
@@ -305,6 +350,12 @@
   height: 100%;
   background: var(--kanjo-progress-filled);
   border-radius: 2px;
+  transition: border-radius var(--kanjo-transition-normal);
+}
+
+/* Minimal mode: no rounded corners on played bar */
+.kanjo-controls-hidden .kanjo-progress-played {
+  border-radius: 0;
 }
 
 .kanjo-progress-scrubber {
@@ -322,6 +373,25 @@
 .kanjo-progress-container:hover .kanjo-progress-scrubber,
 .kanjo-progress-container.kanjo-dragging .kanjo-progress-scrubber {
   transform: translate(-50%, -50%) scale(1);
+}
+
+/* Hide interactive elements in minimal mode */
+.kanjo-controls-hidden .kanjo-progress-scrubber,
+.kanjo-controls-hidden .kanjo-progress-hover-time,
+.kanjo-controls-hidden .kanjo-progress-buffered,
+.kanjo-controls-hidden .kanjo-loop-marker,
+.kanjo-controls-hidden .kanjo-loop-region,
+.kanjo-controls-hidden .kanjo-thumbnail-preview,
+.kanjo-controls-hidden .kanjo-zoom-indicator {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.kanjo-controls-hidden .kanjo-progress-container {
+  pointer-events: none;
+  cursor: default;
+  height: var(--kanjo-progress-minimal-height);
+  align-items: flex-end;
 }
 
 /* Hover time display */
@@ -1096,6 +1166,18 @@
   padding: 16px 24px;
 }
 
+.kanjo-player:fullscreen .kanjo-progress-wrapper,
+.kanjo-player:-webkit-full-screen .kanjo-progress-wrapper {
+  bottom: calc(var(--kanjo-btn-size) + 16px + 8px);
+  padding: 8px 24px;
+}
+
+.kanjo-player:fullscreen .kanjo-controls-hidden .kanjo-progress-wrapper,
+.kanjo-player:-webkit-full-screen .kanjo-controls-hidden .kanjo-progress-wrapper {
+  bottom: 0;
+  padding: 0;
+}
+
 .kanjo-player:fullscreen .kanjo-center-play-btn,
 .kanjo-player:-webkit-full-screen .kanjo-center-play-btn {
   width: 96px;
@@ -1564,6 +1646,8 @@
   justify-content: flex-end;
   gap: 8px;
   padding: 8px var(--kanjo-controls-padding);
+  /* Add space below for the progress bar */
+  margin-bottom: 26px;
   min-height: 40px;
   position: relative;
 }
