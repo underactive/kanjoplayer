@@ -1,7 +1,7 @@
 {
   "name": "kanjo-player",
-  "version": "0.1.0",
-  "description": "Framework-agnostic video player library with WebAssembly-powered thumbnail previews",
+  "version": "0.20260130.0",
+  "description": "Framework-agnostic video player library with WASM where it matters",
   "type": "module",
   "main": "./dist/kanjo-player.umd.js",
   "module": "./dist/kanjo-player.es.js",
@@ -19,7 +19,8 @@
   ],
   "scripts": {
     "build": "vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "video",
@@ -38,7 +39,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/underactive/kanjoplayer.git"
+  },
+  "homepage": "https://github.com/underactive/kanjoplayer#readme",
+  "bugs": {
+    "url": "https://github.com/underactive/kanjoplayer/issues"
   },
   "dependencies": {
     "hls.js": "^1.5.17"
