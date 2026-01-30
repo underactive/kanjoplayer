@@ -17,7 +17,7 @@ A framework-agnostic video player library built with TypeScript. Supports HTML5 
 - **A/B loop controls**: Set loop points for precise playback regions with clip download
 - **Skip controls**: Configurable skip forward/back buttons with duration selection
 - **Video adjustments**: Brightness, contrast, saturation controls
-- **Custom buttons**: Add your own buttons to the control bar that emit events to your app
+- **Custom buttons**: Add your own buttons to the control bar that emit custom events to your app
 - **AirPlay & Chromecast**: Stream to external devices (when available)
 - **Keyboard shortcuts**: Full keyboard navigation support
 - **Theming**: CSS variables for easy customization
