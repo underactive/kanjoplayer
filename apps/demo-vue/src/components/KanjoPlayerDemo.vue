@@ -347,7 +347,8 @@ function initPlayer() {
   ] as const;
 
   eventTypes.forEach((eventType) => {
-    player.value!.on(eventType as any, (data: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    player.value!.on(eventType as any, (data: unknown) => {
       logEvent(eventType, data);
     });
   });

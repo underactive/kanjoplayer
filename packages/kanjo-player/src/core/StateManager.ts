@@ -63,11 +63,10 @@ export class StateManager {
       return;
     }
 
-    const prevState = this.state;
     const hasChanges = this.applyUpdates(updates);
 
     if (hasChanges) {
-      this.notifySubscribers(prevState);
+      this.notifySubscribers();
     }
   }
 
@@ -84,12 +83,11 @@ export class StateManager {
       this.isBatching = false;
 
       if (this.batchUpdates.length > 0) {
-        const prevState = this.state;
         const mergedUpdates = Object.assign({}, ...this.batchUpdates);
         const hasChanges = this.applyUpdates(mergedUpdates);
 
         if (hasChanges) {
-          this.notifySubscribers(prevState);
+          this.notifySubscribers();
         }
       }
 
@@ -113,9 +111,8 @@ export class StateManager {
    * Reset state to initial values
    */
   reset(): void {
-    const prevState = this.state;
     this.state = createInitialState();
-    this.notifySubscribers(prevState);
+    this.notifySubscribers();
   }
 
   /**
@@ -162,7 +159,7 @@ export class StateManager {
     return JSON.stringify(a) === JSON.stringify(b);
   }
 
-  private notifySubscribers(_prevState: KanjoPlayerState): void {
+  private notifySubscribers(): void {
     const currentState = this.getState();
     this.subscribers.forEach((subscriber) => {
       try {

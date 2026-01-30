@@ -3,6 +3,7 @@
  * <kanjo-player src="video.mp4" controls></kanjo-player>
  */
 
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../vite-env.d.ts" />
 
 import { KanjoPlayer } from '../core/KanjoPlayer';

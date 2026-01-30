@@ -145,7 +145,7 @@ export class ThumbnailManager {
   /**
    * Handle source change events
    */
-  private handleSourceChange(_data: { src: string; type: string }): void {
+  private handleSourceChange(): void {
     // Reset state for new source
     this.isInitialized = false;
     this.useSprites = false;

@@ -3,6 +3,7 @@
  * Runs in isolated context to prevent blocking the main thread
  */
 
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../vite-env.d.ts" />
 
 import type {

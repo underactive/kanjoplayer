@@ -87,11 +87,7 @@ export class KeyboardPlugin implements KanjoPlugin {
 
     // Ignore if typing in an input
     const target = e.target as HTMLElement;
-    if (
-      target.tagName === 'INPUT' ||
-      target.tagName === 'TEXTAREA' ||
-      target.isContentEditable
-    ) {
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
       return;
     }
 
@@ -176,22 +172,34 @@ export class KeyboardPlugin implements KanjoPlugin {
 
       case 'loopStart':
         // Emit event for ABLoopControl to handle
-        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('setloopstart', undefined);
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit(
+          'setloopstart',
+          undefined
+        );
         break;
 
       case 'loopEnd':
         // Emit event for ABLoopControl to handle
-        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('setloopend', undefined);
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit(
+          'setloopend',
+          undefined
+        );
         break;
 
       case 'loopClear':
         // Emit event for ABLoopControl to handle
-        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('clearloop', undefined);
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit(
+          'clearloop',
+          undefined
+        );
         break;
 
       case 'loopToggle':
         // Emit event for ABLoopControl to handle
-        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit('toggleloop', undefined);
+        (this.player as unknown as { emit: (event: string, data: unknown) => void }).emit(
+          'toggleloop',
+          undefined
+        );
         break;
     }
   }

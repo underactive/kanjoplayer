@@ -41,12 +41,7 @@ export interface SettingsMenuConfig {
 // ============================================================================
 
 /** Player properties that can be used as event values */
-export type PlayerProperty =
-  | 'src'
-  | 'currentTime'
-  | 'duration'
-  | 'volume'
-  | 'playbackRate';
+export type PlayerProperty = 'src' | 'currentTime' | 'duration' | 'volume' | 'playbackRate';
 
 export interface CustomButtonConfig {
   /** Unique identifier for the button */

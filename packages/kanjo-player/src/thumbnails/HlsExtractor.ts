@@ -151,7 +151,7 @@ export class HlsExtractor {
     };
 
     return new Promise<void>((resolve, reject) => {
-      const onManifestParsed = (_event: string, _data: unknown) => {
+      const onManifestParsed = () => {
         hlsInstance.off(Hls.Events.MANIFEST_PARSED, onManifestParsed);
         hlsInstance.off(Hls.Events.ERROR, onError);
 

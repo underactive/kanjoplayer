@@ -235,16 +235,34 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
   private bindMediaEvents(): void {
     // Forward media controller events
     const forwardEvents: (keyof KanjoPlayerEvents)[] = [
-      'play', 'pause', 'ended', 'timeupdate', 'seeking', 'seeked',
-      'ratechange', 'loadstart', 'loadedmetadata', 'loadeddata',
-      'canplay', 'canplaythrough', 'waiting', 'playing', 'progress',
-      'volumechange', 'error', 'enterpictureinpicture', 'leavepictureinpicture',
+      'play',
+      'pause',
+      'ended',
+      'timeupdate',
+      'seeking',
+      'seeked',
+      'ratechange',
+      'loadstart',
+      'loadedmetadata',
+      'loadeddata',
+      'canplay',
+      'canplaythrough',
+      'waiting',
+      'playing',
+      'progress',
+      'volumechange',
+      'error',
+      'enterpictureinpicture',
+      'leavepictureinpicture',
     ];
 
     forwardEvents.forEach((event) => {
-      this.mediaController.on(event as keyof typeof this.mediaController extends EventEmitter<infer E> ? keyof E : never, (data: unknown) => {
-        this.emit(event, data as KanjoPlayerEvents[typeof event]);
-      });
+      this.mediaController.on(
+        event as keyof typeof this.mediaController extends EventEmitter<infer E> ? keyof E : never,
+        (data: unknown) => {
+          this.emit(event, data as KanjoPlayerEvents[typeof event]);
+        }
+      );
     });
   }
 

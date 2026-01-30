@@ -26,22 +26,76 @@ const CODEC_STRINGS: Record<VideoCodec, Record<VideoContainer, string>> = {
 };
 
 // For MediaCapabilities API
-const MEDIA_CAPABILITIES_CONFIG: Record<VideoCodec, Record<VideoContainer, { contentType: string; width: number; height: number; bitrate: number; framerate: number }>> = {
+const MEDIA_CAPABILITIES_CONFIG: Record<
+  VideoCodec,
+  Record<
+    VideoContainer,
+    { contentType: string; width: number; height: number; bitrate: number; framerate: number }
+  >
+> = {
   h264: {
-    mp4: { contentType: 'video/mp4; codecs="avc1.42E01E"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
-    webm: { contentType: 'video/webm; codecs="avc1.42E01E"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
+    mp4: {
+      contentType: 'video/mp4; codecs="avc1.42E01E"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
+    webm: {
+      contentType: 'video/webm; codecs="avc1.42E01E"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
   },
   h265: {
-    mp4: { contentType: 'video/mp4; codecs="hvc1.1.6.L93.B0"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
-    webm: { contentType: 'video/webm; codecs="hvc1.1.6.L93.B0"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
+    mp4: {
+      contentType: 'video/mp4; codecs="hvc1.1.6.L93.B0"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
+    webm: {
+      contentType: 'video/webm; codecs="hvc1.1.6.L93.B0"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
   },
   vp9: {
-    mp4: { contentType: 'video/mp4; codecs="vp09.00.10.08"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
-    webm: { contentType: 'video/webm; codecs="vp9"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
+    mp4: {
+      contentType: 'video/mp4; codecs="vp09.00.10.08"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
+    webm: {
+      contentType: 'video/webm; codecs="vp9"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
   },
   av1: {
-    mp4: { contentType: 'video/mp4; codecs="av01.0.01M.08"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
-    webm: { contentType: 'video/webm; codecs="av01.0.01M.08"', width: 1920, height: 1080, bitrate: 5000000, framerate: 30 },
+    mp4: {
+      contentType: 'video/mp4; codecs="av01.0.01M.08"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
+    webm: {
+      contentType: 'video/webm; codecs="av01.0.01M.08"',
+      width: 1920,
+      height: 1080,
+      bitrate: 5000000,
+      framerate: 30,
+    },
   },
 };
 
@@ -139,10 +193,10 @@ export async function getAllCapabilities(): Promise<CodecCapabilitiesResult> {
 
   for (const codec of codecPriority) {
     // Check if codec is supported in at least one container
-    const codecResults = results.filter(r => r.codec === codec && r.supported);
+    const codecResults = results.filter((r) => r.codec === codec && r.supported);
     if (codecResults.length > 0) {
       // Prefer codecs that are power efficient
-      const efficient = codecResults.find(r => r.powerEfficient);
+      const efficient = codecResults.find((r) => r.powerEfficient);
       if (efficient || codecResults.length > 0) {
         preferredCodec = codec;
         break;
