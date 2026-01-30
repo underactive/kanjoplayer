@@ -23,6 +23,8 @@ export class CustomButtonArea {
   private buttons: HTMLButtonElement[] = [];
   private overflowButtons: CustomButtonConfig[] = [];
   private isOverflowOpen = false;
+  private mobileToggleBtn: HTMLButtonElement | null = null;
+  private isMobileExpanded = false;
 
   constructor(player: KanjoPlayer, container: HTMLElement, config: CustomButtonsConfig) {
     this.player = player;
@@ -35,6 +37,10 @@ export class CustomButtonArea {
 
   private createElement(): HTMLElement {
     const area = UIBuilder.create({ className: 'kanjo-custom-button-area' });
+
+    // Mobile toggle button (hidden on desktop via CSS)
+    this.mobileToggleBtn = this.createMobileToggleButton();
+    area.appendChild(this.mobileToggleBtn);
 
     // Overflow menu button (hidden by default)
     this.overflowMenuBtn = this.createOverflowButton();
@@ -66,6 +72,46 @@ export class CustomButtonArea {
       this.toggleOverflowMenu();
     });
     return btn;
+  }
+
+  private createMobileToggleButton(): HTMLButtonElement {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'kanjo-btn kanjo-custom-mobile-toggle';
+    // Use chevronRight rotated 180deg to show as chevronLeft (pointing left, meaning "show more")
+    btn.innerHTML = UIBuilder.icons.chevronRight;
+    btn.title = 'Show custom buttons';
+    btn.setAttribute('aria-label', 'Show custom buttons');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleMobileExpanded();
+    });
+    return btn;
+  }
+
+  private toggleMobileExpanded(): void {
+    this.isMobileExpanded = !this.isMobileExpanded;
+
+    if (this.mobileToggleBtn) {
+      // Update icon: chevronRight (pointing right) when expanded, rotated for left when collapsed
+      this.mobileToggleBtn.innerHTML = UIBuilder.icons.chevronRight;
+      this.mobileToggleBtn.setAttribute('aria-expanded', this.isMobileExpanded.toString());
+      this.mobileToggleBtn.title = this.isMobileExpanded
+        ? 'Hide custom buttons'
+        : 'Show custom buttons';
+      this.mobileToggleBtn.setAttribute(
+        'aria-label',
+        this.isMobileExpanded ? 'Hide custom buttons' : 'Show custom buttons'
+      );
+    }
+
+    // Toggle expanded class on container
+    if (this.isMobileExpanded) {
+      this.element.classList.add('kanjo-mobile-expanded');
+    } else {
+      this.element.classList.remove('kanjo-mobile-expanded');
+    }
   }
 
   private createButton(config: CustomButtonConfig): HTMLButtonElement {

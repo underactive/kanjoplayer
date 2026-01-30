@@ -1752,6 +1752,68 @@
   line-height: 1;
 }
 
+/* Mobile toggle button - hidden by default on desktop */
+.kanjo-custom-mobile-toggle {
+  display: none;
+  width: var(--kanjo-btn-size);
+  padding: 0;
+  background: transparent;
+  order: 100; /* Ensure it appears at the end (rightmost) */
+}
+
+.kanjo-custom-mobile-toggle:hover {
+  background: var(--kanjo-bg-hover);
+}
+
+.kanjo-custom-mobile-toggle svg {
+  transition: transform var(--kanjo-transition-fast);
+  /* Rotate to point left (collapsed state = "show more" direction) */
+  transform: rotate(180deg);
+}
+
+/* When expanded, rotate to point right (meaning "hide") */
+.kanjo-mobile-expanded .kanjo-custom-mobile-toggle svg {
+  transform: rotate(0deg);
+}
+
+/* Mobile styles for custom button area */
+@media (max-width: 480px) {
+  /* Show mobile toggle when there are custom buttons */
+  .kanjo-custom-button-area .kanjo-custom-mobile-toggle {
+    display: flex;
+  }
+
+  /* Hide custom buttons by default on mobile with animation */
+  .kanjo-custom-button-area .kanjo-custom-btn {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(10px);
+    max-width: 0;
+    padding: 0;
+    overflow: hidden;
+    transition:
+      opacity var(--kanjo-transition-fast),
+      visibility var(--kanjo-transition-fast),
+      transform var(--kanjo-transition-fast),
+      max-width var(--kanjo-transition-normal),
+      padding var(--kanjo-transition-normal);
+  }
+
+  /* When expanded, show custom buttons with animation */
+  .kanjo-custom-button-area.kanjo-mobile-expanded .kanjo-custom-btn {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    max-width: 200px;
+    padding: 0 12px;
+  }
+
+  /* Hide overflow button on mobile (mobile toggle replaces it) */
+  .kanjo-custom-button-area .kanjo-custom-overflow-btn {
+    display: none !important;
+  }
+}
+
 /* ============================================================================
    Skip Controls
    ============================================================================ */
