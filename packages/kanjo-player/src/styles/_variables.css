@@ -24,6 +24,7 @@
   --kanjo-progress-filled: var(--kanjo-primary);
   --kanjo-progress-height: 4px;
   --kanjo-progress-height-hover: 6px;
+  --kanjo-progress-minimal-height: 3px;
 
   /* Scrubber */
   --kanjo-scrubber-size: 14px;
