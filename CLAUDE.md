@@ -71,6 +71,18 @@ This project uses ESLint 9 (flat config) and Prettier for code quality and forma
 3. Run `npm run format` to ensure consistent formatting
 4. Run `npm run typecheck` to verify TypeScript types
 
+## Planning & Documentation
+
+When working on non-trivial tasks that require planning:
+
+1. **Plans** must be written to `docs/plans/` with the filename format `{epoch}-{descriptive-name}.md`
+   - Example: `docs/plans/1738262400-add-subtitle-support.md`
+   - The epoch is the Unix timestamp when the plan is created
+
+2. **Implementation output** from a planned task must be documented in `docs/plans/implemented/` with the same naming convention: `{epoch}-{descriptive-name}.md`
+   - Example: `docs/plans/implemented/1738262400-add-subtitle-support.md`
+   - This documents what was actually implemented, decisions made, and any deviations from the plan
+
 ## Architecture
 
 ### Core Layer (`packages/kanjo-player/src/core/`)
