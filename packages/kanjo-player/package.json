@@ -1,6 +1,6 @@
 {
   "name": "kanjo-player",
-  "version": "0.20260130.2",
+  "version": "0.20260130.3",
   "description": "Framework-agnostic video player library with WASM where it matters",
   "type": "module",
   "main": "./dist/kanjo-player.umd.js",
