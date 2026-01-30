@@ -22,7 +22,12 @@ function App() {
     <div className="app">
       <header>
         <h1>KanjoPlayer Demo</h1>
-        <p className="subtitle">React Implementation</p>
+        <nav className="demo-links">
+          <a href="/">Plain HTML</a>
+          <a href="/vue/">Vue</a>
+          <a href="/react/" className="active">React</a>
+          <a href="/svelte/">Svelte</a>
+        </nav>
       </header>
       <main>
         <KanjoPlayerDemo />
