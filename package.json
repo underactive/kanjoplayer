@@ -16,7 +16,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"packages/**/*.{ts,vue,js,json,css,scss}\" \"apps/**/*.{ts,tsx,vue,svelte,js,json,css,scss}\""
+    "format": "prettier --write \"packages/**/*.{ts,vue,js,json,css,scss}\" \"apps/**/*.{ts,tsx,vue,svelte,js,json,css,scss}\"",
+    "publish:lib": "./scripts/publish.sh"
   },
   "devDependencies": {
     "@vue/eslint-config-prettier": "^10.2.0",
