@@ -247,7 +247,8 @@ export class CustomButtonArea {
 
       // Check if this button fits (leaving room for overflow menu if needed)
       const remainingButtons = this.buttons.length - i - 1;
-      const needsOverflowSpace = remainingButtons > 0 && widthNeeded + overflowMenuWidth > areaWidth;
+      const needsOverflowSpace =
+        remainingButtons > 0 && widthNeeded + overflowMenuWidth > areaWidth;
 
       if (widthNeeded > areaWidth - (needsOverflowSpace ? overflowMenuWidth : 0)) {
         btn.style.display = 'none';

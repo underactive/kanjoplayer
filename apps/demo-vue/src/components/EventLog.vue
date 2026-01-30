@@ -1,44 +1,44 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { VideoEvent } from '../types/video-stats'
+import { computed } from 'vue';
+import type { VideoEvent } from '../types/video-stats';
 
 const props = defineProps<{
-  events: VideoEvent[]
-}>()
+  events: VideoEvent[];
+}>();
 
 const emit = defineEmits<{
-  clear: []
-}>()
+  clear: [];
+}>();
 
 function formatTimestamp(ts: number): string {
-  const date = new Date(ts)
+  const date = new Date(ts);
   return date.toLocaleTimeString('en-US', {
     hour12: false,
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     fractionalSecondDigits: 3,
-  } as Intl.DateTimeFormatOptions)
+  } as Intl.DateTimeFormatOptions);
 }
 
 function getEventClass(type: string): string {
-  if (type.includes('error')) return 'error'
-  if (type.includes('waiting') || type.includes('stalled')) return 'warning'
-  if (type === 'play' || type === 'playing' || type === 'canplaythrough') return 'success'
-  if (type.includes('hls-')) return 'hls'
-  if (type === 'source-change') return 'info'
-  return ''
+  if (type.includes('error')) return 'error';
+  if (type.includes('waiting') || type.includes('stalled')) return 'warning';
+  if (type === 'play' || type === 'playing' || type === 'canplaythrough') return 'success';
+  if (type.includes('hls-')) return 'hls';
+  if (type === 'source-change') return 'info';
+  return '';
 }
 
 const eventCounts = computed(() => {
-  const counts: Record<string, number> = {}
+  const counts: Record<string, number> = {};
   props.events.forEach((e) => {
-    counts[e.type] = (counts[e.type] || 0) + 1
-  })
+    counts[e.type] = (counts[e.type] || 0) + 1;
+  });
   return Object.entries(counts)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 10)
-})
+    .slice(0, 10);
+});
 </script>
 
 <template>

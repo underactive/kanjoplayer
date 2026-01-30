@@ -187,9 +187,7 @@ export class SpriteLoader {
     }
 
     // Find the cue that contains this time
-    const cue = this.cues.find(
-      (c) => time >= c.startTime && time < c.endTime
-    );
+    const cue = this.cues.find((c) => time >= c.startTime && time < c.endTime);
 
     if (!cue) {
       // Find the closest cue

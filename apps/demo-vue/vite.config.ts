@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import wasm from 'vite-plugin-wasm'
-import topLevelAwait from 'vite-plugin-top-level-await'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import wasm from 'vite-plugin-wasm';
+import topLevelAwait from 'vite-plugin-top-level-await';
 
 export default defineConfig(({ mode }) => ({
   base: mode === 'production' ? '/vue/' : '/',
@@ -22,4 +22,4 @@ export default defineConfig(({ mode }) => ({
     exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
   },
   assetsInclude: ['**/*.wasm'],
-}))
+}));

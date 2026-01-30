@@ -63,7 +63,11 @@ export class ResponsiveControlsManager {
   private rafId: number | null = null;
   private lastWidth: number = 0;
 
-  constructor(container: HTMLElement, controlsContainer: HTMLElement, config?: ResponsiveControlsConfig) {
+  constructor(
+    container: HTMLElement,
+    controlsContainer: HTMLElement,
+    config?: ResponsiveControlsConfig
+  ) {
     this.container = container;
     this.controlsContainer = controlsContainer;
     this.enabled = config?.enabled !== false;

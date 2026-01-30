@@ -105,7 +105,7 @@ export class SkipControl {
       const option = UIBuilder.create({
         tag: 'button',
         className: 'kanjo-skip-option',
-        attrs: { type: 'button', 'data-duration': String(duration) },
+        attrs: { 'type': 'button', 'data-duration': String(duration) },
         text: `${duration}s`,
         events: {
           click: (e) => {
@@ -115,7 +115,8 @@ export class SkipControl {
         },
       });
 
-      const currentDuration = direction === 'back' ? this.skipBackDuration : this.skipForwardDuration;
+      const currentDuration =
+        direction === 'back' ? this.skipBackDuration : this.skipForwardDuration;
       if (duration === currentDuration) {
         option.classList.add('kanjo-active');
       }

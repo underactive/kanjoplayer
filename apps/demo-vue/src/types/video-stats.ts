@@ -1,72 +1,72 @@
 export interface VideoSource {
-  name: string
-  url: string
-  type: 'mp4' | 'hls' | 'webm' | 'dash'
+  name: string;
+  url: string;
+  type: 'mp4' | 'hls' | 'webm' | 'dash';
 }
 
 export interface VideoState {
   // Playback state
-  currentTime: number
-  duration: number
-  paused: boolean
-  ended: boolean
-  seeking: boolean
+  currentTime: number;
+  duration: number;
+  paused: boolean;
+  ended: boolean;
+  seeking: boolean;
 
   // Buffering
-  buffered: string
-  seekable: string
+  buffered: string;
+  seekable: string;
 
   // Volume
-  volume: number
-  muted: boolean
+  volume: number;
+  muted: boolean;
 
   // Dimensions
-  videoWidth: number
-  videoHeight: number
+  videoWidth: number;
+  videoHeight: number;
 
   // Network state
-  networkState: number
-  networkStateText: string
-  readyState: number
-  readyStateText: string
+  networkState: number;
+  networkStateText: string;
+  readyState: number;
+  readyStateText: string;
 
   // Playback quality
-  playbackRate: number
-  defaultPlaybackRate: number
+  playbackRate: number;
+  defaultPlaybackRate: number;
 
   // Source info
-  currentSrc: string
-  src: string
+  currentSrc: string;
+  src: string;
 
   // Timing
-  played: string
+  played: string;
 
   // Error state
-  error: string | null
+  error: string | null;
 
   // Additional properties
-  autoplay: boolean
-  controls: boolean
-  loop: boolean
-  preload: string
-  crossOrigin: string | null
+  autoplay: boolean;
+  controls: boolean;
+  loop: boolean;
+  preload: string;
+  crossOrigin: string | null;
 
   // Media capabilities
-  canPlayType_mp4: string
-  canPlayType_webm: string
-  canPlayType_hls: string
+  canPlayType_mp4: string;
+  canPlayType_webm: string;
+  canPlayType_hls: string;
 
   // Codec capabilities
-  codec_h264: boolean
-  codec_h265: boolean
-  codec_vp9: boolean
-  codec_av1: boolean
+  codec_h264: boolean;
+  codec_h265: boolean;
+  codec_vp9: boolean;
+  codec_av1: boolean;
 }
 
 export interface VideoEvent {
-  timestamp: number
-  type: string
-  detail?: string
+  timestamp: number;
+  type: string;
+  detail?: string;
 }
 
 export const NETWORK_STATE_MAP: Record<number, string> = {
@@ -74,7 +74,7 @@ export const NETWORK_STATE_MAP: Record<number, string> = {
   1: 'NETWORK_IDLE',
   2: 'NETWORK_LOADING',
   3: 'NETWORK_NO_SOURCE',
-}
+};
 
 export const READY_STATE_MAP: Record<number, string> = {
   0: 'HAVE_NOTHING',
@@ -82,7 +82,7 @@ export const READY_STATE_MAP: Record<number, string> = {
   2: 'HAVE_CURRENT_DATA',
   3: 'HAVE_FUTURE_DATA',
   4: 'HAVE_ENOUGH_DATA',
-}
+};
 
 export const VIDEO_EVENTS = [
   'abort',
@@ -108,6 +108,6 @@ export const VIDEO_EVENTS = [
   'timeupdate',
   'volumechange',
   'waiting',
-] as const
+] as const;
 
-export type VideoEventType = typeof VIDEO_EVENTS[number]
+export type VideoEventType = (typeof VIDEO_EVENTS)[number];

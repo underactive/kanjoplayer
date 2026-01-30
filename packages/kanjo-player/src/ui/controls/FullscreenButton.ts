@@ -31,9 +31,7 @@ export class FullscreenButton {
   }
 
   private updateIcon(isFullscreen: boolean): void {
-    const icon = isFullscreen
-      ? UIBuilder.icons.exitFullscreen
-      : UIBuilder.icons.fullscreen;
+    const icon = isFullscreen ? UIBuilder.icons.exitFullscreen : UIBuilder.icons.fullscreen;
     const tooltip = isFullscreen ? 'Exit Fullscreen (F)' : 'Fullscreen (F)';
 
     this.element.innerHTML = icon;

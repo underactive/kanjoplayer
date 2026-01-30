@@ -94,10 +94,7 @@ export class AirPlayButton {
   private updateActiveState(): void {
     this.element.classList.toggle('kanjo-active', this.isActive);
     this.element.title = this.isActive ? 'AirPlay (Connected)' : 'AirPlay';
-    this.element.setAttribute(
-      'aria-label',
-      this.isActive ? 'AirPlay (Connected)' : 'AirPlay'
-    );
+    this.element.setAttribute('aria-label', this.isActive ? 'AirPlay (Connected)' : 'AirPlay');
   }
 
   getElement(): HTMLButtonElement {

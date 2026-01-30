@@ -201,9 +201,13 @@ export class ThumbnailManager {
       if (this.useSprites && this.spriteLoader?.isReady()) {
         thumbnail = this.spriteLoader.getThumbnail(time);
       } else if (this.useHls && this.hlsExtractor) {
-        thumbnail = await (this.hlsExtractor as { extract: (time: number) => Promise<ThumbnailData> }).extract(time);
+        thumbnail = await (
+          this.hlsExtractor as { extract: (time: number) => Promise<ThumbnailData> }
+        ).extract(time);
       } else if (this.useDash && this.dashExtractor) {
-        thumbnail = await (this.dashExtractor as { extract: (time: number) => Promise<ThumbnailData> }).extract(time);
+        thumbnail = await (
+          this.dashExtractor as { extract: (time: number) => Promise<ThumbnailData> }
+        ).extract(time);
       } else if (this.canvasExtractor) {
         thumbnail = await this.canvasExtractor.extract(time);
       }

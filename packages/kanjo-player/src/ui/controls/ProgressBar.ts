@@ -63,7 +63,7 @@ export class ProgressBar {
       className: `kanjo-loop-marker kanjo-loop-marker-${type}`,
       attrs: {
         'data-type': type,
-        title: type === 'start' ? 'Loop start (drag to move)' : 'Loop end (drag to move)',
+        'title': type === 'start' ? 'Loop start (drag to move)' : 'Loop end (drag to move)',
       },
     });
 
@@ -79,12 +79,12 @@ export class ProgressBar {
     const container = UIBuilder.create({
       className: 'kanjo-progress-container',
       attrs: {
-        role: 'slider',
+        'role': 'slider',
         'aria-label': 'Video progress',
         'aria-valuemin': '0',
         'aria-valuemax': '100',
         'aria-valuenow': '0',
-        tabindex: '0',
+        'tabindex': '0',
       },
     });
 

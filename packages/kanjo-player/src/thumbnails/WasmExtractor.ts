@@ -167,10 +167,7 @@ export class WasmExtractor {
    * Check if WASM extraction is supported
    */
   static isSupported(): boolean {
-    return (
-      typeof Worker !== 'undefined' &&
-      typeof WebAssembly !== 'undefined'
-    );
+    return typeof Worker !== 'undefined' && typeof WebAssembly !== 'undefined';
   }
 
   /**
