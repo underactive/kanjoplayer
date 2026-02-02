@@ -3,6 +3,32 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.0.0] - 2026-02-02
+
+### Added
+- **Internationalization (i18n) support**: Full localization with 8 bundled locales (en, es, fr, de, ja, zh, zhTW, ko)
+  - LocaleManager class with type-safe string keys (~70 translatable strings)
+  - Runtime locale switching without player recreation
+  - Partial locale overrides support
+  - String interpolation for dynamic values
+  - Language selector in all demo apps
+- **Mobile custom button toggle**: Collapsible custom button area on mobile screens (≤480px)
+  - Hidden by default, revealed via chevron toggle
+  - Smooth slide-in animation with opacity/transform transitions
+- **Precise time formatting**: Decimal precision in thumbnail preview when dragging A/B loop markers
+- **Pre-commit security audit hook**: Automated security analysis on staged changes using Husky
+- **npm publish automation**: `publish.sh` script with quality checks and interactive version bumping
+
+### Fixed
+- Volume slider container vertical positioning alignment
+
+### Security
+- Add Content Security Policy headers to all demo app Vite configs
+- Add Subresource Integrity to hls.js CDN script in vanilla demo
+- Implement `escapeHtml` utility for safe HTML string interpolation
+- Replace innerHTML with safe DOM methods in ProgressBar and SettingsMenu
+- Replace Math.random() with crypto.getRandomValues() for secure ID generation
+
 ## [0.20260130.3] - 2026-01-30
 
 ### Added
