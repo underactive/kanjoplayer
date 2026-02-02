@@ -28,6 +28,9 @@ export default defineConfig(({ mode }) => ({
     // hls.js is ~680 kB minified, which is expected for a full HLS implementation
     chunkSizeWarningLimit: 700,
   },
+  esbuild: {
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
+  },
   optimizeDeps: {
     exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', '@jsquash/jpeg'],
   },
