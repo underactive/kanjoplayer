@@ -7,6 +7,7 @@
     "apps/*"
   ],
   "scripts": {
+    "prepare": "husky",
     "dev": "npm run dev -w kanjo-player-demo",
     "dev:vue": "npm run dev -w kanjo-player-demo-vue",
     "dev:react": "npm run dev -w kanjo-player-demo-react",
@@ -24,6 +25,7 @@
     "@vue/eslint-config-typescript": "^14.6.0",
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "^10.7.0",
+    "husky": "^9.1.7",
     "prettier": "^3.8.1",
     "typescript": "~5.6.2"
   }
