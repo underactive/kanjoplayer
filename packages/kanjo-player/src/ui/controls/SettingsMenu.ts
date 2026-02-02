@@ -30,6 +30,7 @@ export class SettingsMenu {
   private options: SettingsMenuOptions;
   private isOpen = false;
   private onAdjustmentsClick: (() => void) | null = null;
+  private unsubscribeLocale?: () => void;
 
   constructor(player: KanjoPlayer, config?: SettingsMenuConfig) {
     this.player = player;
@@ -44,18 +45,21 @@ export class SettingsMenu {
     this.menuPanel = this.createMenuPanel();
     this.element = this.createElement();
     this.bindEvents();
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   private createToggleButton(): HTMLButtonElement {
+    const locale = this.player.locale;
     return UIBuilder.button({
       className: 'kanjo-settings-btn',
       icon: UIBuilder.icons.settings,
-      tooltip: 'Settings',
+      tooltip: locale.get('settings.title'),
       onClick: () => this.toggle(),
     });
   }
 
   private createMenuPanel(): HTMLElement {
+    const locale = this.player.locale;
     const panel = UIBuilder.create({
       className: 'kanjo-settings-menu',
     });
@@ -67,8 +71,8 @@ export class SettingsMenu {
     if (this.options.showSpeed) {
       const speedItem = this.createMenuItem({
         icon: UIBuilder.icons.speed,
-        label: 'Playback speed',
-        value: '1x',
+        label: locale.get('settings.playbackSpeed'),
+        value: locale.get('settings.normal'),
         hasSubmenu: true,
         onClick: () => this.showSubmenu('speed'),
       });
@@ -80,12 +84,13 @@ export class SettingsMenu {
     if (this.options.showPiP && document.pictureInPictureEnabled) {
       const pipItem = this.createMenuItem({
         icon: UIBuilder.icons.pip,
-        label: 'Picture-in-Picture',
+        label: locale.get('settings.pip'),
         onClick: () => {
           this.player.togglePiP();
           this.close();
         },
       });
+      pipItem.id = 'kanjo-pip-item';
       mainMenu.appendChild(pipItem);
     }
 
@@ -93,12 +98,13 @@ export class SettingsMenu {
     if (this.options.showDownload) {
       const downloadItem = this.createMenuItem({
         icon: UIBuilder.icons.download,
-        label: 'Download',
+        label: locale.get('settings.download'),
         onClick: () => {
           this.downloadVideo();
           this.close();
         },
       });
+      downloadItem.id = 'kanjo-download-item';
       mainMenu.appendChild(downloadItem);
     }
 
@@ -106,7 +112,7 @@ export class SettingsMenu {
     if (this.options.showAdjustments) {
       const adjustmentsItem = this.createMenuItem({
         icon: UIBuilder.icons.adjustments,
-        label: 'Video adjustments',
+        label: locale.get('settings.adjustments'),
         onClick: () => {
           if (this.onAdjustmentsClick) {
             this.onAdjustmentsClick();
@@ -114,6 +120,7 @@ export class SettingsMenu {
           this.close();
         },
       });
+      adjustmentsItem.id = 'kanjo-adjustments-item';
       mainMenu.appendChild(adjustmentsItem);
     }
 
@@ -180,6 +187,7 @@ export class SettingsMenu {
   }
 
   private createSpeedSubmenu(): HTMLElement {
+    const locale = this.player.locale;
     const submenu = UIBuilder.create({
       className: 'kanjo-settings-submenu',
       attrs: { 'data-submenu': 'speed' },
@@ -199,7 +207,7 @@ export class SettingsMenu {
     });
     backBtn.innerHTML = `
       <span class="kanjo-settings-back-icon">${UIBuilder.icons.chevronRight}</span>
-      <span>Playback speed</span>
+      <span class="kanjo-settings-back-label">${locale.get('settings.playbackSpeed')}</span>
     `;
     submenu.appendChild(backBtn);
 
@@ -226,7 +234,7 @@ export class SettingsMenu {
 
       const label = UIBuilder.create({
         className: 'kanjo-settings-option-label',
-        text: rate === 1 ? 'Normal' : `${rate}x`,
+        text: rate === 1 ? locale.get('settings.normal') : `${rate}x`,
       });
 
       option.appendChild(checkIcon);
@@ -308,10 +316,12 @@ export class SettingsMenu {
   }
 
   private updateSpeedDisplay(rate: number): void {
+    const locale = this.player.locale;
+
     // Update value in main menu
     const speedItem = this.element.querySelector('#kanjo-speed-item .kanjo-settings-item-value');
     if (speedItem) {
-      speedItem.textContent = rate === 1 ? 'Normal' : `${rate}x`;
+      speedItem.textContent = rate === 1 ? locale.get('settings.normal') : `${rate}x`;
     }
 
     // Update active state in submenu
@@ -346,6 +356,60 @@ export class SettingsMenu {
     }
   }
 
+  private updateStrings(): void {
+    const locale = this.player.locale;
+
+    // Update toggle button
+    this.toggleBtn.title = locale.get('settings.title');
+    this.toggleBtn.setAttribute('aria-label', locale.get('settings.title'));
+
+    // Update speed item
+    const speedItemLabel = this.element.querySelector(
+      '#kanjo-speed-item .kanjo-settings-item-label'
+    );
+    if (speedItemLabel) {
+      speedItemLabel.textContent = locale.get('settings.playbackSpeed');
+    }
+
+    // Update speed submenu back button label
+    const backLabel = this.element.querySelector('.kanjo-settings-back-label');
+    if (backLabel) {
+      backLabel.textContent = locale.get('settings.playbackSpeed');
+    }
+
+    // Update speed options (Normal label)
+    const normalOption = this.element.querySelector('[data-rate="1"] .kanjo-settings-option-label');
+    if (normalOption) {
+      normalOption.textContent = locale.get('settings.normal');
+    }
+
+    // Update current speed value display
+    const currentRate = this.player.getPlaybackRate();
+    this.updateSpeedDisplay(currentRate);
+
+    // Update PiP item
+    const pipItemLabel = this.element.querySelector('#kanjo-pip-item .kanjo-settings-item-label');
+    if (pipItemLabel) {
+      pipItemLabel.textContent = locale.get('settings.pip');
+    }
+
+    // Update Download item
+    const downloadItemLabel = this.element.querySelector(
+      '#kanjo-download-item .kanjo-settings-item-label'
+    );
+    if (downloadItemLabel) {
+      downloadItemLabel.textContent = locale.get('settings.download');
+    }
+
+    // Update Adjustments item
+    const adjustmentsItemLabel = this.element.querySelector(
+      '#kanjo-adjustments-item .kanjo-settings-item-label'
+    );
+    if (adjustmentsItemLabel) {
+      adjustmentsItemLabel.textContent = locale.get('settings.adjustments');
+    }
+  }
+
   getElement(): HTMLElement {
     return this.element;
   }
@@ -355,5 +419,9 @@ export class SettingsMenu {
    */
   setAdjustmentsCallback(callback: () => void): void {
     this.onAdjustmentsClick = callback;
+  }
+
+  destroy(): void {
+    this.unsubscribeLocale?.();
   }
 }

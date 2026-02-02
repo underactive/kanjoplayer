@@ -43,21 +43,24 @@ export interface SettingsMenuConfig {
 /** Player properties that can be used as event values */
 export type PlayerProperty = 'src' | 'currentTime' | 'duration' | 'volume' | 'playbackRate';
 
+/** Localized string - either a plain string or an object mapping locale codes to strings */
+export type LocalizedString = string | Record<string, string>;
+
 export interface CustomButtonConfig {
   /** Unique identifier for the button */
   id: string;
   /** CSS class for icon (e.g., "hero-bookmark-solid") */
   iconClass?: string;
-  /** Button text label */
-  text?: string;
+  /** Button text label - can be a string or localized object { en: 'Share', ja: '共有' } */
+  text?: LocalizedString;
   /** How to display the button content */
   displayMode: 'icon' | 'icon-text' | 'text';
   /** Event name to emit when clicked (e.g., "bookmark_movie") */
   eventKey: string;
   /** Static value or player property name to include in event */
   eventValue?: string | PlayerProperty;
-  /** Optional hover tooltip */
-  tooltip?: string;
+  /** Optional hover tooltip - can be a string or localized object { en: 'Share', ja: '共有' } */
+  tooltip?: LocalizedString;
 }
 
 export interface CustomButtonsConfig {
@@ -113,6 +116,9 @@ export interface MinimalProgressConfig {
   /** Opacity of the progress bar 0-1 (default: 1, fully opaque) */
   opacity?: number;
 }
+
+// Import locale types for configuration
+import type { LocaleStrings } from '../i18n/types';
 
 // ============================================================================
 // Responsive Controls Configuration
@@ -200,6 +206,8 @@ export interface KanjoPlayerOptions {
   codecs?: CodecsConfig;
   /** Minimal progress bar configuration (shown when controls are hidden) */
   minimalProgress?: MinimalProgressConfig;
+  /** Locale configuration for i18n support */
+  locale?: Partial<LocaleStrings>;
   /** Plugins to load */
   plugins?: KanjoPlugin[];
   /** Custom CSS class for container */

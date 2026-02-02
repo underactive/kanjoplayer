@@ -193,6 +193,38 @@ main {
   color: #6d28d9;
 }
 
+.source-type.dash {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.language-selector label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.language-selector select {
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.language-selector select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 .player-wrapper {
   position: relative;
   background: #000;

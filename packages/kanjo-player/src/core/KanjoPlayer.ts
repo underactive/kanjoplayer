@@ -22,6 +22,7 @@ import type {
   CodecCapabilitiesResult,
 } from './types';
 import { CodecCapabilities } from './CodecCapabilities';
+import { LocaleManager } from '../i18n/LocaleManager';
 
 export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements KanjoPlayerAPI {
   private container: HTMLElement;
@@ -41,8 +42,14 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
   // Thumbnail manager (lazy initialized)
   private thumbnailManager: ThumbnailManager | null = null;
 
+  // Locale manager for i18n
+  readonly locale: LocaleManager;
+
   constructor(options: KanjoPlayerOptions) {
     super();
+
+    // Initialize locale manager
+    this.locale = new LocaleManager(options.locale);
 
     // Merge with defaults
     this.options = this.mergeOptions(options);
@@ -170,6 +177,7 @@ export class KanjoPlayer extends EventEmitter<KanjoPlayerEvents> implements Kanj
       keyboardShortcuts: true,
       doubleClickFullscreen: true,
       controlsTimeout: 3000,
+      locale: {},
     };
 
     return {

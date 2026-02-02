@@ -122,6 +122,9 @@ export class ControlsOverlay {
     // Wire up A/B loop control with download overlay
     this.abLoopControl.setDownloadOverlay(this.downloadOverlay);
 
+    // Pass locale manager to download overlay
+    this.downloadOverlay.setLocaleManager(player.locale);
+
     // Build the overlay
     this.bottomBar = this.createBottomBar();
     this.element = this.createElement();

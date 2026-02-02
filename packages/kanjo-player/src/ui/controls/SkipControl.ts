@@ -36,6 +36,8 @@ export class SkipControl {
   private skipForwardDuration: number;
   private skipForwardOpen = false;
 
+  private unsubscribeLocale?: () => void;
+
   constructor(player: KanjoPlayer, config?: SkipControlConfig) {
     this.player = player;
     this.options = {
@@ -57,17 +59,19 @@ export class SkipControl {
 
     this.element = this.createElement();
     this.bindEvents();
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   private createSkipButton(direction: 'back' | 'forward'): HTMLButtonElement {
+    const locale = this.player.locale;
     const icon = direction === 'back' ? UIBuilder.icons.skipBack : UIBuilder.icons.skipForward;
-    const tooltip = direction === 'back' ? 'Skip back' : 'Skip forward';
     const duration = direction === 'back' ? this.skipBackDuration : this.skipForwardDuration;
+    const tooltipKey = direction === 'back' ? 'skip.back' : 'skip.forward';
 
     const btn = UIBuilder.create<HTMLButtonElement>({
       tag: 'button',
       className: `kanjo-btn kanjo-skip-btn kanjo-skip-${direction}`,
-      attrs: { type: 'button', title: `${tooltip} ${duration}s` },
+      attrs: { type: 'button', title: locale.t(tooltipKey, { duration }) },
     });
 
     // Icon container
@@ -247,13 +251,14 @@ export class SkipControl {
   }
 
   private updateButtonLabel(direction: 'back' | 'forward', duration: number): void {
+    const locale = this.player.locale;
     const btn = direction === 'back' ? this.skipBackBtn : this.skipForwardBtn;
     const label = btn.querySelector('.kanjo-skip-label');
     if (label) {
       label.textContent = `${duration}`;
     }
-    const tooltip = direction === 'back' ? 'Skip back' : 'Skip forward';
-    btn.title = `${tooltip} ${duration}s`;
+    const tooltipKey = direction === 'back' ? 'skip.back' : 'skip.forward';
+    btn.title = locale.t(tooltipKey, { duration });
   }
 
   private updateDropdownSelection(direction: 'back' | 'forward', duration: number): void {
@@ -265,7 +270,21 @@ export class SkipControl {
     });
   }
 
+  private updateStrings(): void {
+    const locale = this.player.locale;
+
+    // Update skip back button tooltip
+    this.skipBackBtn.title = locale.t('skip.back', { duration: this.skipBackDuration });
+
+    // Update skip forward button tooltip
+    this.skipForwardBtn.title = locale.t('skip.forward', { duration: this.skipForwardDuration });
+  }
+
   getElement(): HTMLElement {
     return this.element;
+  }
+
+  destroy(): void {
+    this.unsubscribeLocale?.();
   }
 }

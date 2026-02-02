@@ -3,7 +3,12 @@
  */
 
 import type { KanjoPlayer } from '../../core/KanjoPlayer';
-import type { CustomButtonsConfig, CustomButtonConfig, PlayerProperty } from '../../core/types';
+import type {
+  CustomButtonsConfig,
+  CustomButtonConfig,
+  PlayerProperty,
+  LocalizedString,
+} from '../../core/types';
 import { UIBuilder } from '../UIBuilder';
 
 export interface CustomButtonEventDetail {
@@ -25,6 +30,7 @@ export class CustomButtonArea {
   private isOverflowOpen = false;
   private mobileToggleBtn: HTMLButtonElement | null = null;
   private isMobileExpanded = false;
+  private unsubscribeLocale?: () => void;
 
   constructor(player: KanjoPlayer, container: HTMLElement, config: CustomButtonsConfig) {
     this.player = player;
@@ -33,6 +39,57 @@ export class CustomButtonArea {
     container.appendChild(this.element);
     this.setupResizeObserver();
     this.bindDocumentClick();
+
+    // Subscribe to locale changes
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateButtonStrings());
+  }
+
+  /**
+   * Resolve a localized string based on current locale
+   */
+  private resolveLocalizedString(value: LocalizedString | undefined): string | undefined {
+    if (value === undefined) return undefined;
+    if (typeof value === 'string') return value;
+
+    // Get current locale code from LocaleManager
+    const currentLocale = this.player.locale.getCurrentLocale();
+
+    // Try exact match first, then fallback to 'en', then first available
+    if (currentLocale && value[currentLocale]) {
+      return value[currentLocale];
+    }
+    if (value['en']) {
+      return value['en'];
+    }
+    // Return first available value as last resort
+    const keys = Object.keys(value);
+    return keys.length > 0 ? value[keys[0]] : undefined;
+  }
+
+  /**
+   * Update all button strings when locale changes
+   */
+  private updateButtonStrings(): void {
+    for (let i = 0; i < this.buttons.length; i++) {
+      const btn = this.buttons[i];
+      const config = this.config.buttons[i];
+
+      // Update tooltip
+      const tooltip = this.resolveLocalizedString(config.tooltip);
+      if (tooltip) {
+        btn.title = tooltip;
+        btn.setAttribute('aria-label', tooltip);
+      }
+
+      // Update text content
+      if (config.displayMode === 'text' || config.displayMode === 'icon-text') {
+        const textSpan = btn.querySelector('.kanjo-custom-btn-text');
+        if (textSpan) {
+          const text = this.resolveLocalizedString(config.text);
+          textSpan.textContent = text || '';
+        }
+      }
+    }
   }
 
   private createElement(): HTMLElement {
@@ -120,9 +177,10 @@ export class CustomButtonArea {
     btn.className = 'kanjo-btn kanjo-custom-btn';
     btn.dataset.buttonId = config.id;
 
-    if (config.tooltip) {
-      btn.title = config.tooltip;
-      btn.setAttribute('aria-label', config.tooltip);
+    const tooltip = this.resolveLocalizedString(config.tooltip);
+    if (tooltip) {
+      btn.title = tooltip;
+      btn.setAttribute('aria-label', tooltip);
     }
 
     // Build content based on displayMode
@@ -135,10 +193,11 @@ export class CustomButtonArea {
     }
 
     if (config.displayMode === 'text' || config.displayMode === 'icon-text') {
-      if (config.text) {
+      const textValue = this.resolveLocalizedString(config.text);
+      if (textValue) {
         const text = document.createElement('span');
         text.className = 'kanjo-custom-btn-text';
-        text.textContent = config.text;
+        text.textContent = textValue;
         btn.appendChild(text);
       }
     }
@@ -165,8 +224,12 @@ export class CustomButtonArea {
     }
 
     // Text label (use text or tooltip as fallback)
+    const textValue =
+      this.resolveLocalizedString(config.text) ||
+      this.resolveLocalizedString(config.tooltip) ||
+      config.id;
     const text = document.createElement('span');
-    text.textContent = config.text || config.tooltip || config.id;
+    text.textContent = textValue;
     btn.appendChild(text);
 
     btn.addEventListener('click', (e) => {
@@ -321,6 +384,7 @@ export class CustomButtonArea {
   }
 
   destroy(): void {
+    this.unsubscribeLocale?.();
     this.resizeObserver.disconnect();
     this.element.remove();
   }

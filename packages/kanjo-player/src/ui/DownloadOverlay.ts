@@ -3,6 +3,7 @@
  */
 
 import { UIBuilder } from './UIBuilder';
+import type { LocaleManager } from '../i18n/LocaleManager';
 
 export interface DownloadProgress {
   phase: string;
@@ -20,6 +21,8 @@ export class DownloadOverlay {
   private pendingFilename: string = '';
   private onCleanup: (() => void) | null = null;
   private onCancel: (() => void) | null = null;
+  private locale: LocaleManager | null = null;
+  private unsubscribeLocale?: () => void;
 
   constructor(container: HTMLElement) {
     // Create progress indicator (top-right corner)
@@ -37,6 +40,15 @@ export class DownloadOverlay {
 
     // Append to container
     container.appendChild(this.element);
+  }
+
+  /**
+   * Set the locale manager for i18n support
+   */
+  setLocaleManager(locale: LocaleManager): void {
+    this.locale = locale;
+    this.unsubscribeLocale = locale.onChange(() => this.updateStrings());
+    this.updateStrings();
   }
 
   private createProgressContainer(): HTMLElement {
@@ -158,7 +170,11 @@ export class DownloadOverlay {
     const sizeText = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${sizeKB} KB`;
 
     const message = this.dialogOverlay.querySelector('.kanjo-download-dialog-message')!;
-    message.textContent = `Your clip (${sizeText}) is ready. Do you want to download it?`;
+    if (this.locale) {
+      message.textContent = this.locale.t('download.readyMessage', { size: sizeText });
+    } else {
+      message.textContent = `Your clip (${sizeText}) is ready. Do you want to download it?`;
+    }
 
     // Hide progress, show dialog
     this.hideProgress();
@@ -222,6 +238,7 @@ export class DownloadOverlay {
    */
   showError(message: string): void {
     this.progressText.textContent = message;
+    this.progressContainer.classList.add('kanjo-visible');
     this.progressContainer.classList.add('kanjo-error');
 
     // Auto-hide after 3 seconds
@@ -231,7 +248,47 @@ export class DownloadOverlay {
     }, 3000);
   }
 
+  private updateStrings(): void {
+    if (!this.locale) return;
+
+    // Update progress container text
+    const progressText = this.progressContainer.querySelector('.kanjo-download-progress-text');
+    // Only update if it's still showing the default/preparing text
+    if (progressText && progressText.textContent === 'Preparing download...') {
+      progressText.textContent = this.locale.get('download.preparing');
+    }
+
+    // Update progress close button title
+    const closeBtn = this.progressContainer.querySelector(
+      '.kanjo-download-progress-close'
+    ) as HTMLButtonElement;
+    if (closeBtn) {
+      closeBtn.title = this.locale.get('download.cancelDownload');
+    }
+
+    // Update dialog title
+    const dialogTitle = this.dialogOverlay.querySelector('.kanjo-download-dialog-title');
+    if (dialogTitle) {
+      dialogTitle.textContent = this.locale.get('download.ready');
+    }
+
+    // Update dialog buttons
+    const cancelBtn = this.dialogOverlay.querySelector('.kanjo-download-dialog-btn-cancel');
+    if (cancelBtn) {
+      cancelBtn.textContent = this.locale.get('download.cancel');
+    }
+
+    const downloadBtn = this.dialogOverlay.querySelector('.kanjo-download-dialog-btn-download');
+    if (downloadBtn) {
+      downloadBtn.textContent = this.locale.get('download.download');
+    }
+  }
+
   getElement(): HTMLElement {
     return this.element;
+  }
+
+  destroy(): void {
+    this.unsubscribeLocale?.();
   }
 }
