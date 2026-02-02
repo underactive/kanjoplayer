@@ -209,8 +209,10 @@
     </div>
   </div>
 
-  <!-- Load hls.js from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+  <!-- Load hls.js from CDN with Subresource Integrity for supply chain security -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"
+    integrity="sha384-9v3HcdYrO3D+OPDTjZ40RXocgE4GtXVCd3/mCS62JsM93JXgI1afJVuwjFvsu6ni"
+    crossorigin="anonymous"></script>
 
   <!-- Load KanjoPlayer UMD bundle -->
   <script src="/lib/kanjo-player.umd.js"></script>

@@ -334,7 +334,7 @@ export class ProgressBar {
       this.zoomEndTime = Math.min(duration, this.currentLoopEnd + 2);
     }
 
-    // Update zoom indicator
+    // Update zoom indicator using safe DOM methods (prevents XSS)
     const locale = this.player.locale;
     const pointLabel =
       draggingMarker === 'start'
@@ -342,14 +342,35 @@ export class ProgressBar {
         : locale.get('progress.fineTuningEnd');
     const windowDuration = UIBuilder.formatTime(this.zoomEndTime - this.zoomStartTime);
 
-    this.zoomIndicator.innerHTML = `
-      <div class="kanjo-zoom-label">${locale.get('progress.fineTuning')}: ${pointLabel}</div>
-      <div class="kanjo-zoom-range">
-        <span class="kanjo-zoom-time-start">${UIBuilder.formatTime(this.zoomStartTime)}</span>
-        <span class="kanjo-zoom-time-center">${locale.t('progress.window', { duration: windowDuration })}</span>
-        <span class="kanjo-zoom-time-end">${UIBuilder.formatTime(this.zoomEndTime)}</span>
-      </div>
-    `;
+    // Clear existing content
+    this.zoomIndicator.textContent = '';
+
+    // Create label div
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'kanjo-zoom-label';
+    labelDiv.textContent = `${locale.get('progress.fineTuning')}: ${pointLabel}`;
+    this.zoomIndicator.appendChild(labelDiv);
+
+    // Create range div with time spans
+    const rangeDiv = document.createElement('div');
+    rangeDiv.className = 'kanjo-zoom-range';
+
+    const startSpan = document.createElement('span');
+    startSpan.className = 'kanjo-zoom-time-start';
+    startSpan.textContent = UIBuilder.formatTime(this.zoomStartTime);
+    rangeDiv.appendChild(startSpan);
+
+    const centerSpan = document.createElement('span');
+    centerSpan.className = 'kanjo-zoom-time-center';
+    centerSpan.textContent = locale.t('progress.window', { duration: windowDuration });
+    rangeDiv.appendChild(centerSpan);
+
+    const endSpan = document.createElement('span');
+    endSpan.className = 'kanjo-zoom-time-end';
+    endSpan.textContent = UIBuilder.formatTime(this.zoomEndTime);
+    rangeDiv.appendChild(endSpan);
+
+    this.zoomIndicator.appendChild(rangeDiv);
 
     this.progressContainer.classList.add('kanjo-zoomed');
     this.zoomIndicator.classList.add('kanjo-visible');

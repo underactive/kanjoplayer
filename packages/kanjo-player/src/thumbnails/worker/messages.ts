@@ -92,8 +92,20 @@ export type WorkerResponse =
   | ReleaseCompleteMessage;
 
 /**
- * Generate unique message ID
+ * Generate a cryptographically secure random string.
+ * Uses crypto.getRandomValues for better uniqueness than Math.random.
+ */
+function generateSecureId(length: number = 9): string {
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(36).padStart(2, '0'))
+    .join('')
+    .slice(0, length);
+}
+
+/**
+ * Generate unique message ID using cryptographically secure randomness.
  */
 export function generateMessageId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `${Date.now()}-${generateSecureId()}`;
 }

@@ -6,6 +6,32 @@ import type { LocaleStrings } from './types';
 import { en } from './locales/en';
 
 /**
+ * HTML entity map for escaping potentially dangerous characters.
+ * Prevents XSS when inserting user-provided or interpolated values into HTML.
+ */
+const HTML_ENTITIES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+/**
+ * Escape HTML special characters to prevent XSS attacks.
+ * Use this when inserting dynamic text into HTML contexts.
+ *
+ * @param str - The string to escape
+ * @returns The escaped string safe for HTML insertion
+ *
+ * @example
+ * escapeHtml('<script>alert("xss")</script>') // '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+ */
+export function escapeHtml(str: string): string {
+  return str.replace(/[&<>"']/g, (char) => HTML_ENTITIES[char]);
+}
+
+/**
  * Interpolates values into a string template.
  * Replaces {key} placeholders with corresponding values.
  *
