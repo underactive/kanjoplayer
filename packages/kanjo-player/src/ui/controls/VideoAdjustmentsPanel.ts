@@ -5,6 +5,18 @@
 import type { KanjoPlayer } from '../../core/KanjoPlayer';
 import { UIBuilder } from '../UIBuilder';
 
+/**
+ * Generate a cryptographically secure random string for use as unique IDs.
+ * Uses crypto.getRandomValues for better uniqueness than Math.random.
+ */
+function generateSecureId(length: number = 9): string {
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(36).padStart(2, '0'))
+    .join('')
+    .slice(0, length);
+}
+
 export interface VideoAdjustments {
   brightness: number; // 0-200, 100 = normal
   contrast: number; // 0-200, 100 = normal
@@ -56,7 +68,7 @@ export class VideoAdjustmentsPanel {
 
   constructor(player: KanjoPlayer, container: HTMLElement) {
     this.player = player;
-    this.filterId = `kanjo-gamma-filter-${Math.random().toString(36).slice(2, 9)}`;
+    this.filterId = `kanjo-gamma-filter-${generateSecureId()}`;
     this.createSvgFilter(container);
     this.element = this.createElement();
     container.appendChild(this.element);

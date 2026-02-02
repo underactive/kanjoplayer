@@ -193,7 +193,7 @@ export class SettingsMenu {
       attrs: { 'data-submenu': 'speed' },
     });
 
-    // Back button
+    // Back button - using DOM methods for safe text content (prevents XSS)
     const backBtn = UIBuilder.create({
       tag: 'button',
       className: 'kanjo-settings-back',
@@ -205,10 +205,19 @@ export class SettingsMenu {
         },
       },
     });
-    backBtn.innerHTML = `
-      <span class="kanjo-settings-back-icon">${UIBuilder.icons.chevronRight}</span>
-      <span class="kanjo-settings-back-label">${locale.get('settings.playbackSpeed')}</span>
-    `;
+
+    // Icon span (innerHTML is safe here - UIBuilder.icons are hardcoded SVGs)
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'kanjo-settings-back-icon';
+    iconSpan.innerHTML = UIBuilder.icons.chevronRight;
+    backBtn.appendChild(iconSpan);
+
+    // Label span (using textContent for safe locale string rendering)
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'kanjo-settings-back-label';
+    labelSpan.textContent = locale.get('settings.playbackSpeed');
+    backBtn.appendChild(labelSpan);
+
     submenu.appendChild(backBtn);
 
     // Speed options
