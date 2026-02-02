@@ -36,6 +36,9 @@ export class ProgressBar {
   private currentLoopEnd: number | null = null;
   private isDraggingMarker = false;
 
+  // Locale subscription
+  private unsubscribeLocale?: () => void;
+
   constructor(player: KanjoPlayer) {
     this.player = player;
     this.thumbnailPreview = new ThumbnailPreview(player);
@@ -56,14 +59,18 @@ export class ProgressBar {
     this.progressContainer = this.createProgressContainer();
     this.element = this.createElement();
     this.bindEvents();
+
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   private createLoopMarker(type: 'start' | 'end'): HTMLElement {
+    const locale = this.player.locale;
     const marker = UIBuilder.create({
       className: `kanjo-loop-marker kanjo-loop-marker-${type}`,
       attrs: {
         'data-type': type,
-        'title': type === 'start' ? 'Clip start (drag to move)' : 'Clip end (drag to move)',
+        'title':
+          type === 'start' ? locale.get('loop.markerDragStart') : locale.get('loop.markerDragEnd'),
       },
     });
 
@@ -76,11 +83,12 @@ export class ProgressBar {
   }
 
   private createProgressContainer(): HTMLElement {
+    const locale = this.player.locale;
     const container = UIBuilder.create({
       className: 'kanjo-progress-container',
       attrs: {
         'role': 'slider',
-        'aria-label': 'Video progress',
+        'aria-label': locale.get('progress.ariaLabel'),
         'aria-valuemin': '0',
         'aria-valuemax': '100',
         'aria-valuenow': '0',
@@ -327,11 +335,18 @@ export class ProgressBar {
     }
 
     // Update zoom indicator
+    const locale = this.player.locale;
+    const pointLabel =
+      draggingMarker === 'start'
+        ? locale.get('progress.fineTuningStart')
+        : locale.get('progress.fineTuningEnd');
+    const windowDuration = UIBuilder.formatTime(this.zoomEndTime - this.zoomStartTime);
+
     this.zoomIndicator.innerHTML = `
-      <div class="kanjo-zoom-label">Fine Tuning: ${draggingMarker === 'start' ? 'Start' : 'End'} Point</div>
+      <div class="kanjo-zoom-label">${locale.get('progress.fineTuning')}: ${pointLabel}</div>
       <div class="kanjo-zoom-range">
         <span class="kanjo-zoom-time-start">${UIBuilder.formatTime(this.zoomStartTime)}</span>
-        <span class="kanjo-zoom-time-center">${UIBuilder.formatTime(this.zoomEndTime - this.zoomStartTime)} window</span>
+        <span class="kanjo-zoom-time-center">${locale.t('progress.window', { duration: windowDuration })}</span>
         <span class="kanjo-zoom-time-end">${UIBuilder.formatTime(this.zoomEndTime)}</span>
       </div>
     `;
@@ -589,5 +604,20 @@ export class ProgressBar {
 
   getElement(): HTMLElement {
     return this.element;
+  }
+
+  private updateStrings(): void {
+    const locale = this.player.locale;
+
+    // Update aria-label
+    this.progressContainer.setAttribute('aria-label', locale.get('progress.ariaLabel'));
+
+    // Update loop marker titles
+    this.loopStartMarker.title = locale.get('loop.markerDragStart');
+    this.loopEndMarker.title = locale.get('loop.markerDragEnd');
+  }
+
+  destroy(): void {
+    this.unsubscribeLocale?.();
   }
 }

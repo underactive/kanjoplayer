@@ -21,6 +21,7 @@ A framework-agnostic video player library built with TypeScript. Supports HTML5 
 - **AirPlay & Chromecast**: Stream to external devices (when available)
 - **Keyboard shortcuts**: Full keyboard navigation support
 - **Theming**: CSS variables for easy customization
+- **Internationalization**: 7 bundled locales with runtime switching and custom locale support
 
 ## Installation
 
@@ -555,11 +556,11 @@ customButtons: {
     {
       id: string;              // Unique button ID
       iconClass?: string;      // CSS class for icon
-      text?: string;           // Button text
+      text?: string | Record<string, string>;  // Button text (plain or localized)
       displayMode: 'icon' | 'icon-text' | 'text';
       eventKey: string;        // Event name to emit
       eventValue?: string | 'src' | 'currentTime' | 'duration' | 'volume' | 'playbackRate';
-      tooltip?: string;        // Tooltip text
+      tooltip?: string | Record<string, string>;  // Tooltip (plain or localized)
     }
   ]
 }
@@ -663,6 +664,197 @@ const player = new KanjoPlayer({
 
   plugins: [new HlsPlugin(), new DashPlugin()],
 });
+```
+
+---
+
+## Internationalization (i18n)
+
+KanjoPlayer includes built-in internationalization support with 8 bundled locales and the ability to add custom translations.
+
+### Bundled Locales
+
+The following locales are included out of the box:
+
+| Code | Language |
+|------|----------|
+| `en` | English (default) |
+| `es` | Spanish |
+| `fr` | French |
+| `de` | German |
+| `ja` | Japanese |
+| `zh` | Chinese (Simplified) |
+| `zhTW` | Chinese (Traditional) |
+| `ko` | Korean |
+
+### Using a Bundled Locale
+
+```typescript
+import { KanjoPlayer, locales } from 'kanjo-player';
+
+const player = new KanjoPlayer({
+  container: '#player',
+  src: 'video.mp4',
+  locale: locales.es, // Use Spanish
+});
+```
+
+### Runtime Locale Switching
+
+You can change the language at runtime without recreating the player:
+
+```typescript
+import { KanjoPlayer, locales } from 'kanjo-player';
+
+const player = new KanjoPlayer({
+  container: '#player',
+  src: 'video.mp4',
+});
+
+// Switch to Japanese
+player.locale.update(locales.ja, 'ja');
+
+// Switch to French
+player.locale.update(locales.fr, 'fr');
+
+// Switch back to English
+player.locale.update(locales.en, 'en');
+```
+
+### Partial String Overrides
+
+You can override specific strings while keeping the rest of the default locale:
+
+```typescript
+const player = new KanjoPlayer({
+  container: '#player',
+  src: 'video.mp4',
+  locale: {
+    'play.tooltip': 'Start Video',
+    'pause.tooltip': 'Stop Video',
+  },
+});
+```
+
+### Creating a Custom Locale
+
+To add support for a language that isn't bundled, provide a complete locale object:
+
+```typescript
+import type { LocaleStrings } from 'kanjo-player';
+
+const ptBR: LocaleStrings = {
+  // Play/Pause controls
+  'play.tooltip': 'Reproduzir (Espaço)',
+  'play.ariaLabel': 'Reproduzir',
+  'pause.tooltip': 'Pausar (Espaço)',
+  'pause.ariaLabel': 'Pausar',
+  'replay.ariaLabel': 'Repetir',
+
+  // Volume controls
+  'volume.mute': 'Silenciar (M)',
+  'volume.unmute': 'Ativar som (M)',
+  'volume.ariaLabel': 'Volume',
+
+  // Fullscreen controls
+  'fullscreen.enter': 'Tela cheia (F)',
+  'fullscreen.exit': 'Sair da tela cheia (F)',
+
+  // Settings menu
+  'settings.title': 'Configurações',
+  'settings.playbackSpeed': 'Velocidade de reprodução',
+  'settings.normal': 'Normal',
+  'settings.pip': 'Picture-in-Picture',
+  'settings.download': 'Baixar',
+  'settings.adjustments': 'Ajustes de vídeo',
+
+  // ... continue with all ~70 string keys
+  // See src/i18n/locales/en.ts for the complete list
+};
+
+const player = new KanjoPlayer({
+  container: '#player',
+  src: 'video.mp4',
+  locale: ptBR,
+});
+
+// When switching, pass the locale code for custom button support
+player.locale.update(ptBR, 'pt-BR');
+```
+
+### Localized Custom Buttons
+
+Custom button `text` and `tooltip` properties support localization. Instead of a plain string, provide an object mapping locale codes to translations:
+
+```typescript
+const player = new KanjoPlayer({
+  container: '#player',
+  src: 'video.mp4',
+  customButtons: {
+    enabled: true,
+    buttons: [
+      {
+        id: 'share',
+        iconClass: 'hero-share-solid',
+        displayMode: 'icon-text',
+        eventKey: 'share_video',
+        // Localized text - changes when locale switches
+        text: {
+          en: 'Share',
+          es: 'Compartir',
+          fr: 'Partager',
+          de: 'Teilen',
+          ja: '共有',
+          zh: '分享',
+        },
+        // Localized tooltip
+        tooltip: {
+          en: 'Share this video',
+          es: 'Compartir este video',
+          fr: 'Partager cette vidéo',
+          de: 'Dieses Video teilen',
+          ja: 'この動画を共有',
+          zh: '分享此视频',
+        },
+      },
+      {
+        id: 'bookmark',
+        iconClass: 'hero-bookmark-solid',
+        displayMode: 'icon',
+        eventKey: 'bookmark_video',
+        eventValue: 'currentTime',
+        // Plain string still works (uses same text for all locales)
+        tooltip: 'Bookmark this position',
+      },
+    ],
+  },
+});
+```
+
+When the locale changes via `player.locale.update()`, custom button text and tooltips automatically update to match the current language.
+
+### LocaleManager API
+
+```typescript
+// Get a localized string
+const playText = player.locale.get('play.tooltip');
+
+// Get a string with interpolation
+const skipText = player.locale.t('skip.back', { duration: 10 }); // "Skip back 10s"
+
+// Get current locale code
+const currentLocale = player.locale.getCurrentLocale(); // 'en', 'es', etc.
+
+// Set locale code only (for custom button resolution)
+player.locale.setCurrentLocale('pt-BR');
+
+// Subscribe to locale changes
+const unsubscribe = player.locale.onChange(() => {
+  console.log('Locale changed to:', player.locale.getCurrentLocale());
+});
+
+// Later: unsubscribe
+unsubscribe();
 ```
 
 ---

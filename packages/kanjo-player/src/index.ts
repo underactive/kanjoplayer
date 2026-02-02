@@ -37,6 +37,8 @@ export type {
   ControlId,
   ResponsiveBreakpoints,
   ResponsiveControlsConfig,
+  LocalizedString,
+  CustomButtonConfig,
 } from './core/types';
 
 // Plugin types
@@ -56,3 +58,8 @@ export { ThumbnailManager } from './thumbnails/ThumbnailManager';
 
 // Web Component
 export { KanjoPlayerElement } from './web-component/KanjoPlayerElement';
+
+// i18n exports
+export { LocaleManager } from './i18n';
+export type { LocaleStrings, LocaleInterpolations } from './i18n';
+export { en as defaultLocale, locales } from './i18n';

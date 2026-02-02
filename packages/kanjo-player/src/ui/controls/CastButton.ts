@@ -68,6 +68,7 @@ export class CastButton {
   private isConnected = false;
   private session: CastSession | null = null;
   private sdkLoaded = false;
+  private unsubscribeLocale?: () => void;
 
   constructor(player: KanjoPlayer, config?: CastConfig) {
     this.player = player;
@@ -80,13 +81,15 @@ export class CastButton {
 
     this.element = this.createButton();
     this.loadCastSDK();
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   private createButton(): HTMLButtonElement {
+    const locale = this.player.locale;
     const btn = UIBuilder.button({
       className: 'kanjo-cast-btn',
       icon: UIBuilder.icons.cast,
-      tooltip: 'Cast',
+      tooltip: locale.get('cast.title'),
       onClick: () => this.toggleCast(),
     });
 
@@ -227,13 +230,18 @@ export class CastButton {
   }
 
   private updateActiveState(): void {
+    const locale = this.player.locale;
     const icon = this.isConnected ? UIBuilder.icons.castConnected : UIBuilder.icons.cast;
-    const tooltip = this.isConnected ? 'Cast (Connected)' : 'Cast';
+    const tooltip = this.isConnected ? locale.get('cast.connected') : locale.get('cast.title');
 
     this.element.innerHTML = icon;
     this.element.classList.toggle('kanjo-active', this.isConnected);
     this.element.title = tooltip;
     this.element.setAttribute('aria-label', tooltip);
+  }
+
+  private updateStrings(): void {
+    this.updateActiveState();
   }
 
   getElement(): HTMLButtonElement {
@@ -245,6 +253,7 @@ export class CastButton {
   }
 
   destroy(): void {
+    this.unsubscribeLocale?.();
     if (this.isConnected) {
       this.stopCasting();
     }

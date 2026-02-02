@@ -50,17 +50,24 @@ export class ABLoopControl {
   // Markers on progress bar (managed externally via callbacks)
   private onStateChange: ((state: ABLoopState) => void) | null = null;
 
+  // Locale subscription
+  private unsubscribeLocale?: () => void;
+
   constructor(player: KanjoPlayer, options?: ABLoopControlOptions) {
     this.player = player;
     this.options = options || {};
 
+    const locale = this.player.locale;
+
     // Create buttons with text labels (A [ time) and (time ] B)
-    this.startBtn = this.createLoopPointButton('start', 'Set clip start point', () =>
+    this.startBtn = this.createLoopPointButton('start', locale.get('loop.setStart'), () =>
       this.setStartPoint()
     );
     this.startBtn.classList.add('kanjo-abloop-start');
 
-    this.endBtn = this.createLoopPointButton('end', 'Set clip end point', () => this.setEndPoint());
+    this.endBtn = this.createLoopPointButton('end', locale.get('loop.setEnd'), () =>
+      this.setEndPoint()
+    );
     this.endBtn.classList.add('kanjo-abloop-end');
 
     // Create toggle button with dropdown
@@ -71,6 +78,8 @@ export class ABLoopControl {
     this.element = this.createElement();
     this.bindEvents();
     this.updateButtonStates();
+
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   private createLoopPointButton(
@@ -114,6 +123,7 @@ export class ABLoopControl {
   }
 
   private createToggleButton(): HTMLButtonElement {
+    const locale = this.player.locale;
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'kanjo-btn kanjo-abloop-btn kanjo-abloop-toggle';
@@ -130,8 +140,8 @@ export class ABLoopControl {
     chevronSpan.innerHTML = UIBuilder.icons.chevronDown;
     btn.appendChild(chevronSpan);
 
-    btn.title = 'Toggle A/B loop';
-    btn.setAttribute('aria-label', 'Toggle A/B loop');
+    btn.title = locale.get('loop.toggle');
+    btn.setAttribute('aria-label', locale.get('loop.toggle'));
 
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -149,6 +159,7 @@ export class ABLoopControl {
   }
 
   private createToggleDropdown(): HTMLElement {
+    const locale = this.player.locale;
     const dropdown = UIBuilder.create({
       className: 'kanjo-abloop-dropdown',
     });
@@ -159,9 +170,9 @@ export class ABLoopControl {
     this.downloadMenuItem.className = 'kanjo-abloop-dropdown-item';
     this.downloadMenuItem.innerHTML = `
       <span class="kanjo-abloop-dropdown-icon">${UIBuilder.icons.downloadLoop}</span>
-      <span class="kanjo-abloop-dropdown-label">Download clip</span>
+      <span class="kanjo-abloop-dropdown-label">${locale.get('loop.downloadClip')}</span>
     `;
-    this.downloadMenuItem.title = 'Download loop clip';
+    this.downloadMenuItem.title = locale.get('loop.downloadClip');
     this.downloadMenuItem.addEventListener('click', (e) => {
       e.stopPropagation();
       this.closeDropdown();
@@ -175,9 +186,9 @@ export class ABLoopControl {
     this.clearMenuItem.className = 'kanjo-abloop-dropdown-item';
     this.clearMenuItem.innerHTML = `
       <span class="kanjo-abloop-dropdown-icon">${UIBuilder.icons.clearLoop}</span>
-      <span class="kanjo-abloop-dropdown-label">Clear markers</span>
+      <span class="kanjo-abloop-dropdown-label">${locale.get('loop.clearMarkers')}</span>
     `;
-    this.clearMenuItem.title = 'Clear loop points';
+    this.clearMenuItem.title = locale.get('loop.clearTitle');
     this.clearMenuItem.addEventListener('click', (e) => {
       e.stopPropagation();
       this.closeDropdown();
@@ -345,13 +356,14 @@ export class ABLoopControl {
       return;
     }
 
+    const locale = this.player.locale;
     const duration = this.state.endTime - this.state.startTime;
 
     // Check duration limit
     if (duration > MAX_LOOP_DURATION) {
       if (this.downloadOverlay) {
         this.downloadOverlay.showError(
-          `Clip too long (${Math.round(duration)}s). Max: ${MAX_LOOP_DURATION}s`
+          locale.t('loop.tooLong', { duration: Math.round(duration), max: MAX_LOOP_DURATION })
         );
       } else {
         alert(
@@ -364,7 +376,7 @@ export class ABLoopControl {
     // Check if downloading is supported
     if (!ClipDownloader.isSupported()) {
       if (this.downloadOverlay) {
-        this.downloadOverlay.showError('Download not supported in this browser');
+        this.downloadOverlay.showError(locale.get('download.notSupported'));
       } else {
         alert(
           'Loop download is not supported in this browser.\n\nPlease use a modern browser with WebAssembly support.'
@@ -456,13 +468,14 @@ export class ABLoopControl {
   }
 
   private updateDownloadButtonState(state: 'idle' | 'downloading'): void {
+    const locale = this.player.locale;
     const iconEl = this.downloadMenuItem.querySelector('.kanjo-abloop-dropdown-icon');
 
     if (state === 'downloading') {
       if (iconEl) iconEl.innerHTML = UIBuilder.icons.spinner;
       this.downloadMenuItem.classList.add('kanjo-downloading');
       this.downloadMenuItem.disabled = true;
-      this.downloadMenuItem.title = 'Preparing...';
+      this.downloadMenuItem.title = locale.get('download.preparing');
     } else {
       if (iconEl) iconEl.innerHTML = UIBuilder.icons.downloadLoop;
       this.downloadMenuItem.classList.remove('kanjo-downloading');
@@ -477,6 +490,7 @@ export class ABLoopControl {
   }
 
   private updateButtonStates(): void {
+    const locale = this.player.locale;
     const startTimeSpan = this.startBtn.querySelector('.kanjo-abloop-time');
     const endTimeSpan = this.endBtn.querySelector('.kanjo-abloop-time');
 
@@ -486,25 +500,24 @@ export class ABLoopControl {
     // Update start button - format: "A [ 00:04:20.123" or "A [" when no time
     if (this.state.startTime !== null) {
       this.startBtn.classList.add('kanjo-active');
-      this.startBtn.title = `Loop start: ${UIBuilder.formatTimePrecise(this.state.startTime, showHours)} (click to update)`;
-      if (startTimeSpan)
-        startTimeSpan.textContent =
-          ' ' + UIBuilder.formatTimePrecise(this.state.startTime, showHours);
+      const timeStr = UIBuilder.formatTimePrecise(this.state.startTime, showHours);
+      this.startBtn.title = locale.t('loop.startAt', { time: timeStr });
+      if (startTimeSpan) startTimeSpan.textContent = ' ' + timeStr;
     } else {
       this.startBtn.classList.remove('kanjo-active');
-      this.startBtn.title = 'Set clip start point';
+      this.startBtn.title = locale.get('loop.setStart');
       if (startTimeSpan) startTimeSpan.textContent = '';
     }
 
     // Update end button - format: "00:04:33.456 ] B" or "] B" when no time
     if (this.state.endTime !== null) {
       this.endBtn.classList.add('kanjo-active');
-      this.endBtn.title = `Loop end: ${UIBuilder.formatTimePrecise(this.state.endTime, showHours)} (click to update)`;
-      if (endTimeSpan)
-        endTimeSpan.textContent = UIBuilder.formatTimePrecise(this.state.endTime, showHours) + ' ';
+      const timeStr = UIBuilder.formatTimePrecise(this.state.endTime, showHours);
+      this.endBtn.title = locale.t('loop.endAt', { time: timeStr });
+      if (endTimeSpan) endTimeSpan.textContent = timeStr + ' ';
     } else {
       this.endBtn.classList.remove('kanjo-active');
-      this.endBtn.title = 'Set clip end point';
+      this.endBtn.title = locale.get('loop.setEnd');
       if (endTimeSpan) endTimeSpan.textContent = '';
     }
 
@@ -523,10 +536,12 @@ export class ABLoopControl {
 
     if (this.state.enabled) {
       this.toggleBtn.classList.add('kanjo-active');
-      this.toggleBtn.title = 'Disable A/B loop';
+      this.toggleBtn.title = locale.get('loop.disable');
     } else {
       this.toggleBtn.classList.remove('kanjo-active');
-      this.toggleBtn.title = canToggle ? 'Enable A/B loop' : 'Set A and B points first';
+      this.toggleBtn.title = canToggle
+        ? locale.get('loop.enable')
+        : locale.get('loop.setPointsFirst');
     }
 
     // Update download menu item
@@ -537,19 +552,44 @@ export class ABLoopControl {
         const duration = this.state.endTime! - this.state.startTime!;
         if (duration > MAX_LOOP_DURATION) {
           this.downloadMenuItem.classList.add('kanjo-disabled');
-          this.downloadMenuItem.title = `Clip too long (${Math.round(duration)}s). Max: ${MAX_LOOP_DURATION}s`;
+          this.downloadMenuItem.title = locale.t('loop.tooLong', {
+            duration: Math.round(duration),
+            max: MAX_LOOP_DURATION,
+          });
         } else {
           this.downloadMenuItem.classList.remove('kanjo-disabled');
-          this.downloadMenuItem.title = `Download ${Math.round(duration)}s clip`;
+          this.downloadMenuItem.title = locale.t('loop.downloadDuration', {
+            duration: Math.round(duration),
+          });
         }
       } else {
-        this.downloadMenuItem.title = 'Set A and B points to download';
+        this.downloadMenuItem.title = locale.get('loop.setPointsToDownload');
       }
     }
 
     // Update clear menu item
     this.clearMenuItem.disabled = !hasAnyMarker;
-    this.clearMenuItem.title = hasAnyMarker ? 'Clear loop points' : 'No markers to clear';
+    this.clearMenuItem.title = hasAnyMarker
+      ? locale.get('loop.clearTitle')
+      : locale.get('loop.noMarkers');
+  }
+
+  private updateStrings(): void {
+    const locale = this.player.locale;
+
+    // Update dropdown labels
+    const downloadLabel = this.downloadMenuItem.querySelector('.kanjo-abloop-dropdown-label');
+    if (downloadLabel) {
+      downloadLabel.textContent = locale.get('loop.downloadClip');
+    }
+
+    const clearLabel = this.clearMenuItem.querySelector('.kanjo-abloop-dropdown-label');
+    if (clearLabel) {
+      clearLabel.textContent = locale.get('loop.clearMarkers');
+    }
+
+    // Re-update all button states with new locale
+    this.updateButtonStates();
   }
 
   private notifyStateChange(): void {
@@ -606,6 +646,7 @@ export class ABLoopControl {
    * Clean up resources
    */
   destroy(): void {
+    this.unsubscribeLocale?.();
     if (this.clipDownloader) {
       this.clipDownloader.destroy();
       this.clipDownloader = null;

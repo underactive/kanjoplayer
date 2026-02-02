@@ -11,6 +11,7 @@ export class VolumeControl {
   private slider: HTMLInputElement;
   private sliderContainer: HTMLElement;
   private player: KanjoPlayer;
+  private unsubscribeLocale?: () => void;
 
   constructor(player: KanjoPlayer) {
     this.player = player;
@@ -19,15 +20,19 @@ export class VolumeControl {
     this.sliderContainer = this.createSliderContainer();
     this.element = this.createElement();
     this.bindEvents();
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   private createMuteButton(): HTMLButtonElement {
-    return UIBuilder.button({
+    const locale = this.player.locale;
+    const btn = UIBuilder.button({
       className: 'kanjo-volume-btn',
       icon: UIBuilder.icons.volumeHigh,
-      tooltip: 'Mute (M)',
+      tooltip: locale.get('volume.mute'),
       onClick: () => this.player.toggleMute(),
     });
+    btn.setAttribute('aria-label', locale.get('volume.ariaLabel'));
+    return btn;
   }
 
   private createSlider(): HTMLInputElement {
@@ -77,12 +82,13 @@ export class VolumeControl {
   }
 
   private updateIcon(volume: number, muted: boolean): void {
+    const locale = this.player.locale;
     let icon = UIBuilder.icons.volumeHigh;
-    let tooltip = 'Mute (M)';
+    let tooltip = locale.get('volume.mute');
 
     if (muted || volume === 0) {
       icon = UIBuilder.icons.volumeMuted;
-      tooltip = 'Unmute (M)';
+      tooltip = locale.get('volume.unmute');
     } else if (volume < 0.5) {
       icon = UIBuilder.icons.volumeLow;
     }
@@ -96,7 +102,17 @@ export class VolumeControl {
     this.slider.style.background = gradient;
   }
 
+  private updateStrings(): void {
+    const state = this.player.getState();
+    this.updateIcon(state.volume, state.muted);
+    this.muteBtn.setAttribute('aria-label', this.player.locale.get('volume.ariaLabel'));
+  }
+
   getElement(): HTMLElement {
     return this.element;
+  }
+
+  destroy(): void {
+    this.unsubscribeLocale?.();
   }
 }

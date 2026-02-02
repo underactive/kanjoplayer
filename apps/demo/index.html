@@ -122,9 +122,57 @@
       font-family: monospace;
       font-size: 0.8rem;
     }
+
+    .language-selector {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .language-selector label {
+      font-size: 0.85rem;
+      color: #606770;
+    }
+
+    .language-selector select {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid #ced0d4;
+      background: #e4e6eb;
+      color: #1c1e21;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .language-selector select:hover {
+      border-color: #2E82FF;
+    }
+
+    .language-selector select:focus {
+      outline: none;
+      border-color: #2E82FF;
+      box-shadow: 0 0 0 2px rgba(46, 130, 255, 0.2);
+    }
   </style>
 </head>
 <body>
+  <div class="language-selector">
+    <label for="language-select">Player Language:</label>
+    <select id="language-select">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="ja">日本語</option>
+      <option value="zh">简体中文</option>
+      <option value="zhTW">繁體中文</option>
+      <option value="ko">한국어</option>
+    </select>
+  </div>
   <div class="external-links">
     <a href="https://github.com/underactive/kanjoplayer" target="_blank" rel="noopener" title="GitHub Repository">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -179,6 +227,16 @@
       muted: false,
       thumbnails: { enabled: true },
       plugins: [new KanjoPlayer.HlsPlugin()],
+    });
+
+    // Language selector for runtime locale switching
+    const languageSelect = document.getElementById('language-select');
+    languageSelect.addEventListener('change', (e) => {
+      const localeCode = e.target.value;
+      const locale = KanjoPlayer.locales[localeCode];
+      if (locale) {
+        player.locale.update(locale, localeCode);
+      }
     });
   </script>
 </body>

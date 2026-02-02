@@ -23,18 +23,23 @@ const DEFAULT_ADJUSTMENTS: VideoAdjustments = {
 
 interface SliderConfig {
   key: keyof VideoAdjustments;
-  label: string;
+  labelKey:
+    | 'adjustments.brightness'
+    | 'adjustments.contrast'
+    | 'adjustments.saturation'
+    | 'adjustments.gamma'
+    | 'adjustments.hue';
   min: number;
   max: number;
   default: number;
 }
 
 const SLIDER_CONFIGS: SliderConfig[] = [
-  { key: 'brightness', label: 'Brightness', min: 0, max: 200, default: 100 },
-  { key: 'contrast', label: 'Contrast', min: 0, max: 200, default: 100 },
-  { key: 'saturation', label: 'Saturation', min: 0, max: 200, default: 100 },
-  { key: 'gamma', label: 'Gamma', min: 0, max: 200, default: 100 },
-  { key: 'hue', label: 'Hue', min: -180, max: 180, default: 0 },
+  { key: 'brightness', labelKey: 'adjustments.brightness', min: 0, max: 200, default: 100 },
+  { key: 'contrast', labelKey: 'adjustments.contrast', min: 0, max: 200, default: 100 },
+  { key: 'saturation', labelKey: 'adjustments.saturation', min: 0, max: 200, default: 100 },
+  { key: 'gamma', labelKey: 'adjustments.gamma', min: 0, max: 200, default: 100 },
+  { key: 'hue', labelKey: 'adjustments.hue', min: -180, max: 180, default: 0 },
 ];
 
 export class VideoAdjustmentsPanel {
@@ -42,9 +47,12 @@ export class VideoAdjustmentsPanel {
   private player: KanjoPlayer;
   private adjustments: VideoAdjustments = { ...DEFAULT_ADJUSTMENTS };
   private sliders: Map<keyof VideoAdjustments, HTMLInputElement> = new Map();
+  private labels: Map<keyof VideoAdjustments, HTMLLabelElement> = new Map();
+  private resetButtons: Map<keyof VideoAdjustments, HTMLButtonElement> = new Map();
   private isVisible = false;
   private svgFilter: SVGSVGElement | null = null;
   private filterId: string;
+  private unsubscribeLocale?: () => void;
 
   constructor(player: KanjoPlayer, container: HTMLElement) {
     this.player = player;
@@ -52,6 +60,7 @@ export class VideoAdjustmentsPanel {
     this.createSvgFilter(container);
     this.element = this.createElement();
     container.appendChild(this.element);
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   /**
@@ -81,6 +90,7 @@ export class VideoAdjustmentsPanel {
   }
 
   private createElement(): HTMLElement {
+    const locale = this.player.locale;
     const panel = UIBuilder.create({
       className: 'kanjo-adjustments-panel',
     });
@@ -91,14 +101,15 @@ export class VideoAdjustmentsPanel {
     });
 
     const title = document.createElement('span');
-    title.textContent = 'Video Adjustments';
+    title.className = 'kanjo-adjustments-title';
+    title.textContent = locale.get('adjustments.title');
     header.appendChild(title);
 
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'kanjo-adjustments-close';
     closeBtn.innerHTML = UIBuilder.icons.close;
-    closeBtn.title = 'Close';
+    closeBtn.title = locale.get('adjustments.close');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       this.hide();
@@ -123,7 +134,7 @@ export class VideoAdjustmentsPanel {
     const resetAllBtn = document.createElement('button');
     resetAllBtn.type = 'button';
     resetAllBtn.className = 'kanjo-adjustments-reset-all';
-    resetAllBtn.textContent = 'Reset All';
+    resetAllBtn.textContent = locale.get('adjustments.resetAll');
     resetAllBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       this.resetAll();
@@ -134,6 +145,7 @@ export class VideoAdjustmentsPanel {
   }
 
   private createSliderRow(config: SliderConfig): HTMLElement {
+    const locale = this.player.locale;
     const row = UIBuilder.create({
       className: 'kanjo-adjustments-row',
     });
@@ -141,7 +153,8 @@ export class VideoAdjustmentsPanel {
     // Label
     const label = document.createElement('label');
     label.className = 'kanjo-adjustments-label';
-    label.textContent = config.label;
+    label.textContent = locale.get(config.labelKey);
+    this.labels.set(config.key, label);
     row.appendChild(label);
 
     // Slider
@@ -163,13 +176,14 @@ export class VideoAdjustmentsPanel {
     resetBtn.type = 'button';
     resetBtn.className = 'kanjo-adjustments-reset';
     resetBtn.innerHTML = UIBuilder.icons.reset;
-    resetBtn.title = `Reset ${config.label}`;
+    resetBtn.title = locale.t('adjustments.reset', { name: locale.get(config.labelKey) });
     resetBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       slider.value = String(config.default);
       this.adjustments[config.key] = config.default;
       this.applyFilters();
     });
+    this.resetButtons.set(config.key, resetBtn);
     row.appendChild(resetBtn);
 
     return row;
@@ -233,6 +247,43 @@ export class VideoAdjustmentsPanel {
     this.applyFilters();
   }
 
+  private updateStrings(): void {
+    const locale = this.player.locale;
+
+    // Update title
+    const title = this.element.querySelector('.kanjo-adjustments-title');
+    if (title) {
+      title.textContent = locale.get('adjustments.title');
+    }
+
+    // Update close button title
+    const closeBtn = this.element.querySelector('.kanjo-adjustments-close') as HTMLButtonElement;
+    if (closeBtn) {
+      closeBtn.title = locale.get('adjustments.close');
+    }
+
+    // Update reset all button
+    const resetAllBtn = this.element.querySelector(
+      '.kanjo-adjustments-reset-all'
+    ) as HTMLButtonElement;
+    if (resetAllBtn) {
+      resetAllBtn.textContent = locale.get('adjustments.resetAll');
+    }
+
+    // Update slider labels and reset button titles
+    for (const config of SLIDER_CONFIGS) {
+      const label = this.labels.get(config.key);
+      if (label) {
+        label.textContent = locale.get(config.labelKey);
+      }
+
+      const resetBtn = this.resetButtons.get(config.key);
+      if (resetBtn) {
+        resetBtn.title = locale.t('adjustments.reset', { name: locale.get(config.labelKey) });
+      }
+    }
+  }
+
   show(): void {
     this.isVisible = true;
     this.element.classList.add('kanjo-visible');
@@ -260,6 +311,8 @@ export class VideoAdjustmentsPanel {
   }
 
   destroy(): void {
+    this.unsubscribeLocale?.();
+
     // Reset video filter
     const video = this.player.getVideoElement();
     video.style.filter = '';

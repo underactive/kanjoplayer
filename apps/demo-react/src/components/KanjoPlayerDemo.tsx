@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { KanjoPlayer, HlsPlugin, DashPlugin, CodecCapabilities } from 'kanjo-player';
+import { KanjoPlayer, HlsPlugin, DashPlugin, CodecCapabilities, locales } from 'kanjo-player';
 import 'kanjo-player/style.css';
 import StatsPanel from './StatsPanel';
 import EventLog from './EventLog';
@@ -63,6 +63,7 @@ function KanjoPlayerDemo() {
   const statsIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [selectedSourceIndex, setSelectedSourceIndex] = useState(0);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [videoState, setVideoState] = useState<VideoState>(initialVideoState);
   const [events, setEvents] = useState<VideoEvent[]>([]);
 
@@ -162,14 +163,32 @@ function KanjoPlayerDemo() {
             iconClass: 'hero-sun-solid',
             displayMode: 'icon',
             eventKey: 'set_light_mode',
-            tooltip: 'Turn on the lights',
+            tooltip: {
+              en: 'Turn on the lights',
+              es: 'Encender las luces',
+              fr: 'Allumer les lumières',
+              de: 'Licht einschalten',
+              ja: 'ライトをオンにする',
+              zh: '开灯',
+              zhTW: '開燈',
+              ko: '불 켜기',
+            },
           },
           {
             id: 'dark-mode',
             iconClass: 'hero-moon-solid',
             displayMode: 'icon',
             eventKey: 'set_dark_mode',
-            tooltip: 'Turn off the lights',
+            tooltip: {
+              en: 'Turn off the lights',
+              es: 'Apagar las luces',
+              fr: 'Éteindre les lumières',
+              de: 'Licht ausschalten',
+              ja: 'ライトをオフにする',
+              zh: '关灯',
+              zhTW: '關燈',
+              ko: '불 끄기',
+            },
           },
           {
             id: 'bookmark',
@@ -177,16 +196,43 @@ function KanjoPlayerDemo() {
             displayMode: 'icon',
             eventKey: 'bookmark_movie',
             eventValue: 'src',
-            tooltip: 'Bookmark this video',
+            tooltip: {
+              en: 'Bookmark this video',
+              es: 'Marcar este video',
+              fr: 'Ajouter aux favoris',
+              de: 'Video merken',
+              ja: 'この動画をブックマーク',
+              zh: '收藏此视频',
+              zhTW: '收藏此影片',
+              ko: '이 동영상 북마크',
+            },
           },
           {
             id: 'share-time',
             iconClass: 'hero-share-solid',
-            text: 'Share',
+            text: {
+              en: 'Share',
+              es: 'Compartir',
+              fr: 'Partager',
+              de: 'Teilen',
+              ja: '共有',
+              zh: '分享',
+              zhTW: '分享',
+              ko: '공유',
+            },
             displayMode: 'icon-text',
             eventKey: 'share_at_time',
             eventValue: 'currentTime',
-            tooltip: 'Share at current time',
+            tooltip: {
+              en: 'Share at current time',
+              es: 'Compartir en el tiempo actual',
+              fr: 'Partager au temps actuel',
+              de: 'Zum aktuellen Zeitpunkt teilen',
+              ja: '現在の時間で共有',
+              zh: '在当前时间分享',
+              zhTW: '在目前時間分享',
+              ko: '현재 시간에서 공유',
+            },
           },
         ],
       },
@@ -268,6 +314,14 @@ function KanjoPlayerDemo() {
     setEvents([]);
   }, []);
 
+  const handleLanguageChange = useCallback((lang: string) => {
+    setSelectedLanguage(lang);
+    const locale = locales[lang as keyof typeof locales];
+    if (playerRef.current && locale) {
+      playerRef.current.locale.update(locale, lang);
+    }
+  }, []);
+
   return (
     <div className="video-player-container">
       <div className="controls-bar">
@@ -286,6 +340,23 @@ function KanjoPlayerDemo() {
         <span className={`source-type ${selectedSource.type}`}>
           {selectedSource.type.toUpperCase()}
         </span>
+        <div className="language-selector">
+          <label htmlFor="language-select">Player Language:</label>
+          <select
+            id="language-select"
+            value={selectedLanguage}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+          >
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="ja">日本語</option>
+            <option value="zh">简体中文</option>
+            <option value="zhTW">繁體中文</option>
+            <option value="ko">한국어</option>
+          </select>
+        </div>
       </div>
 
       <div ref={containerRef} className="player-wrapper"></div>

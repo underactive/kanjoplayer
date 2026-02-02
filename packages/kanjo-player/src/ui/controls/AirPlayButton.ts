@@ -28,19 +28,22 @@ export class AirPlayButton {
   private player: KanjoPlayer;
   private isAvailable = false;
   private isActive = false;
+  private unsubscribeLocale?: () => void;
 
   constructor(player: KanjoPlayer) {
     this.player = player;
     this.element = this.createButton();
     this.checkAvailability();
     this.bindEvents();
+    this.unsubscribeLocale = player.locale.onChange(() => this.updateStrings());
   }
 
   private createButton(): HTMLButtonElement {
+    const locale = this.player.locale;
     const btn = UIBuilder.button({
       className: 'kanjo-airplay-btn',
       icon: UIBuilder.icons.airplay,
-      tooltip: 'AirPlay',
+      tooltip: locale.get('airplay.title'),
       onClick: () => this.showPicker(),
     });
 
@@ -92,9 +95,16 @@ export class AirPlayButton {
   }
 
   private updateActiveState(): void {
+    const locale = this.player.locale;
+    const tooltip = this.isActive ? locale.get('airplay.connected') : locale.get('airplay.title');
+
     this.element.classList.toggle('kanjo-active', this.isActive);
-    this.element.title = this.isActive ? 'AirPlay (Connected)' : 'AirPlay';
-    this.element.setAttribute('aria-label', this.isActive ? 'AirPlay (Connected)' : 'AirPlay');
+    this.element.title = tooltip;
+    this.element.setAttribute('aria-label', tooltip);
+  }
+
+  private updateStrings(): void {
+    this.updateActiveState();
   }
 
   getElement(): HTMLButtonElement {
@@ -103,5 +113,9 @@ export class AirPlayButton {
 
   isSupported(): boolean {
     return this.isAvailable;
+  }
+
+  destroy(): void {
+    this.unsubscribeLocale?.();
   }
 }
