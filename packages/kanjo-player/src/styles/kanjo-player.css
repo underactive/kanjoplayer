@@ -429,6 +429,8 @@
   width: 0;
   overflow: hidden;
   transition: width var(--kanjo-transition-normal);
+  position: relative;
+  top: -2px;
 }
 
 .kanjo-volume-control:hover .kanjo-volume-slider-container {
