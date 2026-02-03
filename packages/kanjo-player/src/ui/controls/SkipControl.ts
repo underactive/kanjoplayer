@@ -38,6 +38,9 @@ export class SkipControl {
 
   private unsubscribeLocale?: () => void;
 
+  // Live stream state - skip controls are hidden for live streams
+  private liveMode = false;
+
   constructor(player: KanjoPlayer, config?: SkipControlConfig) {
     this.player = player;
     this.options = {
@@ -192,6 +195,16 @@ export class SkipControl {
     this.player.on('fullscreenchange', () => {
       this.closeAllDropdowns();
     });
+
+    // Listen for live state changes - hide skip controls for live streams
+    this.player.on('livestatechange', ({ isLive }) => {
+      this.setLiveState(isLive);
+    });
+  }
+
+  private setLiveState(isLive: boolean): void {
+    this.liveMode = isLive;
+    this.element.classList.toggle('kanjo-live-hidden', this.liveMode);
   }
 
   private skip(direction: 'back' | 'forward'): void {

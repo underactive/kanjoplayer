@@ -32,6 +32,11 @@ export class SettingsMenu {
   private onAdjustmentsClick: (() => void) | null = null;
   private unsubscribeLocale?: () => void;
 
+  // Live stream state - playback speed is hidden for live streams
+  private liveMode = false;
+  private speedItem: HTMLElement | null = null;
+  private speedSubmenu: HTMLElement | null = null;
+
   constructor(player: KanjoPlayer, config?: SettingsMenuConfig) {
     this.player = player;
     this.options = {
@@ -69,15 +74,15 @@ export class SettingsMenu {
 
     // Speed option
     if (this.options.showSpeed) {
-      const speedItem = this.createMenuItem({
+      this.speedItem = this.createMenuItem({
         icon: UIBuilder.icons.speed,
         label: locale.get('settings.playbackSpeed'),
         value: locale.get('settings.normal'),
         hasSubmenu: true,
         onClick: () => this.showSubmenu('speed'),
       });
-      speedItem.id = 'kanjo-speed-item';
-      mainMenu.appendChild(speedItem);
+      this.speedItem.id = 'kanjo-speed-item';
+      mainMenu.appendChild(this.speedItem);
     }
 
     // Picture-in-Picture option
@@ -128,8 +133,8 @@ export class SettingsMenu {
 
     // Speed submenu (only if speed option is enabled)
     if (this.options.showSpeed) {
-      const speedSubmenu = this.createSpeedSubmenu();
-      panel.appendChild(speedSubmenu);
+      this.speedSubmenu = this.createSpeedSubmenu();
+      panel.appendChild(this.speedSubmenu);
     }
 
     return panel;
@@ -287,6 +292,28 @@ export class SettingsMenu {
     this.player.on('fullscreenchange', () => {
       this.close();
     });
+
+    // Listen for live state changes - hide playback speed for live streams
+    this.player.on('livestatechange', ({ isLive }) => {
+      this.setLiveState(isLive);
+    });
+  }
+
+  private setLiveState(isLive: boolean): void {
+    this.liveMode = isLive;
+
+    // Hide/show playback speed option for live streams
+    if (this.speedItem) {
+      this.speedItem.style.display = this.liveMode ? 'none' : '';
+    }
+    if (this.speedSubmenu) {
+      this.speedSubmenu.style.display = this.liveMode ? 'none' : '';
+    }
+
+    // Reset playback rate to 1x when entering live mode
+    if (this.liveMode && this.player.getPlaybackRate() !== 1) {
+      this.player.setPlaybackRate(1);
+    }
   }
 
   private toggle(): void {

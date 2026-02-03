@@ -76,6 +76,11 @@ export const en: LocaleStrings = {
   'cast.title': 'Cast',
   'cast.connected': 'Cast (Connected)',
 
+  // Live stream
+  'live.badge': 'LIVE',
+  'live.jumpToLive': 'Jump to live',
+  'loop.notAvailableLive': 'Loop not available for live streams',
+
   // Download overlay
   'download.preparing': 'Preparing download...',
   'download.ready': 'Download Ready',

@@ -27,6 +27,7 @@ export function createInitialState(): KanjoPlayerState {
     error: null,
     isPiP: false,
     controlsVisible: true,
+    isLive: false,
   };
 }
 

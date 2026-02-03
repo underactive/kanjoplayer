@@ -20,6 +20,13 @@ interface HlsConfig {
   levelLoadingMaxRetry?: number;
 }
 
+interface HlsLevelDetails {
+  live: boolean;
+  targetduration: number;
+  totalduration: number;
+  type: string | null;
+}
+
 interface HlsInstance {
   loadSource(url: string): void;
   attachMedia(media: HTMLMediaElement): void;
@@ -28,11 +35,13 @@ interface HlsInstance {
   startLoad(startPosition?: number): void;
   stopLoad(): void;
   currentLevel: number;
+  liveSyncPosition?: number | null;
   levels: Array<{
     bitrate: number;
     width: number;
     height: number;
     name: string;
+    details?: HlsLevelDetails;
   }>;
   on(event: string, handler: (...args: unknown[]) => void): void;
   off(event: string, handler: (...args: unknown[]) => void): void;
@@ -71,6 +80,8 @@ export class HlsPlugin implements KanjoPlugin {
   private Hls: HlsConstructor | null = null;
   private currentLevels: HlsLevel[] = [];
   private isAutoLevel = true;
+  private isLive = false;
+  private useNativeHls = false;
 
   constructor(options: HlsPluginOptions = {}) {
     this.options = {
@@ -140,13 +151,21 @@ export class HlsPlugin implements KanjoPlugin {
 
     this.destroyHls();
 
+    // Reset live state on source change
+    this.setLiveState(false);
+
     const video = this.player.getVideoElement();
 
     // Check for native HLS support (Safari)
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      this.useNativeHls = true;
       video.src = src;
+      // For native HLS, detect live via duration
+      this.setupNativeHlsLiveDetection(video);
       return;
     }
+
+    this.useNativeHls = false;
 
     // Ensure video element is clean before HLS.js attaches
     // This helps prevent ORB issues on initial page load
@@ -206,6 +225,14 @@ export class HlsPlugin implements KanjoPlugin {
 
       this.player?.emit('hlsmanifestparsed', { levels: this.currentLevels });
       this.updateQualityMenu();
+    });
+
+    // Level loaded - detect live stream
+    this.hls.on(Events.LEVEL_LOADED, (...args: unknown[]) => {
+      const data = args[1] as { details: HlsLevelDetails };
+      if (data.details) {
+        this.setLiveState(data.details.live);
+      }
     });
 
     // Level switch
@@ -315,6 +342,61 @@ export class HlsPlugin implements KanjoPlugin {
     }
     this.currentLevels = [];
     this.isAutoLevel = true;
+    this.useNativeHls = false;
+  }
+
+  private setLiveState(isLive: boolean): void {
+    if (this.isLive !== isLive) {
+      this.isLive = isLive;
+      if (this.player) {
+        this.player.getStateManager().setState({ isLive });
+        this.player.emit('livestatechange', { isLive });
+      }
+    }
+  }
+
+  private setupNativeHlsLiveDetection(video: HTMLVideoElement): void {
+    // For Safari native HLS, we detect live by checking duration
+    const checkLive = () => {
+      if (!this.useNativeHls || !this.player) return;
+
+      // Live streams have Infinity duration or very large duration
+      const isLive = !isFinite(video.duration) || video.duration === Infinity;
+      this.setLiveState(isLive);
+    };
+
+    // Check on loadedmetadata and durationchange
+    const onMetadata = () => checkLive();
+    const onDurationChange = () => checkLive();
+
+    video.addEventListener('loadedmetadata', onMetadata);
+    video.addEventListener('durationchange', onDurationChange);
+
+    // Store handlers for cleanup (simplified - native HLS cleanup happens on source change)
+  }
+
+  /**
+   * Jump to the live edge of the stream
+   */
+  jumpToLive(): void {
+    if (!this.player) return;
+
+    const video = this.player.getVideoElement();
+
+    if (this.hls && this.hls.liveSyncPosition != null) {
+      // Use hls.js liveSyncPosition for accurate live edge
+      video.currentTime = this.hls.liveSyncPosition;
+    } else if (video.seekable.length > 0) {
+      // Fallback: seek to end of seekable range
+      video.currentTime = video.seekable.end(video.seekable.length - 1);
+    }
+  }
+
+  /**
+   * Check if currently playing a live stream
+   */
+  isLiveStream(): boolean {
+    return this.isLive;
   }
 
   getLevels(): HlsLevel[] {

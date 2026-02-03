@@ -76,6 +76,11 @@ export const zhTW: LocaleStrings = {
   'cast.title': '投放',
   'cast.connected': '投放 (已連線)',
 
+  // Live stream
+  'live.badge': '直播',
+  'live.jumpToLive': '跳轉到直播',
+  'loop.notAvailableLive': '直播中無法使用循環功能',
+
   // Download overlay
   'download.preparing': '正在準備下載...',
   'download.ready': '下載準備就緒',

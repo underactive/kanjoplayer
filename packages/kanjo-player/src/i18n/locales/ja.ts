@@ -76,6 +76,11 @@ export const ja: LocaleStrings = {
   'cast.title': 'キャスト',
   'cast.connected': 'キャスト (接続済み)',
 
+  // Live stream
+  'live.badge': 'ライブ',
+  'live.jumpToLive': 'ライブに移動',
+  'loop.notAvailableLive': 'ライブ配信ではループ機能は利用できません',
+
   // Download overlay
   'download.preparing': 'ダウンロードを準備中...',
   'download.ready': 'ダウンロード準備完了',

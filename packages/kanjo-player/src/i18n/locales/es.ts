@@ -76,6 +76,11 @@ export const es: LocaleStrings = {
   'cast.title': 'Enviar',
   'cast.connected': 'Enviar (Conectado)',
 
+  // Live stream
+  'live.badge': 'EN VIVO',
+  'live.jumpToLive': 'Ir a la transmisión en vivo',
+  'loop.notAvailableLive': 'El bucle no está disponible para transmisiones en vivo',
+
   // Download overlay
   'download.preparing': 'Preparando descarga...',
   'download.ready': 'Descarga lista',

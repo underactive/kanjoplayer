@@ -267,6 +267,8 @@ export interface KanjoPlayerState {
   isPiP: boolean;
   /** Controls are visible */
   controlsVisible: boolean;
+  /** Stream is live (HLS/DASH live stream) */
+  isLive: boolean;
 }
 
 export interface TimeRangeInfo {
@@ -316,6 +318,9 @@ export interface KanjoPlayerEvents {
 
   // Source events
   sourcechange: { src: string; type: string };
+
+  // Live stream events
+  livestatechange: { isLive: boolean };
 
   // Plugin events
   pluginloaded: { name: string };

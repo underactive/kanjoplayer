@@ -78,6 +78,11 @@ export interface LocaleStrings {
   'cast.title': string;
   'cast.connected': string;
 
+  // Live stream
+  'live.badge': string;
+  'live.jumpToLive': string;
+  'loop.notAvailableLive': string;
+
   // Download overlay
   'download.preparing': string;
   'download.ready': string;

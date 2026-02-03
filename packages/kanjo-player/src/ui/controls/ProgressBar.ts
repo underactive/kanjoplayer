@@ -39,6 +39,9 @@ export class ProgressBar {
   // Locale subscription
   private unsubscribeLocale?: () => void;
 
+  // Live stream state - used to track live mode for CSS class
+  private liveMode = false;
+
   constructor(player: KanjoPlayer) {
     this.player = player;
     this.thumbnailPreview = new ThumbnailPreview(player);
@@ -122,6 +125,11 @@ export class ProgressBar {
     // Reset on source change
     this.player.on('sourcechange', () => {
       this.reset();
+    });
+
+    // Listen for live state changes
+    this.player.on('livestatechange', ({ isLive }) => {
+      this.setLiveState(isLive);
     });
 
     // Update progress on timeupdate
@@ -552,6 +560,15 @@ export class ProgressBar {
     this.bufferedBar.style.width = '0%';
     this.thumbnailPreview.reset();
     this.resetLoopMarkers();
+    this.setLiveState(false);
+  }
+
+  /**
+   * Set live stream state - hides scrubber and loop elements
+   */
+  private setLiveState(isLive: boolean): void {
+    this.liveMode = isLive;
+    this.element.classList.toggle('kanjo-live', this.liveMode);
   }
 
   private resetLoopMarkers(): void {
