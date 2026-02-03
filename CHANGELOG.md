@@ -3,6 +3,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.1.0] - 2026-02-03
+
+### Added
+- **Live stream support**: Full HLS live stream detection and UI adaptations
+  - Automatic detection of live streams via hls.js `LEVEL_LOADED` event and Safari native HLS (`duration === Infinity`)
+  - Red "LIVE" badge with pulsing dot animation replaces time display in live mode
+  - Jump-to-live functionality via LIVE badge click
+  - Disabled A/B loop controls, skip controls, and playback speed for live streams
+  - Hidden progress bar scrubber in live mode (shows only played portion)
+  - i18n support for live stream UI strings in all 8 supported locales
+  - Live stream example added to all demo apps
+
+### Changed
+- Production builds now automatically remove `console` and `debugger` statements via esbuild configuration
+  - Reduces bundle size and prevents debug code from appearing in production
+  - Applied to all demo app Vite configs (React, Vue, Svelte)
+
 ## [1.0.0] - 2026-02-02
 
 ### Added
