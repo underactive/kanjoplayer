@@ -40,6 +40,12 @@ const VIDEO_SOURCES: VideoSource[] = [
     url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8',
     type: 'hls',
   },
+  // Live HLS Sources
+  {
+    name: 'Live Test Stream (Live HLS)',
+    url: 'https://demo.unified-streaming.com/k8s/live/stable/live.isml/.m3u8',
+    type: 'hls',
+  },
   // DASH Sources
   {
     name: 'Big Buck Bunny (DASH)',

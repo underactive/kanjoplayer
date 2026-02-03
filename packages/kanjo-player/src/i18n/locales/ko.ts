@@ -76,6 +76,11 @@ export const ko: LocaleStrings = {
   'cast.title': '전송',
   'cast.connected': '전송 (연결됨)',
 
+  // Live stream
+  'live.badge': '실시간',
+  'live.jumpToLive': '실시간으로 이동',
+  'loop.notAvailableLive': '라이브 스트림에서는 구간 반복을 사용할 수 없습니다',
+
   // Download overlay
   'download.preparing': '다운로드 준비 중...',
   'download.ready': '다운로드 준비 완료',

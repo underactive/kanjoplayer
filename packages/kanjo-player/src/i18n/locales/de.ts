@@ -76,6 +76,11 @@ export const de: LocaleStrings = {
   'cast.title': 'Übertragen',
   'cast.connected': 'Übertragen (Verbunden)',
 
+  // Live stream
+  'live.badge': 'LIVE',
+  'live.jumpToLive': 'Zum Live-Punkt springen',
+  'loop.notAvailableLive': 'Schleife nicht verfügbar für Live-Streams',
+
   // Download overlay
   'download.preparing': 'Download wird vorbereitet...',
   'download.ready': 'Download bereit',

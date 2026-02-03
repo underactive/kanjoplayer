@@ -76,6 +76,11 @@ export const zh: LocaleStrings = {
   'cast.title': '投屏',
   'cast.connected': '投屏 (已连接)',
 
+  // Live stream
+  'live.badge': '直播',
+  'live.jumpToLive': '跳转到直播',
+  'loop.notAvailableLive': '直播中无法使用循环功能',
+
   // Download overlay
   'download.preparing': '正在准备下载...',
   'download.ready': '下载准备就绪',

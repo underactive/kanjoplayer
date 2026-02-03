@@ -255,6 +255,58 @@
   color: var(--kanjo-text-secondary);
 }
 
+/* Live badge for live streams */
+.kanjo-time-live-badge {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #e02020;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background var(--kanjo-transition-fast),
+    transform var(--kanjo-transition-fast);
+}
+
+.kanjo-time-live-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  animation: kanjo-live-pulse 1.5s ease-in-out infinite;
+}
+
+.kanjo-time-live-badge:hover {
+  background: #c91818;
+  transform: scale(1.02);
+}
+
+.kanjo-time-live-badge:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(224, 32, 32, 0.5);
+}
+
+@keyframes kanjo-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Live mode time display */
+.kanjo-time-display.kanjo-live {
+  padding: 0 4px;
+}
+
 /* ============================================================================
    Progress Bar
    ============================================================================ */
@@ -331,6 +383,16 @@
 
 .kanjo-progress-container:hover .kanjo-progress-track {
   height: var(--kanjo-progress-height-hover);
+}
+
+/* Live stream progress bar - hide scrubber and loop elements */
+.kanjo-progress-wrapper.kanjo-live .kanjo-progress-scrubber {
+  display: none;
+}
+
+.kanjo-progress-wrapper.kanjo-live .kanjo-loop-marker,
+.kanjo-progress-wrapper.kanjo-live .kanjo-loop-region {
+  display: none !important;
 }
 
 .kanjo-progress-buffered {
@@ -753,6 +815,17 @@
 
 .kanjo-abloop-toggle:disabled {
   cursor: not-allowed;
+}
+
+/* Disabled state for live streams */
+.kanjo-abloop-control.kanjo-live-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Hide skip controls for live streams */
+.kanjo-skip-control.kanjo-live-hidden {
+  display: none;
 }
 
 .kanjo-abloop-toggle-icon {

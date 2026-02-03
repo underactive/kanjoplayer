@@ -53,6 +53,9 @@ export class ABLoopControl {
   // Locale subscription
   private unsubscribeLocale?: () => void;
 
+  // Live stream state - used to track disabled state for live streams
+  private liveMode = false;
+
   constructor(player: KanjoPlayer, options?: ABLoopControlOptions) {
     this.player = player;
     this.options = options || {};
@@ -278,6 +281,30 @@ export class ABLoopControl {
     this.player.on('fullscreenchange', () => {
       this.closeDropdown();
     });
+
+    // Listen for live state changes
+    this.player.on('livestatechange', ({ isLive }) => {
+      this.setLiveState(isLive);
+    });
+  }
+
+  private setLiveState(isLive: boolean): void {
+    this.liveMode = isLive;
+    const locale = this.player.locale;
+
+    this.element.classList.toggle('kanjo-live-disabled', this.liveMode);
+
+    if (this.liveMode) {
+      this.element.title = locale.get('loop.notAvailableLive');
+      this.startBtn.disabled = true;
+      this.endBtn.disabled = true;
+      this.toggleBtn.disabled = true;
+    } else {
+      this.element.title = '';
+      this.startBtn.disabled = false;
+      this.endBtn.disabled = false;
+      this.updateButtonStates();
+    }
   }
 
   private setStartPoint(): void {
